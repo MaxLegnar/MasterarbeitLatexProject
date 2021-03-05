@@ -1,0 +1,126 @@
+% Encoding: UTF-8
+
+@Misc{LookUp,
+  title        = {Render Target Lookup},
+  howpublished = {\url{https://wiki.unrealengine.com/Render_Target_Lookup}},
+  year         = {2014},
+  note         = {aufgerufen: 12:05, 4 Januar 2017},
+}
+
+@Misc{DynTex,
+  title        = {Dynamic Textures},
+  howpublished = {\url{https://wiki.unrealengine.com/Dynamic_Textures}},
+  year         = {2014},
+  note         = {aufgerufen: 22:42, 25 August 2017},
+}
+
+@Misc{CrossCompiler,
+  title        = {UE4 Dokumentation: hlsl Cross Compiler},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Programming/Rendering/ShaderDevelopment/HLSLCrossCompiler/}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{PhysX,
+  title        = {UE4 Dokumentation: Physics Simulation},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Engine/Physics/}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{DrawMaterial,
+  title        = {UE4 Dokumentation: Draw Material to Render Target},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/BlueprintAPI/Rendering/DrawMaterialtoRenderTarget/index.html}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{CustomNode,
+  title        = {UE4 Dokumentation: Custom Expressions},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Engine/Rendering/Materials/ExpressionReference/Custom/}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{APrinzip,
+  title        = {Archimedisches Prinzip},
+  howpublished = {\url{https://de.wikipedia.org/wiki/Archimedisches Prinzip}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{FluidSurface,
+  title        = {Creating a Fluid surface with Blueprints and Render Targets},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Engine/Rendering/RenderTargets/BlueprintRenderTargets/HowTo/FluidSurface/index.html}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{GPUProfiling,
+  title        = {GPU Profiling},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Engine/Performance/GPU/}},
+  year         = {2017},
+  note         = {aufgerufen: 12:22, 8 September 2017},
+}
+
+@Misc{Kennedy95particleswarm,
+  author = {James Kennedy and Russell Eberhart},
+  title  = {Particle swarm optimization},
+  year   = {1995},
+}
+
+@Misc{Olfati-Saber06flockingfor,
+  author = {Reza Olfati-Saber},
+  title  = {Flocking for Multi-Agent Dynamic Systems: Algorithms and Theory},
+  year   = {2006},
+}
+
+@Misc{Jadbabaie02coordinationof,
+  author = {A. Jadbabaie and J. Lin and A. S. Morse},
+  title  = {Coordination of Groups of Mobile Autonomous Agents Using Nearest Neighbor Rules},
+  year   = {2002},
+}
+
+@Misc{Reynolds99steeringbehaviors,
+  author = {Craig Reynolds},
+  title  = {Steering Behaviors For Autonomous Characters},
+  year   = {1999},
+}
+
+@Misc{ReynoldsHP,
+  title        = {Boids Background and Update by Craig Reynolds},
+  howpublished = {\url{http://www.red3d.com/cwr/boids/}},
+  year         = {2018},
+  note         = {aufgerufen: 12:00, 11 Januar 2018},
+}
+
+@Misc{UE4MatNodes,
+  title        = {UE4 Dokumentation: Material Nodes},
+  howpublished = {\url{https://docs.unrealengine.com/latest/INT/Engine/Rendering/Materials/ExpressionReference/index.html}},
+  year         = {2018},
+  note         = {aufgerufen: 15:50, 15 Januar 2018},
+}
+
+@Misc{Ryan18Brucks,
+  author       = {Ryan Brucks},
+  title        = {Shaderbits - HLSL and UE4 Development Blog},
+  howpublished = {\url{http://shaderbits.com/blog}},
+  year         = {2018},
+  note         = {aufgerufen: 9:21, 16 Januar 2018},
+}
+
+@Misc{GDC2017,
+  title        = {GDC 2017: Content-Driven Multipass Rendering in UE4},
+  howpublished = {\url{https://www.unrealengine.com/en-US/blog/gdc-2017-content-driven-multipass-rendering-in-ue4}},
+  year         = {2017},
+  note         = {aufgerufen: 10:50, 16 Januar 2018},
+}
+
+@Misc{BilTexFilt,
+  title        = {Bilinear Texture Filtering (Direct3D 9)},
+  howpublished = {\url{https://msdn.microsoft.com/de-de/library/windows/desktop/bb172357(v=vs.85).aspx}},
+  year         = {2018},
+  note         = {aufgerufen: 13:43, 16 Januar 2018},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

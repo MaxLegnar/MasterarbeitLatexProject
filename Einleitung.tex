@@ -1,0 +1,51 @@
+% Die Arbeit besteht aus Kapiteln (chapter)
+% strg + t -> commend selection. strg+ u -> uncommend selection
+\chapter{Einleitung}
+\label{chap_Einleitung}
+
+teste quellen ref: \cite{SurgSim}
+
+\section{Motivation und Problemstellung}
+
+
+
+%Das Vorkommen von Tierschwärmen in der Natur ist ein ganz besonderes Phänomen.
+%Es ist beeindruckend, wie ein Schwarm komplexe Problemstellungen löst, indem einzelne Individuen einfache Regeln befolgen. Eine einzelne Ameise erscheint auf den ersten Blick nicht besonders intelligent. Betrachtet man aber den gesamten Ameisenschwarm, ist ein intelligentes Verhalten zu erkennen. Deswegen wird dieses Naturphänomen auch als Schwarmintelligenz bezeichnet.
+%
+%Im Rahmen dieser Bachelorarbeit wird ein Schwarmverhalten simuliert, mit dem Ziel, Schwarmbewegungen als Stilmittel in Videospielen einzusetzen. Die Simulation soll die typischen Bewegungen eines Tierschwarms nachahmen, wie sie zum Beispiel bei Vögel- oder Fischschwärmen vorkommen.
+%
+%Außerdem kann ein menschlicher Spieler mit dem simulierten Schwarm interagieren, wodurch das Spielerlebnis intensiviert werden soll. Damit eine möglichst vielfältige Interaktion mit dem virtuellen Schwarm realisiert werden kann, werden die Schwarmbewegungen in Echtzeit simuliert. 
+%
+%Die Simulationssoftware besteht dabei zum Großteil aus einer Shader-Pipeline und der virtuelle Schwarm wird von Texturen beschrieben. Der in Texturform vorliegende Schwarm wird als Punkte-Wolke dargestellt. Einzelne Individuen sind dann kaum erkennbar, wodurch sich der optische Fokus auf den Schwarm als Gesamtsystem verschiebt. Jedes Individuum ist ein kleiner leuchtender Punkt. Mehrere Individuen können zu einer heller leuchtenden Gruppe verschmelzen.
+%
+%Entstehen soll dabei ein neuartiger Schwarm-Effekt für Videospiele, der durch seine Optik und Interaktivität, an ein intelligentes Lebewesen erinnert.
+
+
+\section{Einordnung und Abgrenzung}
+
+%Um die Bewegungen von Tierschwärmen zu simulieren, hat sich das sogenannte Boid-Modell von Reynolds etabliert. Auch in dieser Arbeit werden seine bekanntesten Werke, \cite{Reynolds87flocks} und \cite{Reynolds99steeringbehaviors}, als Fundament genutzt, um ein Modell für die Simulation aufzustellen.
+%
+%In dieser Arbeit wird nicht versucht, etablierte Techniken für Schwarmsimulationen weiter zu optimieren, wie beispielsweise in \cite{Kennedy95particleswarm}. Stattdessen werden die grundlegenden Prinzipien von Reynolds aufgegriffen um ein neuartiges System zu modellieren, das besonders gut von Shadern und Texturen beschrieben werden kann.
+%
+%Für gewöhnlich wird ein Boid-System wie ein Partikelsystem  behandelt \\ \cite{Reynolds87flocks}, so wie in \cite{Oliver14Tschesche}. In solch einem System ist jedes Individuum des Schwarms ein eigenständiges Objekt, das sich frei im Raum bewegen kann. In dieser Arbeit wird der Schwarm hingegen mithilfe eines Zellensystems beschrieben, in dem jede Zelle örtlich gebunden ist. Jede Zelle kann dabei von mehreren Individuen besucht werden. Im Zellensystem befinden sich keine einzelnen Schwarmtiere, die eindeutig voneinander trennbar sind. Stattdessen \glqq fließt\grqq{} der Schwarm vielmehr, als zum Teil kontinuierlich zusammenhängende Menge, durch das Zellensystem. Das Zellensystem wird dabei von Texturen beschrieben.
+%
+%Der im Rahmen dieser Arbeit entstandene algorithmische Aufwand ist weniger von der Anzahl der simulierten Individuen abhängig, so wie es in \cite{Reynolds87flocks} der Fall ist. Stattdessen steigt hier der Rechenaufwand in Abhängigkeit von der Anzahl der verwendeten Zellen.
+%
+%Reynolds Boid-System wird, wie in \cite{Oliver14Tschesche}, meist mithilfe von Grafikkartenschnittstellen wie \textit{OpenCV} oder \textit{CUDA} berechnet. In dieser Arbeit wird statt dessen auf die Verwendung von herkömmlichen Shadern gesetzt.
+%
+%Schwarmtiere werden für gewöhnlich als einzelne 3D-Modelle dargestellt. Beispielsweise als einzelne Fische \cite{Tu94artificialfishes:} oder Vögel  \cite{Oliver14Tschesche}.
+%In dieser Arbeit erfolgt die Darstellung des Schwarms auf eine andere Weise. Hier sind die Schwarmtiere lediglich kleine Punkte. Einzelne Individuen sind hier kaum erkennbar, weil diese miteinander verschmelzen können. Der in Texturform hinterlegte Schwarm wird von Shadern als Punkte-Wolke dargestellt. Beispielsweise mittels \textit{Texture-Based Volume Rendering} \cite{GPUGems1}.  
+%
+
+
+
+
+\section{Aufbau dieser Arbeit}
+%... mach ich am Ende...
+
+
+
+
+
+
+

@@ -1,0 +1,116 @@
+% Preambel mit Einstellungen importieren
+\input{preambel}
+
+% Dokumenteninfos importieren
+\input{docinfo.tex}
+
+\begin{document}
+\frontmatter
+
+% Römische Ziffern ür die "Front-Matter"
+\setcounter{page}{0}
+\changefont{ptm}{m}{n}  % Times New Roman für den Fließtext
+\renewcommand{\rmdefault}{ptm}
+
+% Titelblatt
+\input{titelblatt}
+% Inhaltsverzeichnis erzeugen
+\cleardoublepage
+\pdfbookmark{\contentsname}{Contents}
+\tableofcontents
+
+% Korrigiert Nummerierung bei mehrseitigem Inhaltsverzeichnis
+\cleardoublepage
+\newcounter{frontmatterpage}
+\setcounter{frontmatterpage}{\value{page}}
+
+% Neue Seite
+\cleardoublepage
+
+% Backmatter mit normalem Zeilenabstand setzen
+\singlespacing
+
+% Römische Ziffern für die "Back-Matter", fortlaufend mit "Front-Matter"
+\pagenumbering{roman}
+\setcounter{page}{\value{frontmatterpage}}
+
+% Abkürzungsverzeichnis
+\input{abkuerzungen}
+
+% Tabellenverzeichnis erzeugen
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+\listoftables
+
+% Abbildungsverzeichnis erzeugen
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\listoffigures
+
+% Listingverzeichnis erzeugen
+%\cleardoublepage
+%\phantomsection
+%\addcontentsline{toc}{chapter}{Quellcodeverzeichnis}
+%\lstlistoflistings
+
+
+
+
+
+
+
+
+% Arabische Zahlen für den Hauptteil
+\mainmatter
+
+% Den Hauptteil mit vergrößertem Zeilenabstand setzen
+\onehalfspacing
+
+% ------------------------------------------------------------------
+% Hauptteil der Arbeit
+%\input{kapitel1}  % Externe Datei einbinden
+%\input{kapitel2a} % Externe Datei einbinden
+%\input{kapitel3}  % Externe Datei einbinden
+
+
+\input{Einleitung}
+\input{Grundlagen}
+\input{ht}
+\input{ht2}
+\input{Fazit_und_Ausblick}
+
+
+
+
+%\input{Modellierung} % das ist mein CheatSheet für Latex!!!!!!!!!!!!
+% ------------------------------------------------------------------
+
+\label{lastpage}
+
+\clearpage
+
+%% Backmatter mit normalem Zeilenabstand setzen
+%\singlespacing
+%
+%% Römische Ziffern für die "Back-Matter", fortlaufend mit "Front-Matter"
+%\pagenumbering{roman}
+%\setcounter{page}{\value{frontmatterpage}}
+
+% Literaturverzeichnis erzeugen (nach DIN)
+\begin{flushleft}
+%\bibliographystyle{dinat} % Literatur nach DIN
+\bibliographystyle{apalike} % unsrt=Zitate mit [1], [2] etc.
+%\bibliographystyle{alpha} % Zitate mit [Kor01], [Vix99] etc.
+\bibliography{literatur}   % BibTeX-Datei mit Literaturquellen einbinden
+\end{flushleft}
+
+
+% Index ausgeben
+%\cleardoublepage
+%\phantomsection
+%\addcontentsline{toc}{chapter}{Index}
+%\printindex
+
+\end{document}

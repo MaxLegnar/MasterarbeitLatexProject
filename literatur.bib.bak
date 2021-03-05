@@ -1,0 +1,44 @@
+% Encoding: UTF-8
+
+@Misc{SurgSim,
+  howpublished = {\url{wiki.tum.de/display/btt/Group+4%3A+Surgical+Simulators}},
+  note         = {aufgerufen: 14:30, 4 März 2021},
+  title        = {Surgical Simulators},
+  year         = {2021},
+}
+
+@Article{UPP,
+  author     = {Macklin, Miles and M\"{u}ller, Matthias and Chentanez, Nuttapong and Kim, Tae-Yong},
+  journal    = {ACM Trans. Graph.},
+  title      = {Unified Particle Physics for Real-Time Applications},
+  year       = {2014},
+  issn       = {0730-0301},
+  month      = jul,
+  number     = {4},
+  volume     = {33},
+  abstract   = {We present a unified dynamics framework for real-time visual effects. Using particles connected by constraints as our fundamental building block allows us to treat contact and collisions in a unified manner, and we show how this representation is flexible enough to model gases, liquids, deformable solids, rigid bodies and cloth with two-way interactions. We address some common problems with traditional particle-based methods and describe a parallel constraint solver based on position-based dynamics that is efficient enough for real-time applications.},
+  address    = {New York, NY, USA},
+  articleno  = {153},
+  doi        = {10.1145/2601097.2601152},
+  issue_date = {July 2014},
+  keywords   = {fluid simulation, position-based dynamics, cloth simulation, simulation, two-way fluid coupling, unified solver},
+  numpages   = {12},
+  publisher  = {Association for Computing Machinery},
+  url        = {https://doi.org/10.1145/2601097.2601152},
+}
+
+@Misc{UE4FlexDoc,
+  howpublished = {\url{gameworksdocs.nvidia.com/FleX/1.2/ue4_docs/FLEXUe4_Intro.html}},
+  note         = {aufgerufen: 13:30, 5 März 2021},
+  title        = {Unreal 4 FleX integration - Documentation},
+  year         = {2021},
+}
+
+@Misc{FlexD3D,
+  howpublished = {\url{gdcvault.com/play/1024344/}},
+  note         = {aufgerufen: 15:00, 5 März 2021},
+  title        = {D3D Async Compute for Physics: Bullets, Bandages, and Blood},
+  year         = {2021},
+}
+
+@Comment{jabref-meta: databaseType:bibtex;}

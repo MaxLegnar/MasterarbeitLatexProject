@@ -1,0 +1,186 @@
+% -------------------------------------------------------
+% In dieser Datei sollten eigentlich keine Veränderungen mehr
+% notwendig sein.
+% -------------------------------------------------------
+
+\thispagestyle{empty}
+
+% Fakultäten der HS-Mannheim
+% -------------------------------------------------------
+\ifthenelse{\equal{\hsmafakultaet}{I}}%
+  {\newcommand{\hsmafakultaetlangde}{Institut für Wissenschaftliches Rechnen (IWR)}%
+   \newcommand{\hsmafakultaetlangen}{Interdisciplinary Center for Scientific Computing}}{}
+
+\ifthenelse{\equal{\hsmastudiengang}{MEB}}%%%%--------------------------------------------------------------------
+  {\newcommand{\hsmastudienganglangde}{Angewandte Informatik \linebreak Fakultät für Mathematik und Informatik}%
+   \newcommand{\hsmastudienganglangen}{Applied Computer Science}%Mechatronic
+   \newcommand{\hsmatypde}{Master-Thesis}%
+   \newcommand{\hsmatypen}{Master-Thesis}%
+   \newcommand{\hsmagrad}{\hsmabsc}}{}
+
+\newcommand{\hsmabsc}{Bachelor of Science (B.Sc.)}
+\newcommand{\hsmaba}{Bachelor of Arts (B.A.)}
+\newcommand{\hsmamaster}{Master of Science (M.Sc.)}
+\newcommand{\hsmamastera}{Master of Arts (M.A.)}
+\newcommand{\hsmamasterba}{Master of Business Administration (MBA)}
+
+\newcommand{\hsmakoerperschaftde}{Ruprecht-Karls-Universität Heidelberg}
+\newcommand{\hsmakoerperschaften}{Ruprecht Karl University of Heidelberg}
+
+\newcommand{\hsmaautorbib}{\hsmaautornname, \hsmaautorvname} % Autor Nachname, Vorname
+\newcommand{\hsmaautor}{\hsmaautorvname \ \hsmaautornname} % Autor Vorname Nachname
+
+\ifthenelse{\equal{\hsmasprache}{de}}%
+  {\newcommand{\hsmatyp}{\hsmatypde}%
+   \newcommand{\hsmathesistype}{ \hsmagrad}%
+   \newcommand{\hsmakoerperschaft}{\hsmakoerperschaftde}%
+   \newcommand{\hsmastudiengangname}{Studiengang \hsmastudienganglangde}%
+   \newcommand{\hsmastudienganglang}{\hsmastudienganglangde}%
+   \newcommand{\hsmatitel}{\hsmatitelde}%
+   \newcommand{\hsmatutor}{Betreuer}%
+   \newcommand{\hsmafakultaetlang}{\hsmafakultaetlangde}%
+   \selectlanguage{ngerman}}%
+  {\newcommand{\hsmatyp}{\hsmatypen}%
+   \newcommand{\hsmathesistype}{for the acquisition of the academic degree \hsmagrad}%
+   \newcommand{\hsmakoerperschaft}{\hsmakoerperschaften}%
+   \newcommand{\hsmastudiengangname}{Course of Studies: \hsmastudienganglang}%
+   \newcommand{\hsmastudienganglang}{\hsmastudienganglangen}%
+   \newcommand{\hsmatitel}{\hsmatitelen}%
+   \newcommand{\hsmatutor}{Tutors}
+   \newcommand{\hsmafakultaetlang}{\hsmafakultaetlangen}%
+   \selectlanguage{english}}%
+
+
+% Daten in die Standard-Felder von KOMA-Script eintragen
+\titlehead{\hsmatyp\ in\  \hsmastudienganglang}
+\subject{}
+\title{\hsmatitel}
+\author{\hsmaauthor}
+\date{\small{\hsmadatum}}
+
+% Daten für das fertige PDF-Dokument
+\hypersetup{
+  pdftitle={\hsmatitel},  % Titel des Dokuments
+  pdfauthor={\hsmaautor},              % Autor
+  pdfsubject={\hsmatyp\ in\ \hsmastudienganglang},                % Thema
+  pdfkeywords={\hsmatitel}         % Schlüsselworte
+}
+
+\newlength{\bindekorrektur}
+\newlength{\seitenanfang}
+\newlength{\seitenbreite}
+  
+\setlength{\bindekorrektur}{-46mm}   % Korrektur der horizontalen Position
+\setlength{\seitenanfang}{0mm}       % Korrektur der vertikalen Position
+\setlength{\seitenbreite}{297mm}
+
+%------------------ LOGO habe ich raus commentiert: ----------------------------------------
+%\noindent\includegraphics[width=4cm]{unilogo1.jpg}\\%hsma-logo.pdf     ue-logo.png
+
+% Titel der Arbeit
+\begin{textblock*}{128mm}(45mm,\seitenanfang + 62mm) % 4,5cm vom linken Rand und 6,0cm vom oberen Rand
+  \centering\Large\sffamily
+  \vspace{4mm} % Kleiner zusätzlicher Abstand oben für bessere Optik
+  \textbf{\hsmatitel}
+\end{textblock*}%
+
+% Name                                          h
+\begin{textblock*}{128mm}(38mm,\seitenanfang + 103mm)%103mm
+  \centering\large\sffamily
+  \hsmaautor
+\end{textblock*}
+
+% Thesis
+\begin{textblock*}{\seitenbreite}(\bindekorrektur,\seitenanfang + 130mm)
+  \centering\large\sffamily
+  \hsmatyp\\
+  %\begin{small}\hsmathesistype \end{small}\\
+  \vspace{2mm}
+  \hsmastudiengangname
+\end{textblock*}
+
+% Fakultät
+\begin{textblock*}{\seitenbreite}(\bindekorrektur,\seitenanfang + 165mm)
+  \centering\large\sffamily
+  \hsmafakultaetlang\\
+  \vspace{2mm}
+  \hsmakoerperschaft
+\end{textblock*}
+
+% Datum
+\begin{textblock*}{\seitenbreite}(\bindekorrektur,\seitenanfang + 190mm)
+  \centering\large 
+  \textsf{\hsmadatum}
+\end{textblock*}
+
+% Firma
+\begin{textblock*}{\seitenbreite}(\bindekorrektur,\seitenanfang + 215mm)
+  \centering\large 
+  %\textsf{Durchgeführt bei der Firma \hsmafirma}
+\end{textblock*}
+
+% Betreuer
+\begin{textblock*}{\seitenbreite}(\bindekorrektur,\seitenanfang + 240mm)
+  \centering\large\sffamily
+  \hsmatutor \\
+  \vspace{2mm}
+  \hsmabetreuer\\
+  \vspace{2mm}
+  \hsmazweitkorrektor
+\end{textblock*}
+
+% Bibliographische Informationen
+\null\newpage
+\thispagestyle{empty}
+  
+\newcommand{\hsmabibde}{\begin{small}\textbf{\hsmaautorbib}: \\ \hsmatitelde \ / \hsmaautor. \ -- \\ \hsmatypde, \hsmaort : \hsmakoerperschaftde, \hsmajahr. \pageref{lastpage} Seiten.\end{small}}
+
+\newcommand{\hsmabiben}{\begin{small}\textbf{\hsmaautorbib}: \\ \hsmatitelen \ / \hsmaautor. \ -- \\ \hsmatypen, \hsmaort : \hsmakoerperschaften, \hsmajahr. \pageref{lastpage} pages. \end{small}}
+
+\ifthenelse{\equal{\hsmasprache}{de}}%
+  {\hsmabibde \\ \vspace{0.5cm} \\ \hsmabiben}
+  {\hsmabiben \\ \vspace{0.5cm} \\ \hsmabibde}
+%\hsmabibde
+
+% Erklärung
+\clearpage\setcounter{page}{1}
+\thispagestyle{empty}
+\textsf{\large\textbf{Erklärung}}
+
+Ich versichere hiermit, dass ich die vorliegende Arbeit selbstständig verfasst und keine anderen als die angegebenen Hilfsmittel benutzt habe. Sowohl inhaltlich als auch wörtlich entnommene Inhalte wurden als solche kenntlich gemacht. Die Arbeit ist in gleicher
+oder vergleichbarer Form noch bei keiner anderen Prüfungsbehörde eingereicht worden.
+
+\ifthenelse{\boolean{hsmapublizieren} \and \not\boolean{hsmasperrvermerk}}%
+{
+\vspace{0.5cm}
+Ich bin damit einverstanden, dass meine Arbeit veröffentlicht wird, d.\,h. dass die Arbeit elektronisch gespeichert, in andere Formate konvertiert, auf den Servern der Universität Heidelberg öffentlich zugänglich gemacht und über das Internet verbreitet werden darf. 
+}{}%
+
+
+\vspace{1cm}
+\hsmaort, \hsmadatum \\
+
+\vspace{1.2cm}						                                      
+\hsmaautor
+
+\ifthenelse{\boolean{hsmasperrvermerk}}%
+{%
+\vspace{11cm}
+\color{red}\textsf{\large\textbf{Sperrvermerk}}
+
+Diese Arbeit basiert auf internen und vertraulichen Daten des Unternehmens \hsmafirma.
+
+Diese Arbeit darf Dritten, mit Ausnahme der betreuenden Dozenten und befugten Mitglieder des Prüfungsausschusses, ohne ausdrückliche Zustimmung des Unternehmens und des Verfassers nicht zugänglich gemacht werden.
+
+Eine Vervielfältigung und Veröffentlichung der Arbeit ohne ausdrückliche Genehmigung -- auch in Auszügen -- ist nicht erlaubt.
+\color{black}
+}{}
+
+\cleardoublepage
+
+% Abstract
+\chapter*{Abstract}
+
+\ifthenelse{\equal{\hsmasprache}{de}}%
+  {\subsubsection*{\hsmatitelde}\hsmaabstractde\subsubsection*{\hsmatitelen}\hsmaabstracten}
+  {\subsubsection*{\hsmatitelen}\hsmaabstracten\subsubsection*{\hsmatitelde}\hsmaabstractde}

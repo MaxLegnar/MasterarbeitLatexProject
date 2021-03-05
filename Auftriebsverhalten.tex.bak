@@ -1,0 +1,363 @@
+
+\chapter{ht1}
+%
+%\label{chap_Auftrieb}
+%\section{Begleitendes Videomaterial}
+%Begleitend zu Kapitel \ref{chap_Auftrieb} wurde dieser Arbeit noch ein kurzes Präsentations-Video namens \glqq Auftriebssimulation\grqq{} hinzugefügt. Es dient dem Leser als anschauliche Verständnis-Stütze. Darin wird die implementierte Auftriebssimulation präsentiert. Im Verlaufe dieses Kapitels wird gelegentlich auf bestimmte Abschnitte des Videos hingewiesen um Thematiken besser zu veranschaulichen. 
+%
+%
+%\section{Modellbildung und Theorie}
+%\label{sec_AuftriebTheorie}
+%\subsection{Das archimedische Prinzip}
+%
+%Weil \ac{UE4} bereits eine umfangreiche Physik Engine besitzt, bietet es sich an als erstes über die Auftriebskraft nachzudenken, um einen ersten mathematischen Ansatz für eine Auftriebssimulation, zu finden. 
+%Ein guter Einstiegspunkt ist das über 2000 Jahre alte archimedische Prinzip. Es besagt:
+%
+%Die gesamte Auftriebskraft, die auf einen im Wasser befindlichen Körper wirkt, ist so groß wie die Gewichtskraft der Wassermasse, die der Körper verdrängt \cite{APrinzip}.
+%
+%Wobei die Auftriebskraft entgegen der Schwerkraft wirkt.
+%Also lässt sich sagen:
+%
+%\begin{equation}
+%F_A = m_f \cdot g
+%\label{F_a1}
+%\end{equation}
+%
+%Die Auftriebskraft, $F_A$, ist das Produkt aus der verdrängten Flüssigkeitsmasse, $m_f$ und der Erdbeschleunigung, $g$. Die verdrängte Flüssigkeitsmasse, $m_f$, lässt sich ersetzen mit:
+%
+%\begin{equation}
+%m_f = \rho_f \cdot V_f
+%\label{m_F}
+%\end{equation}
+%
+%Die Auftriebskraft ist also abhängig vom Volumen der verdrängten Flüssigkeit, $V_f$ und ihrer Dichte, $\rho_f$.
+%Zur Laufzeit der Simulation wird sich die Dichte der Flüssigkeit nicht ändern, dafür aber das verdrängte Flüssigkeitsvolumen $V_f$.
+%Für die Simulation muss also die verdrängte Flüssigkeitsmenge, $V_f$, eines schwimmenden 3D Modells ermittelt werden. 
+%
+%$V_f$ ist genau so groß wie das Volumen des Teils des schwimmenden Körpers, das sich unter der Wasseroberfläche befindet.
+%
+%\bild{VF}{9cm}{Das verdrängte Wasservolumen, $V_f$, ergibt sich aus dem Teil des Körpers der sich unter der Wasseroberfläche befindet.}
+%
+%Je nachdem wie komplex die Form der Wasseroberfläche und des 3D Modells ist, kann die Berechnung von $V_f$ entsprechend rechenintensiv werden. Deswegen werden im nächstem Kapitel einige Vereinfachungen getroffen um die Simulation möglichst einfach und effizient zu gestalten.
+%
+%\subsection{Vereinfachte Berechnung des verdrängten Wasservolumens}
+%
+%Auch wenn die gezeichnete Form eines simulierten 3D Modells komplex ist, soll dessen verwendete Volumenform grundlegend vereinfacht werden. Jedem schwimmenden 3D-Modell wird ein virtuelles Volumen, in Form eines Quaders mit den Maßen $a$ mal $a$ mal $h$, zugeordnet. Wobei $a$ die Länge sowie die Breite und $h$ die Höhe eines virtuellen Volumens ist. Die Größe eines Volumens muss dabei nicht exakt so groß wie das zugehörige 3D-Modell sein.
+%
+%\clearpage
+%\bild{VirtuellesVolumen}{8cm}{Ein 3D Modell mit einem virtuellen Volumen in Form eines Quaders. Für die Auftriebssimulation  ist die Form des 3D-Modells nicht mehr relevant. Nur der grob angepasste Quader wird für die Berechnungen der Auftriebskräfte verwendet}
+%
+%Ein virtuelles Volumen kann auch als eine Art Schwimmkörper verstanden werden, das an einem 3D-Modell befestigt wird um es schwimmen zu lassen. Der Koordinatenuhrsprung eines virtuellen Volumens befindet sich in seiner Körpermitte.
+%
+%Als zweite Vereinfachung wird die Flüssigkeitsfläche an der Position $(x_v,y_v)$, bei der sich das virtuelle Volumen befindet, als horizontal orientierte Ebene, die sich $z_f$ hoch befindet, angenommen. Auch wenn der Wellen-Shader eigentlich  eine komplexere Form besitzt.
+%
+%\bild{WasserflaecheVereinfacht}{12cm}{Ein quadratisches Volumen unter einer komplex geformten Wasseroberfläche (blau) in der Seitenansicht. Die Form der Wasseroberfläche in der Umgebung des Volumens wird als einfache Ebene interpretiert (rot).}
+%
+%In Abbildung \ref{WasserflaecheVereinfacht} ist ein virtuelles Volumen abgebildet, welches sich $h_f$ tief unter Wasser befindet. Das Volumen ist $z_v$ hoch positioniert und die vereinfachte Flüssigkeitsfläche etwas höher bei $z_f$.
+%Die verdrängte Flüssigkeitsmenge, $V_f$, berechnet sich mit:
+%
+%\begin{equation}
+%V_f = a^2 \cdot h_f
+%\label{V_F}
+%\end{equation}
+%
+%, wobei sich $h_f$, nach Abbildung \ref{WasserflaecheVereinfacht}, wie folgt zusammensetzt:
+%
+%\begin{equation}
+%h_f = Z_f - z_v + \frac{h}{2}
+%\label{h_F}
+%\end{equation}
+%
+%Wobei $ 0 \leq h_f \leq h$. Somit ist das verdrängte Wasservolumen abhängig von der Geometrie und Position, $P_V=(x_V,y_V,z_V)$, des virtuellen Volumens und von der Flüssigkeitshöhe, $z_f$, an der Stelle $(x_V,y_V)$.
+%
+%\subsection{Vereinfachte Berechnung der Auftriebskraft}
+%
+%Indem Gleichung \ref{h_F} in \ref{V_F} in \ref{m_F} in \ref{F_a1} eingesetzt wird, ergibt sich eine erste Formel für die Berechnung einer simulierten Auftriebskraft:
+%
+%\begin{equation}
+%F_A = \rho_f \cdot a^2 \cdot (z_f - z_V + \frac{h}{2}) \cdot g
+%\label{F_a2}
+%\end{equation}
+%
+%Mit dieser Formel könnte die geplante Simulation durchaus realisiert werden. Möchte ein Programmierer aber mithilfe von Formel \ref{F_a2} ein 3D-Modell zum schwimmen bekommen, wäre diese häufig auftretende Aufgabe aufwändig zu bewältigen. Dieser muss dann nämlich alle Parameter von Formel \ref{F_a2} so anpassen, dass das gegebene 3D-Modell schwimmt. Die maximale Auftriebskraft, $F_{Amax}$, die auf das 3D-Modell wirkt, sollte also größer als die Schwerkraft, $F_m$, des 3D-Modells sein. Nun bleiben dem Programmierer zwei Möglichkeiten um dies zu realisieren: Entweder er verändert das Gewicht des 3D-Modells und die Geometrie des zugehörigen virtuellen Volumens so lange, bis er durch Ausprobieren das Resultat bekommt, das gewünscht ist (, nämlich dass das Objekt schwimmt). Oder er legt beispielsweise die Parameter $a$ und $m$ für das Objekt fest und berechnet $h$ so, dass $F_{Amax} > F_m$ ist. Beide Optionen sind mit einem gewissen Aufwand verbunden. 
+%
+%Daher ist ein anderer Ausdruck für $F_A$ als Gleichung \ref{F_a2} gewünscht. Es wäre praktikabler $F_A$ über $F_{Amax}$ auszudrücken um $F_{Amax}$ von vornherein größer oder kleiner als $F_m$ setzen zu können.
+%Zunächst wird daher $F_{Amax}$ genauer betrachtet um einen benutzerfreundlichen Ausdruck für $F_A$ zu finden:
+%
+%Das von einem Objekt verdrängte Flüssigkeitsvolumen, $V_F$, wird umso größer sein, je tiefer sich das Objekt unter der Wasseroberfläche befindet, weil es dann mehr Flüssigkeit verdrängt. Befindet sich ein Objekt komplett unter der Wasseroberfläche, wirkt die maximale Auftriebskraft $F_{Amax}$ darauf, weil es dann die maximale Menge Flüssigkeit verdrängt, die das Objekt aufgrund seiner Größe verdrängen kann.
+%
+%Die maximale Auftriebskraft wirkt dann, wenn das Objekt vollständig Unterwasser getaucht ist. Dann wird die maximale Wassermenge verdrängt und es gilt $V_f=V$. Das verdrängte Wasservolumen, $V_f$, ist gleich das Volumen des untergetauchten Objekts, $V$. Setzt man nun $V_f = V = \frac{m}{\rho_k}$ in Gleichung \ref{F_a1} ein, ergibt sich eine Formel für die maximale Auftriebskraft, die auf einen untergetauchten Körper wirkt:
+%
+%\begin{equation}
+%F_{Amax} = \frac{m}{\rho_k} \cdot \rho_f \cdot g
+%\label{F_amax}
+%\end{equation}
+%
+%Wobei $\rho_k$ die Dichte des schwimmenden, starren Körpers ist. Bei Betrachtung von Gleichung \ref{F_amax}, wird klar, dass allein das Verhältnis von $\rho_f$ zu $\rho_k$ bestimmt, ob $F_{Amax}$ größer oder kleiner als $F_m=m \cdot g$ ist. 
+%
+%Ist die Dichte eines Körpers kleiner als die der Flüssigkeit, schwimmt er. Ist $\rho_k$ größer als $\rho_f$, wird das simulierte Objekt hingegen sinken. Je nachdem wie das Verhältnis von $\rho_f$ zu $\rho_k$ ist, wird das simulierte 3D-Modell gut ($\frac{\rho_f}{\rho_k} >> 1$) oder weniger gut ($\frac{\rho_f}{\rho_k}$ etwas größer $1$) schwimmen. Oder der Körper sinkt schneller ($\frac{\rho_f}{\rho_k} << 1$) oder langsamer ($\frac{\rho_f}{\rho_k}$ etwas kleiner $1$).
+%
+%Für den Programmierer wäre es also praktisch $\frac{\rho_f}{\rho_k}$ zu bestimmen. Mit diesem Quotienten lassen sich nämlich direkt die Schwimmeigenschaften eines 3D-Modells festlegen. 
+%Im Präsentations-Video \glqq \textit{Auftriebssimulation}\grqq{} wird im Bereich ab einer Minute bis zum Ende des Videos gezeigt, wie durch Bestimmung von $\frac{\rho_f}{\rho_k}$ das Schwimmverhalten eines Würfels gezielt eingestellt werden kann. Hier wird $\frac{\rho_f}{\rho_k}$ (\glqq \textit{Relative Density}\grqq{}) so gesetzt, dass das Objekt gerade noch so schwimmt \textit{(Relative Density = 1,1)}, dann langsam sinkt \textit{(Relative Density = 0,9)} und dann schnell sinkt \textit{(Relative Density = 0,1)}.
+%
+%Die Auftriebskraft sollte also am besten in Abhängigkeit von $\frac{\rho_f}{\rho_k}$ berechnet werden. Um dies zu realisieren wird $F_A$ über $F_{Amax}$ ausgedrückt. In diesem Fall kann $F_A$ auch als lineare Funktion von $h_f$, mit einem Maximalwert, $F_{Amax}$, an der Stelle $h$, verstanden werden. Diese Funktion wird in Abbildung \ref{FaVonhf} dargestellt.
+%
+%\clearpage
+%\bild{FaVonhf}{10cm}{$F_A$, als Funktion von $h_f$. $h_f$ gibt an wie tief sich das Objekt unter Wasser befindet. Wenn Das Objekt komplett unter Wasser getaucht ist, gilt $h_f >= h$ und es wirkt die maximale Auftriebskraft $F_{Amax}$ auf das Objekt}
+%
+%Aus Abbildung \ref{FaVonhf} ergibt sich eine neue Formel für für $F_A$:
+%
+%\begin{equation}
+%F_A = f(h_f) =  \frac{F_{Amax}}{h}\cdot h_f
+%\label{F_A_final}
+%\end{equation}
+%
+%Wobei $0 \leq \frac{h_f}{h} \leq 1$. Mit dieser Berechnungsmethode für $F_A$, kann vorab $\frac{\rho_f}{\rho_k}$ festgelegt werden,  um zu bestimmen wie gut ein 3D-Modell schwimmen soll. Außerdem kann die Höhe des virtuellen Volumens, $h$, eingestellt werden, womit beeinflusst wird, wie das Objekt schwingt, wenn es auf die Wasseroberfläche fällt. Wobei generell $h$ etwa so groß wie das 3D-Modell hoch ist, sein sollte um eine realistische Simulation zu erhalten. $a$ wird automatisch, in Abhängigkeit von $m$, $h$ und $\rho_k$, nach Formel \ref{a} errechnet.
+%
+%\begin{equation}
+%a = \sqrt{\frac{m}{\rho_f \cdot h}}
+%\label{a}
+%\end{equation}
+%
+%Verändert der Nutzer $m$, wird das Objekt genau so gut schwimmen wie zuvor, weil $\frac{\rho_f}{\rho_k}$ unverändert bleibt. Allerdings wird sich das Maß $a$ und somit auch das Volumen des Objekts verändern. Die Veränderung von $a$ kann auch im Präsentations-Video \glqq Auftriebssimulation\grqq{} beobachtet werden, wenn darin \glqq \textit{Relative Density}\grqq{} verändert wird.
+%
+%Das 3D-Modell wird sich zudem je nach Masse einfacher oder schwerer durch das virtuelle Wasser ziehen lassen, weil sich die Masse nach wie vor, dank der vorhandenen Physik Engine, auf die Trägheit auswirkt. Im Präsentations-Video wird in der ersten Minute gezeigt, wie zwei Würfel stets ihre, von der Unreal Engine simulierten, Physik-Eigenschaften beibehalten. Sie fallen, purzeln einen Abhang hinunter und werden vom Spieler durch das Wasser hindurch geschoben und geschubst.
+%
+%\subsection{Verwendung mehrerer Auftriebskräfte}
+%Bei den bisherigen Überlegungen war stets nur von einer einzigen, gesamten Auftriebskraft die Rede. Allerdings würde eine Simulation, mit nur einer Auftriebskraft, nicht besonders realistisch aussehen. Ein schwimmendes Modell wird sich dann nämlich nur mit den Wellen auf und ab bewegen, aber nie zur Seite kippen. Die Auftriebssimulation wird realistischer aussehen, wenn mehrere Auftriebskräfte auf ein 3D-Modell wirken. 
+%
+%Um $N$ Auftriebskräfte auf ein 3D-Modell wirken zu lassen, werden dem Modell $N$ virtuelle Teilvolumen zugeteilt.
+%
+%\bild{4Volumen}{7cm}{Ein 3D Modell mit $N=4$ zugeteilten virtuellen Schwimmkörpern.}
+%
+%Der Programmierer bestimmt die Positionen, $P_i=(x_i,y_i,z_i)$, der Teilvolumen. Die Volumen werden relativ zum Koordinatensystem des 3D-Modells platziert. Dabei macht es Sinn die Teilvolumen außen zu platzieren, so wie in Abbildung \ref{4Volumen} zu sehen. Dann besitzt das schwimmende Objekt, im übertragendem Sinne, mehrere Schwimmkörper die außen befestigt sind, damit es stabil schwimmt. Wie zuvor wird $\frac{\rho_f}{\rho_k}$ und $h$ vom Programmierer festgelegt. Alle Teilvolumen haben die selben Maße, wobei das Maß $a_i$ eines Teilvolumens wie folgt berechnet wird:
+%
+%\begin{equation}
+%a_i = a_{i+1} = ... = a_{i+N-1} = \sqrt{\frac{V}{N \cdot h}}
+%\label{a_i}
+%\end{equation}
+%
+%Wobei $V = m / \rho_k$. 
+%Die Auftriebskraft, $F_{A_i}$, die auf ein Teilvolumen wirkt, wird ähnlich wie in Gleichung \ref{F_A_final} in Abhängigkeit einer maximalen Auftriebskraft, $F_{Amax_i}$, berechnet:
+%
+%\begin{equation}
+%F_{A_i} = f(h_{f_i}) =  \frac{F_{Amax_i}}{h}\cdot h_{f_i}
+%\label{F_A_final_i}
+%\end{equation}
+%
+%Die Auftriebskraft, die von einem Teilvolumen erzeugt wird, ist proportional dazu, wie Tief das Volumen unter Wasser ist. Diese Tiefe wird durch $h_{f_i}$ angegeben. $h_{f_i}$ wird mit Gleichung \ref{h_F} berechnet.
+%Die Summe aller maximaler Teilauftriebskräfte, $F_{Amax_i}$, sollte $F_{Amax}$ entsprechen. Also gilt:
+%
+%\begin{equation}
+%F_{Amax_i} = F_{Amax_{i+1}} = ... = F_{Amax_{i+N-1}}=\frac{F_{Amax}}{N}
+%\label{F_A_final_i}
+%\end{equation}
+%
+%
+%
+%
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Implementierung %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Implementierung der Auftriebssimulation mit UE4}
+%Die geplante Auftriebssimulation wird in diesem Kapitel mithilfe der Unreal Engine implementiert. Bei der Erstellung der Simulationssoftware wird der Schwerpunkt darauf gelegt, sie für dritte Spiele-Programmierer möglichst benutzerfreundlich und übersichtlich zu gestalten.
+%
+%\subsection{Überblick}
+%
+%Im Überblick werden die folgenden Objekte für die Auftriebssimulation benötigt:
+%
+%\bild{SoftwareUeberblick2}{14cm}{Ein \textit{FluidSurface}-Objekt, rechts, besitzt nicht nur einen Wasser-Shader, sondern auch einen \textit{FluidSurfaceManager}. Dieser wird regelmäßig von allen existierenden \textit{BouyancyForceComponents} nach Wellenhöhen gefragt}
+%
+%Der rote Würfel, aus Abbildung \ref{SoftwareUeberblick2}, ist ein 3D-Modell und besitzt ein \textit{BouyancyForceComponent}, welches mehrere virtuelle Volumen erzeugt. In Abbildung \ref{SoftwareUeberblick2} wurden 4 dieser quadratischen Schwimmkörper an die äußeren Kannten des roten Würfels befestigt.
+%
+%Auf der rechten Seite ist ein \textit{FluidSurface}-Objekt abgebildet. Es könnte z.B. eine Meeresfläche repräsentieren. Es besitzt einen Wasserflächen-Shader (\textit{FluidSurfaceShader}) und einen zugehörigen \textit{FluidSurfaceManager}. 
+%
+%Das \textit{BouyancyForceComponent} kann den \textit{FluidSurfaceManager} fragen, wie hoch gerade eine Welle an einer Stelle $(x,y)$ ist.
+%
+%
+%\subsection{Die FluidSurface-Klasse}
+%
+%Aus Abbildung \ref{SoftwareUeberblick2} geht hervor, dass die \textit{FluidSurface}-Klasse einen \textit{FluidSurfaceShader} und einen \textit{FluidSurfaceManager} besitzt. Ihre Aufgabe ist, diese beiden Objekte zu erstellen und miteinander bekannt zu macht. Sie repräsentiert eine Wasserfläche, zusammengefasst als Objekt.
+%
+%Der Programmierer muss ein Objekt vom Typ \textit{FluidSurface} instantiieren, um eine Wasserfläche zu erstellen, auf der 3D-Modelle schwimmen können. Bei der Erstellung eines \textit{FluidSurface}-Objekts kann mithilfe einiger Übergabeparameter das Aussehen des Wasser-Shaders (\textit{FluidSurfaceShader}) beeinflusst werden. Die Parameter bestimmen \zb Die Formen der Wellen (Wellenlängen, Wellenhöhen), ihre Bewegungsrichtungen sowie deren Ausbreitungsgeschwindigkeiten. Wie genau die Übergabeparameter aussehen und wie viele es sind, hängt vom verwendeten Wasser-Shader-Programm (Siehe Kapitel \ref{kap_FluidSurfaceShader}) ab.
+%
+%Der \textit{FluidSurfaceManager} wird bei seiner Initialisierung mit dem Wasserflächen-Shader bekannt gemacht, indem ihm alle Parameter des \textit{FluidSurfaceShaders} mitgeteilt werden. Nur wenn der \textit{FluidSurfaceManager} und der \textit{FluidSurfaceShader} die selben Paramater für ihre Wellenberechnungen verwenden, kann eine Wellenhöhe korrekt ermittelt werden. Die \textit{FluidSurface}-Klasse stellt sicher, dass alle Parameterübergaben korrekt erfolgen.
+%
+%\subsection{FluidSurfaceShader}
+%\label{kap_FluidSurfaceShader}
+%Ein Wellen-Shader-Programm wird für gewöhnlich auf ein flaches  3D-Gitter-Netz angewandt. Solch ein 3D-Model besteht aus Punkten (\textit{Vertices}) die zusammen eine Ebene bilden. Zwischen den Punkten werden Kannten gespannt, um zusammenhängende Dreiecke zu bilden. Alle Dreiecke zusammen bilden eine Oberfläche.
+%
+%\bild{WavePlaneEven}{14cm}{Ein flaches 3D-Netz, vorgesehen von einem Wellen-Shader verformt zu werden. Überall da, wo sich Linien Kreuzen, befindet sich ein Punkt (auch \textit{Vertice} genannt).}
+%
+%Die einzelnen Punkte eines solchen Gitters werden vom Wellen-Shader so versetzt, dass das Gitter verformt wird und nicht mehr eben ist. Die neue Form des Gitters sollte an Meereswellen erinnern:
+%
+%\bild{WavePlane}{14cm}{Die Vertices des 3D-Modells werden von einem Shader-Programm so bewegt, dass die dabei entstehenden Formen an Meereswellen erinnert}
+%
+%Im Rahmen dieser Studienarbeit wird ein einfacher Wellen-Shader namens \textit{MFluidSurfaceShader} implementiert. Bei diesem Shader wird nur auf die Generierung realistischer Wellenbewegungen Wert gelegt. Andere visuelle Wassereffekte wie Transparenz, Schaumbildung, Glanz oder Miniwellen werden für die geplante Auftriebssimulation nicht zwingend benötigt.
+%
+%Als mathematischen Ansatz für die Wellenbewegungen des Wasser-Shaders, wird die folgende Formel \cite{GPUGems} verwendet:
+%
+%\begin{equation}
+%P(x,y,t)=
+%\begin{bmatrix}         
+%   x + \Sigma(Q_i A_i D_{ix} \cos(w_i D_i \cdot (x,y) + \varphi_i t))  \\
+%   y + \Sigma(Q_i A_i D_{iy} \cos(w_i D_i \cdot (x,y) + \varphi_i t)) \\
+%   \Sigma(A_i \sin(w_i D_i \cdot (x,y) + \varphi t))
+%\end{bmatrix}        
+%\label{Pxyt}
+%\end{equation}
+%
+%Jeder Punkt des Gitter-Modells wird in Abhängigkeit von seiner eigenen Position $(x,y)$ und der Zeit $t$ um einen Vektor $P$ versetzt. Gleichung \ref{Pxyt} generiert sogenannte Gerstner-Wellen und überlagert diese durch Summierung.
+%
+%Je nachdem wie viele Gerstner-Wellen überlagert werden und wie sie jeweils parametrisiert sind, lassen sich mit dieser Methode die unterschiedlichsten Wellenarten erstellen. Verwendet man beispielsweise stark unterschiedliche Ausbreitungsrichtungen ($D_i$), entstehen aufgewühlte und chaotische Wellenbewegungen. Mit der verwendeten Anzahl an überlagerten Gerstner-Wellen lässt sich auch die Rechenintensivität des Wellen-Shaders skalieren. 
+%
+%Eine Besonderheit an Gleichung \ref{Pxyt} ist, dass die Vertices (Punkte) der Wasserfläche nicht nur in $Z$-Richtung, sondern auch in $X$- und $Y$-Richtung bewegt werden. Dadurch können steilere Wellenformen erzeugt werden was an Meereswellen erinnert. Zusätzlich wird mit dieser Methode die Wasseroberfläche so verzerren, dass der Eindruck entsteht, als würden kleinere Oberflächenströmungen auf den Wellen entstehen. Die Stärke dieses Effekts lässt sich regeln, indem $Q_i$ verändert wird.
+%
+%\bild{GerstnerVerzerrung}{14cm}{In der orthogonalen Draufsicht lässt sich beobachten wie die Knotenpunkte in $x$- und $y$-Richtung bewegt werden. Diese seitlichen Oberflächenbewegungen erinnern an kleine Oberflächenströmungen. Wie wenn auf einem Wellenrücken Wasser hinab gezogen wird.}
+%
+%%Aus Gleichung \ref{Pxyt} entsteht die folgende Materialfunktion, namens MFGerstnerWaveOffset in UE4:
+%
+%%\clearpage
+%%\bild{MFGerstnerWaveOffset}{14cm}{Gleichung \ref{Pxyt} wurde als Materialfunktion in der Unreal Engine implementiert.}
+%%\clearpage
+%
+%
+%%In FluidSurfacemanager.cpp gibt es ebenfalls eine Funktion namens GerstnerWaveOffset, %nur in C++ geschrieben:
+%
+%%\bild{GerstnerWaveOffset}{14cm}{Gleichung \ref{Pxyt} wurde als C++ Funktion im FluidSurfacemanager implementiert.}
+%
+%%Natürlich muss die C++ Funktion genau die selben Formeln verwenden wie die %Materialfunktion MFGerstnerWaveOffset.
+%
+%Eine Gerstner-Welle nach \ref{Pxyt}, wird vom \textit{FluidSurfaceShader} generiert, indem eine sogenannte \textit{Material}-Funktion namens \textit{MFGerstnerWaveOffset} aufgerufen wird. Diese Funktion gibt einen 3D-Vektor $P_i$ zurück. $P_i$ wird folgendermaßen berechnet:
+%
+%\begin{equation}
+%P_i(x,y,t)=
+%\begin{bmatrix}         
+%   Q A D_{x} \cos(w D \cdot (x,y) + \varphi t)  \\
+%   Q A D_{y} \cos(w D \cdot (x,y) + \varphi t) \\
+%   A \sin(w D \cdot (x,y) + \varphi t)
+%\end{bmatrix}        
+%\label{Pxyt_mf}
+%\end{equation}
+%
+%
+%Die \textit{MFGerstnerWaveOffset}-Funktion wird im \textit{FluidSurfaceShader} wie folgt angewandt um Meereswellenbewegungen nach Formel \ref{Pxyt} zu erzeugen:
+%
+%\bild{MFluidSurfaceShader}{14cm}{Der \textit{FluidSurfaceShader} generiert zwei Gerstner-Wellen nach Gleichung \ref{Pxyt_mf}. Die Wellen haben unterschiedliche Amplituden, Längen und Geschwindigkeiten. sind aber gleich Steil (\textit{steepness} ist ein Maß für $Q$).}
+%
+%\textit{MFluidSurfaceShader} verwendet zwei Gerstner-Wellen die, wie man in Abbildung  \ref{MFluidSurfaceShader} sieht, unterschiedlich parametriert sind. Die erste Welle (oben) hat eine Amplitude $A1$ und einen Richtungsvektor $D1$. Die zweite Welle wird hingegen mit $A2$ und $D2$ parametrisiert. Die zweite Welle wird sich immer halb so schnell wie die erste Welle ausbreiten und ist doppelt so lang. Alle in Abbildung \ref{MFluidSurfaceShader} zu sehenden Variablen sind öffentlich und werden bei der Erstellung des Shaders vom \textit{FluidSurface}-Objekt initialisiert.
+%
+%
+%\subsection{FluidSurfaceManager}
+%%Die Klasse FluidSurfaceManager löst das erste Teilproblem und soll auf die Höhenwerte eines Wasser-Shaders an beliebigen Stellen zugreifen können. Er wird während der Simulation regelmäßig von allen virtuellen Schwimmkörpern nach Wellenhöhen gefragt.
+%
+%Die Hauptaufgabe des \textit{FluidSurfaceManagers} ist, die Höhenwerte, $H$, eines Wellenflächen-Shaders, zum Zeitpunkt $t$, an einer Stelle, $(x,y)$, in Erfahrung zu bringen. Es gibt unterschiedliche Möglichkeiten die Höhenwerte eines Wellenflächen-Shaders herauszufinden. Im Rahmen dieser Studienarbeit wurden 3 unterschiedliche Methoden ausprobiert. Nur eine der 3 Methoden hat hinsichtlich Stabilität und Effizienz überzeugen können. 
+%
+%
+%\subsubsection{Prinzip des Auslesens eines Höhenwertes:}
+%\label{kap_HeightRead}
+%Bei den ersten beiden Methoden wurde prinzipiell versucht auf den Speicher der \ac{GPU} zuzugreifen, mit dem Ziel die sogenannte \glqq Höhentextur\grqq{} eines Wellen-Shaders auszulesen. 
+%
+%%Shader-Programme beinhalten meist einige Ressourcen in Form von Texturen zum zwischenspeichern oder auslesen von Informationen. In den meisten Fällen zeichnet ein Shader-Programm mithilfe einiger hinterlegten Texturen ein 3D-Modell auf bestimmte Weise. So kann z.B. eine Textur die Farbgebungen eines 3D-Modells bestimmen ("Colormap") oder sie beinhaltet Informationen zur Berechnung kleinerer Schatteneffekte ("Normalmap"). 
+%
+%Ein Wellen-Shader kann die Höheninformationen seiner berechneten Wellenfläche in eine Schwarz-Weiß-Textur, der \glqq Höhentextur\grqq{}, speichern. Die Farbe eines Pixels in dieser Textur, an einer Stelle $(i,j)$, steht für die Wellenhöhe $z_f$ an der Stelle $(x,y)$. 
+%
+%Über die die Höhentextur eines Wellen-Shaders kann also auf die Höheninformationen der Wellen zugegriffen werden. Allerdings befinden sich die Texturen eines Shader-Programms da wo auch ein Shader ausgeführt wird. Nämlich bei der \ac{GPU}, also im Speicher der Grafikkarte. Die Simulation läuft in diesem Fall hauptsächlich auf der \ac{CPU}, was bedeutet, dass die \ac{CPU} auf den Grafikkartenspeicher zugreifen muss um eine Höhentextur auszulesen. Solch eine Operation wird standardmäßig nicht von der \ac{UE4} unterstützt.  
+%
+%Die Unreal Engine 4 bietet zu diesem Zeitpunkt keine einfache Möglichkeit um auf eine Textur, die sich im Grafikspeicher befindet, von der CPU aus, zuzugreifen. Mit dieser Problemstellung haben sich bereits einige Programmierer beschäftigt, daher gibt es dafür ein paar Lösungsvorschläge im offiziellem Unreal-Engine-Wiki von Epic Games. Im Rahmen dieser Studienarbeit wurden zwei Lösungsansätze ausprobiert. Beide basieren auf Wiki-Einträgen. 
+%Der erste Eintrag lautet \glqq \textit{Render Target Lookup}\grqq{} \cite{LookUp} 
+%und der Zweite \glqq \textit{Dynamic Textures}\grqq{} \cite{DynTex}. 
+%An dieser Stelle werden die beiden Lösungsvorschläge nicht genauer erklärt. Um Genaueres zu erfahren können die frei zugänglichen Wiki-Einträge durchgelesen werden.
+%
+%Bei der Lösungsmethode \textit{Render Target Lookup} stellte sich heraus, dass die CPU während des Auslesens einer Textur besonders lang blockiert wird. Dieses Problem ist inzwischen bekannt und es erscheinen bereits erste Lösungsvorschläge, die auch im Wiki-Eintrag \textit{Render Target Lookup} nachgelesen werden können.
+%
+%Bei der Lösungsmethode \textit{Dynamic Textures} wird eine sogenannte dynamische Textur erstellt, die von der CPU und GPU geteilt werden kann. Hier konnte eine bessere Performance als bei der ersten Lösungsmethode festgestellt werden, allerdings lief diese Lösung instabil und ist daher unzuverlässig.
+%
+%Aufgrund der festgestellten Probleme wird auf ein anderes Grundprinzip zurückgegriffen um die Wellenform eines Wasser-Shader-Programms abzufragen. Das Prinzip der parallel rechnenden CPU:
+%
+%\subsubsection{Prinzip der parallel rechnenden CPU}
+%
+%Statt die tatsächlichen Höhenwerte aus einem Wellen-Shader auszulesen, kann die CPU die gewünschten Werte auch anhand einer gegebenen Funktion nachrechnen. Die Wellenbewegungen eines Wasser-Shaders sind in manchen Fällen nur von der Zeit abhängig und haben einen rein mathematischen Uhrsprung. So verhält es sich auch in diesem Fall (Siehe Kapitel \ref{kap_FluidSurfaceShader}).
+%
+%Wenn die Wellenhöhe an der Stelle $(x,y)$, zum Zeitpunkt $t$, von Interesse ist, kann die CPU,  wie die GPU auch, die Wellenhöhe, $H$, anhand Formel \ref{Pxyt} berechnen. Wichtig ist hierbei, dass das Wellen-Shader-Programm und der \textit{FluidSurfaceManager} die selbe Zeit, $t$, in ihre Formeln einsetzen. Beide Programme sollten dabei auf den selben Timer hören, damit beide immer die selbe Wellenhöhe berechnen. Die Unreal Engine 4 bietet diese Möglichkeit. Alle Objekte haben zugriff auf einen Timer, der die bisherige Spiellaufzeit auf eine Millisekunde genau liefert. 
+%
+%Der \textit{FluidSurfaceManager} berechnet eine Wellenform prinzipiell genau so wie der in Kapitel \ref{kap_FluidSurfaceShader} vorgestellte \textit{FluidSurfaceShader}. Der \textit{FluidSurfaceManager} besitzt auch eine Funktion namens \textit{GerstnerWaveOffset}, die nach \ref{Pxyt_mf} eine einzelne Gerstner-Welle berechnet. Der \textit{FluidSurfaceShader} generiert zwei dieser Wellen und summiert sie (siehe Abbildung \ref{MFluidSurfaceShader}). So berechnet der \textit{FluidSurfaceManager} seine Wellenhöhen ebenfalls.
+%
+%
+%\begin{lstlisting}[language=C++,caption=Die CPU rechnet Wellenhöhen selbst nach. Es werden auch zwei Gerstner-Wellen erzeugt und durch Summierung überlagert.]
+%float AFluidSurfaceManager::GetWaveHeight(FVector* location, bool correctSteepnes)
+%{
+%	FVector2D pos = FVector2D(location->X, location->Y);
+%	float wave1 = GerstnerWaveOffset(length, numWaves, steepness, speed, height1, &direction1, &pos, correctSteepnes);
+%	float wave2 = GerstnerWaveOffset(length/2, numWaves, steepness, speed/2, height2, &direction2, &pos, correctSteepnes);
+%
+%	return (wave1 + wave2);
+%}
+%\end{lstlisting}
+%
+%Die C++ Funktion \textit{GerstnerWaveOffset} berechnet im Gegensatz zum \textit{WaterSurfaceShader} keinen dreidimensionalen Vektor $P$. Stattdessen wird hier direkt die Höhe $H$ berechnet und zurückgegeben. Die Berechnung von $H$ wird im nächstem Abschnitt erklärt.
+%
+%
+%
+%\subsubsection{Berechnung von H, wenn Q > 0}
+%
+%Die Berechnung von $H$ an einer Stelle $a=(x_a,y_a)$, zum Zeitpunkt $t$, kann nicht ohne weiteres mithilfe Formel \ref{Pxyt_mf} erfolgen. Diese Formel liefert nämlich keinen Höhenwert, sondern einen Vektor $P$. Der Z-Anteil dieses Vektors, $P(a)$, ist ungleich $H(a)$. Abbildung \ref{PZNichtH} verdeutlicht diese Problematik in einer zweidimensionalen Darstellung.
+%
+%\bild{PZNichtH}{14cm}{Jeder Knotenpunkt eines Gitternetzes wird anhand Formel \ref{Pxyt_mf} bewegt. Zu jedem Zeitpunkt wird jeder Knotenpunkt um einen Vektor $P$ versetzt. Der $Z$-Anteil eines Vektors $P(a)$ ist ungleich $H(a)$.}
+%
+%Wenn $Q$ Null ist, besitzen alle Vektoren keine x- und y-Anteile mehr (siehe Gleichung \ref{Pxyt_mf}). In diesem Fall ist der Z-Anteil von $P(a)$ gleich $H(a)$. Deswegen muss $H(a)$ auf spezielle Weise berechnet werden, wenn $Q$ größer null ist.
+%
+%Es ist durchaus möglich $H(a)$ exakt zu bestimmen. Die exakte Berechnung ist allerdings verhältnismäßig rechenintensiv. Wenn $P(a)$ wenig zur Seite geneigt ist, ist $H(a)$ ungefähr so groß wie der Z-Anteil von $P(a)$. Wie stark $P(a)$ zur Seite geneigt ist, hängt von $Q$, aus Formel \ref{Pxyt_mf}, ab.
+%
+%Im Rahmen dieser Arbeit wird $H(a)$ näherungsweise berechnet um den Rechenaufwand gering zu halten. Für diese Näherung wird zuerst folgende Aussage getroffen:
+%
+%Für jeden Vektor, $P(a)$, gibt es einen anderen Vektor, $P_x$, dessen Z-Komponente genau so hoch wie $H(a)$ ist. Abbildung \ref{HeightAccurate} visualisiert diese Aussage.
+%
+%\clearpage
+%\bild{HeightAccurate}{14cm}{ Für Vektor $P(a)$ gibt es ein $P_x$, dessen Z-Komponente genau so hoch wie $H(a)$ ist. $P_x$ wird sich in der Umgebung von $P(a)$ befinden und etwa $\Delta=(\Delta_x,\Delta_y)$ von $P(a)$ entfernt sein.  $\Delta$ ist ungefähr so groß wie die x- und y-Komponente von $P(a)$.} 
+%
+%Dies ist dann der Fall, wenn die Funktion \ref{Pxyt_mf} kontinuierlich ist. Diese Voraussetzung wird als erfüllt angenommen, weil mit 4 Byte breiten Fließkommazahlen gerechnet wird. Diese Zahlenwerte werden in der virtuellen Umgebung wie Zentimeter verstanden um eine Referenz zur realen Dimension zu bekommen.
+%
+%Als nächstes wird angenommen, dass sich $P_x$ in der Umgebung von $P(a)$ befindet, weil alle Vektoren nur geringfügig zur Seite geneigt sind und hauptsächlich nach oben zeigen. 
+%
+%Außerdem wird angenommen, dass sich benachbarte Vektoren ähneln. Dies sollte der Fall sein, weil der Programmierer den Wellen-Shader immer so parametrisieren wird, dass seine Oberfläche abgerundet aussieht. Demnach dürfen benachbarte Vektoren nicht stark voneinander abweichen, weil dadurch eckige Oberflächenformen entstehen würden. 
+%
+%Weil sich benachbarte Vektoren ähneln, liegt $P_x$ ungefähr bei $(a-\Delta)$ (Siehe Abbildung \ref{HeightAccurate}). $\Delta$ ist nichts anderes als die $x$- und $y$-Komponente von $P(a)$. Also gilt für $H(a)$ näherungsweise:
+%
+%\begin{equation}
+%H(a) = P_x.z \approx P[a - (P(a).x,P(a).y ) ].z
+%\label{Ha}
+%\end{equation}
+%
+%Im beiliegendem Präsentationsvideo \textit{Auftriebssimulation} sind zwei farblich markierte Pfeile zu sehen, die auf eine Wellenoberfläche zeigen. Der blaue Pfeil ermittelt dabei die Wellenhöhen anhand $P(a).z$, also ungenau. Der rote Pfeil hingegen, berechnet die Wellenhöhen etwas genauer, nach Formel \ref{Ha}. Auch der rote Würfel, der auf der Wasseroberfläche schwimmt, ermittelt die Wellenhöhen nach Formel \ref{Ha}. 
+%
+%\subsection{Das \textit{BuoyancyForceComponent}}
+%
+%Jedes 3D-Modell, das schwimmen soll, bekommt ein \textit{BuoyancyForceComponent} zugeteilt. Das \textit{BuoyancyForceComponent} ordnet seinem 3D Modell dann einige virtuelle Schwimmkörper zu, um mit deren Hilfe die Auftriebskräfte zu berechnen und auf die jeweiligen Schwimmkörper anzuwenden.
+%
+%\textit{BuoyancyForceComponent} erbt von der Unreal Engine zur Verfügung gestellten \glqq \textit{USceneComponent\grqq}{}-Klasse und ist somit ein sogenanntes \glqq \textit{Component}\grqq{}. Ein Vorteil eines \textit{Components} ist, dass solch ein Objekt einem 3D-Modell hinzugefügt werden kann, ohne eine Zeile Code schreiben zu müssen. \textit{Components} werden mithilfe des Anwender-freundlichen Unreal-Editors zugeteilt. Der Nutzer kann dann mit ein paar Mausklicks ein beliebiges 3D-Modell schwimmfähig machen, indem ihm ein \textit{BuoyancyForceComponent} hinzugefügt wird. Das hinzugefügte \textit{BuoyancyForceComponent} wird dann, je nach Parametrisierung, die entsprechenden Auftriebskräfte berechnen und auf das 3D-Modell wirken lassen. Das \textit{BuoyancyForceComponent} sollte einen \textit{FluidSurfaceManager} kennen um an Wellenhöheninformationen heran zu kommen.
+%
+%Prinzipiell berechnet das \textit{BuoyancyForceComponent} alle Auftriebskräfte genau so, wie bereits in Kapitel \ref{sec_AuftriebTheorie} erklärt. Zusätzlich muss aber auch die Bewegung eines schwimmenden 3D-Modells gedämpft werden, damit es so aussieht, als wäre das Objekt wirklich von einer Flüssigkeit umgeben. Beachtet man dies bei der Simulation nicht, schwingt ein schwimmendes Objekt sehr stark, was nicht realistisch aussieht. 
+%
+%Praktischerweise bietet die Unreal Engine auch für diese Problematik bereits eine Lösung. Jedes 3D-Modell, das Physik simuliert, besitzt die beiden öffentlichen Attribute \glqq \textit{Linear Damping}\grqq{} und \glqq \textit{Angular Damping}\grqq{}. 
+%
+%%\bild{PhysikEinstellungen}{7cm}{Mit den beiden öffentlichen Eigenschaften "Linear Damping" und "Angular Damping" können nicht gewollte Schwingungen gedämpft werden.} 
+%
+%Mit Ihnen lässt sich die translatorische sowie rotatorische Bewegung eines Körpers dämpfen. %In Abbildung \ref{PhysikEinstellungen} sind gerade die Dämpfungsfaktoren eingestellt, welche normalerweise für in der Luft befindliche Objekte verwendet werden.
+%
+%Das \textit{BuoyancyForceComponent} wurde mit 4 Attributen versehen, welche die nötigen Dämpfungsfaktoren speichern sollen.
+%
+%\begin{lstlisting}[language=C++,caption=UBuoyancyForceComponent::UBuoyancyForceComponent()]
+%	//...
+%	//default damping of water:
+%	this->FluidLinearDamping = 1.0;
+%	this->FluidAngularDamping = 1.1;
+%
+%	//Air:
+%	this->AirLinearDamping = ParentMesh->GetLinearDamping();
+%	this->AirAngularDamping = ParentMesh->GetAngularDamping();
+%	//...
+%\end{lstlisting}
+%
+% \textit{FluidLinearDamping} und \textit{FluidAngularDamping} werden immer dann als Dämpfungsfaktoren festgelegt, wenn sich ein Objekt im Wasser befindet. Sobald festgestellt wird, dass sich das Objekt außerhalb des Wassers befindet, werden \glqq \textit{AirLinearDamping\grqq}{} und \glqq \textit{AirAngularDamping}\grqq{} verwendet. Der Übergang zwischen Flüssigkeitsdämpfung und Luftdämpfung, beim ein oder auftauchen eines Objekts, kann auch linear implementiert werden.
+%
+%Durch die Unterscheidung zwischen Flüssigkeits- und Luftdämpfung Wird ein ins Wasser geworfenes Objekt auf realistische weise abgebremst, sobald es auf die Wasseroberfläche trifft. Auch dieses Verhalten kann im beiliegendem Präsentations-Video,  \glqq \textit{Auftriebssimulation\grqq}{}, beobachtet werden. Zu Beginnen rollen zwei Objekte eine Rampe hinunter und werden von einer Flüssigkeit abgebremst.

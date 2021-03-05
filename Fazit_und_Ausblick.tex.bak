@@ -1,0 +1,47 @@
+% Die Arbeit besteht aus Kapiteln (chapter)
+\chapter{Fazit und Ausblick}
+
+%\section{Fazit}
+
+Im Rahmen dieser Arbeit konnten fast alle gesetzten Ziele erreicht werden. Anhand des konzipierten Simulationsmodells konnte ein Prototyp implementiert werden, der fast alle Anforderungen aus Kapitel \ref{sec_Anforderungen} erfüllt. 
+
+Der im Prototyp simulierte Schwarm kann durch Einsatz einfacher Zusatzverhaltensregeln von einem menschlichen Spieler gejagt oder verfolgt werden. Das bestehende System lässt sich zukünftig mit neuen Verhaltensregeln erweitern. Beispielsweise könnte ein Spieler ein Flussfeld zeichnen, um virtuelle \glqq Autobahnen\grqq{} für die Boids zu generieren. Gerät ein Individuum auf solch eine Bahn, folgt es dem Flussfeld, so wie Autos einer Autobahn folgen.
+
+Die Bewegungen des Schwarms können bei entsprechender Parametrisierung realistisch und lebendig gestaltet werden. Ohne mit zufällig generierten Steuervektoren arbeiten zu müssen, bewegen sich manche Schwärme scheinbar in zufällige Richtungen, als ob die virtuellen Lebewesen ein eigenes Ziel verfolgen würden.
+
+Die Performance des implementierten Prototyps erwies sich, entgegen aller Erwartungen, als überraschend gut. Die Messungen aus Kapitel \ref{sec_performance} lassen vermuten, dass sich das konzipierte Simulationsmodell durchaus in der Praxis anwenden lässt. Künftige Videospiele könnten von diesen interaktiven Schwarm-Wesen profitieren, zumal sich die entwickelte Simulation von herkömmlichen Shadern ausgeführt werden kann. Shader-Programme, die mithilfe der Unreal Engine 4 implementiert wurden, lassen sich ohne große Umstände auf einige Plattformen portieren. Von allen handelsüblichen Konsolen, bis hin zu Smartphones. Smartphone-Besitzer mithilfe des Touchscreens mit dem Schwarm interagieren zu lassen, ist durchaus umsetzbar. 
+
+Der erstellte Prototyp konnte aus zeitlichen Gründen nur als zweidimensionale Schwarmsimulation implementiert werden. Die Idee, den virtuellen Schwarm als dreidimensionale Leuchtpunkt-Wolke, mittels volumetrischer Render-Methodik, darzustellen, wird aber weiterhin mit großem Interesse verfolgt. Zu diesem Zeitpunkt ist jedoch noch nicht bekannt, wann die Unreal Engine 4 dreidimensionale Textur-Formate unterstützen wird.
+
+
+
+%\section{Ausblick}
+
+Trotz allem ist das bestehende System durchaus verbesserungswürdig. Besonders negativ aufgefallen ist der in Kapitel \ref{sec_LoseBoids} angesprochene Verlust von Boids. Diese Problematik konnte aus Zeitgründen nicht weiter untersucht werden, weswegen noch keine konkrete Erklärung für das Verschwinden von Individuen existiert.
+
+Außerdem könnte die Darstellung des Schwarms weiter verbessert werden. Die Schwarm-Textur wirkt zum Teil noch recht körnig und unregelmäßig. Es entstehen auch hin und wieder harte Kannten und Ecken.
+
+Eine weitere interessante Erweiterung wäre, die Wahrnehmungsvektoren der Boids wie folgt einzusetzen:  Wie in der Robotik üblich, könnten die Wahrnehmungssensoren nur an die Vorderseite eines Boids befestigt werden. Dann würde jedes Individuum nur den Bereich wahrnehmen können, der in dessen Bewegungsrichtung liegt. Das könnte den Realismus der Simulation steigern, weil dann die Bewegungsrichtung eines Boids auch seine \glqq Blickrichtung\grqq{} wäre.
+
+Denkt man über die Funktionsweise des konzipierten Modells genauer nach, lässt sich eine interessante Feststellung machen. In diesem Simulationsmodell entsteht keine Separation oder Kohäsion weil benachbarte Boids einen zu geringen oder zu großen Abstand zueinander haben. In diesem System handeln die Individuen dann wenn in einer benachbarten Zelle eine bestimmte Menge Boids enthalten ist. Hier ist also nicht die Entfernung, sondern vielmehr die Menge ausschlaggebend. Nichts desto trotz können auch in diesem System besonders realistisch wirkende Sachwarmbewegungen entstehen.
+
+Zum Schluss lässt sich sagen, dass sich das geniale Prinzip von Schwärmen erwiesen hat: Obwohl jede Zelle des Zellensystems nur wenige einfache Fähigkeiten beherrscht, entstand am Ende ein Gesamtsystem, das sich viel komplexer als seine einzelnen Bausteine verhalten kann. Jedes Boid kann nur wenige Bewegungsrichtungen einschlagen und besitzt sehr eingeschränkte Wahrnehmungsfähigkeiten. Aber dennoch kann sich eine große Gruppe aus Boids scheinbar in alle möglichen Richtungen bewegen und dabei einzigartige Formationen bilden.
+
+
+
+
+%
+%Die in Kapitel \ref{chap_Einleitung} gesetzten Ziele wurden größtenteils erfüllt. 
+%
+%Die Auftriebssimulation wird selbst auf schwächeren Computern stabil und effizient ausgeführt. Auch wenn viele Auftriebskräfte von der CPU berechnet und angewandt werden, trägt die integrierte Physik Engine, nvidia PhysX, zu einer realistischen und effizienten Auftriebssimulation bei. Beliebige 3D-Modelle können auf einfache Weise mit virtuellen Schwimmkörpern versehen werden und das Schwimmverhalten eines Objekts kann individuell, je nach Wunsch eingestellt werden.
+%Um die Auftriebssimulationssoftware in der UE4 zu nutzen, sind keine Programmierkenntnisse nötig. Ein Nachteil der erstellten Auftriebssimulation ist die Tatsache, dass die dabei erstellte Software nur mit einem spezifischem Wasserflächen-Shader funktioniert.
+%
+%Das IWave-Verfahren konnte zwar, per \ac{CDMR}-Technik, erfolgreich implementiert werden, nichts desto trotz sind hier noch einige Untersuchungen und Ausbesserungsarbeiten notwendig. Sowohl das Aussehen der Wellen, als auch die Ausführungsgeschwindigkeit ist verbesserungswürdig.
+%Nachdem eine überaus effiziente Musterlösung für eine interaktive Wasseroberfläche von Epic Games veröffentlicht wurde, ist es fragwürdig, ob es sich noch lohnt, den Ansatz des IWave-Verfahrens weiter zu verfolgen.
+%
+%In dieser Arbeit wurden zwei getrennte Systeme entwickelt. Die Auftriebssimulation und der IWave-Wasser-Shader. Ein Mehrwert wäre, diese beiden Systeme miteinander kombinieren zu können. Dann könnten	 3D-Modelle auf einer interaktiven Wasseroberfläche umher schwimmen. Dies ist leider noch nicht ohne weiteres möglich, weil die Auftriebssimulation auf der CPU läuft, während das IWave-Verfahren stets von der GPU ausgeführt wird. Für die Auftriebssimulation werden stets die Wellenhöhen der Wellenoberfläche benötigt. Diese Höhenwerte werden bis jetzt ermittelt, indem die CPU die entsprechenden Werte von Grund auf nachrechnet. Bei einfachen Wellen-Shadern ist dies noch kein Problem für die CPU. Allerdings ist der Rechenaufwand des IWave-Verfahrens besonders hoch und sollte nur von einem stark parallelisierten Rechenwerk, wie einer GPU, ausgeführt werden.
+%Mit der UE4 konnte bis jetzt noch nicht auf effiziente Weise, von der CPU aus, auf den Grafikkartenspeicher zugegriffen werden, weswegen diese Problematik bisher noch nicht gelöst werden konnte. 
+%
+%Eine Lösung für diese Problematik könnte sein, die Auftriebssimulation ebenfalls von der GPU ausführen zu lassen. Der Zugriff auf Shader-Ressourcen, wie eine Höhentextur, könnte dann schneller erfolgen.
+%
+%

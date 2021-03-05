@@ -1,0 +1,78 @@
+% Die Arbeit besteht aus Kapiteln (chapter)
+\chapter{Einleitung}
+\label{chap_Einleitung}
+
+\section{Umfeld}
+
+Diese Arbeit wurde im Umfeld von \textit{Unreadable-Entertainment} erstellt. Unreadable-Entertainment ist eine kleine Firma aus Mannheim, die sowohl Videospiele als auch  \ac{VR}-Anwendungen entwickelt. In der Entwicklungsabteilung wird bevorzugt mit der Unreal Engine 4 gearbeitet um Applikationen für VR-Anlagen oder andere Videospiele-Plattformen zu entwickeln.  
+
+Um ihrer Unterhaltungssoftware mehr Leben einzuhauchen, entwickelt \textit{Unreadable-Entertainment} interaktive Spezialeffekte, wie beispielsweise interaktive Fluid- und Auftriebs-Simulationen \cite{Max17Legnar}.
+
+
+\section{Motivation und Problemstellung}
+
+
+Das Vorkommen von Tierschwärmen in der Natur ist ein ganz besonderes Phänomen. 
+%Die Bildung von Schwärmen lässt sich bei unterschiedlichsten Tierarten beobachten. Besonders häufig kommen in der Tierwelt Fisch-, Vögel-, oder Insektenschwärme vor \cite{Reynolds87flocks}. Die hypnotischen Bewegungen eines Tierschwarms sind nicht nur ein faszinierender Anblick. Von diesem Naturschauspiel lassen sich auch einige nützliche Erkenntnisse für die angewandte Wissenschaft gewinnen. 
+Es ist beeindruckend, wie ein Schwarm komplexe Problemstellungen löst, indem einzelne Individuen einfache Regeln befolgen. Eine einzelne Ameise erscheint auf den ersten Blick nicht besonders intelligent. Betrachtet man aber den gesamten Ameisenschwarm, ist ein intelligentes Verhalten zu erkennen. Deswegen wird dieses Naturphänomen auch als Schwarmintelligenz bezeichnet.
+
+Im Rahmen dieser Bachelorarbeit wird ein Schwarmverhalten simuliert, mit dem Ziel, Schwarmbewegungen als Stilmittel in Videospielen einzusetzen. Die Simulation soll die typischen Bewegungen eines Tierschwarms nachahmen, wie sie zum Beispiel bei Vögel- oder Fischschwärmen vorkommen.
+
+Außerdem kann ein menschlicher Spieler mit dem simulierten Schwarm interagieren, wodurch das Spielerlebnis intensiviert werden soll. Damit eine möglichst vielfältige Interaktion mit dem virtuellen Schwarm realisiert werden kann, werden die Schwarmbewegungen in Echtzeit simuliert. 
+
+Die Simulationssoftware besteht dabei zum Großteil aus einer Shader-Pipeline und der virtuelle Schwarm wird von Texturen beschrieben. Der in Texturform vorliegende Schwarm wird als Punkte-Wolke dargestellt. Einzelne Individuen sind dann kaum erkennbar, wodurch sich der optische Fokus auf den Schwarm als Gesamtsystem verschiebt. Jedes Individuum ist ein kleiner leuchtender Punkt. Mehrere Individuen können zu einer heller leuchtenden Gruppe verschmelzen.
+
+Entstehen soll dabei ein neuartiger Schwarm-Effekt für Videospiele, der durch seine Optik und Interaktivität, an ein intelligentes Lebewesen erinnert.
+
+
+\section{Einordnung und Abgrenzung}
+
+Um die Bewegungen von Tierschwärmen zu simulieren, hat sich das sogenannte Boid-Modell von Reynolds etabliert. Auch in dieser Arbeit werden seine bekanntesten Werke, \cite{Reynolds87flocks} und \cite{Reynolds99steeringbehaviors}, als Fundament genutzt, um ein Modell für die Simulation aufzustellen.
+
+In dieser Arbeit wird nicht versucht, etablierte Techniken für Schwarmsimulationen weiter zu optimieren, wie beispielsweise in \cite{Kennedy95particleswarm}. Stattdessen werden die grundlegenden Prinzipien von Reynolds aufgegriffen um ein neuartiges System zu modellieren, das besonders gut von Shadern und Texturen beschrieben werden kann.
+
+Für gewöhnlich wird ein Boid-System wie ein Partikelsystem  behandelt \\ \cite{Reynolds87flocks}, so wie in \cite{Oliver14Tschesche}. In solch einem System ist jedes Individuum des Schwarms ein eigenständiges Objekt, das sich frei im Raum bewegen kann. In dieser Arbeit wird der Schwarm hingegen mithilfe eines Zellensystems beschrieben, in dem jede Zelle örtlich gebunden ist. Jede Zelle kann dabei von mehreren Individuen besucht werden. Im Zellensystem befinden sich keine einzelnen Schwarmtiere, die eindeutig voneinander trennbar sind. Stattdessen \glqq fließt\grqq{} der Schwarm vielmehr, als zum Teil kontinuierlich zusammenhängende Menge, durch das Zellensystem. Das Zellensystem wird dabei von Texturen beschrieben.
+
+Der im Rahmen dieser Arbeit entstandene algorithmische Aufwand ist weniger von der Anzahl der simulierten Individuen abhängig, so wie es in \cite{Reynolds87flocks} der Fall ist. Stattdessen steigt hier der Rechenaufwand in Abhängigkeit von der Anzahl der verwendeten Zellen.
+
+Reynolds Boid-System wird, wie in \cite{Oliver14Tschesche}, meist mithilfe von Grafikkartenschnittstellen wie \textit{OpenCV} oder \textit{CUDA} berechnet. In dieser Arbeit wird statt dessen auf die Verwendung von herkömmlichen Shadern gesetzt.
+
+Schwarmtiere werden für gewöhnlich als einzelne 3D-Modelle dargestellt. Beispielsweise als einzelne Fische \cite{Tu94artificialfishes:} oder Vögel  \cite{Oliver14Tschesche}.
+In dieser Arbeit erfolgt die Darstellung des Schwarms auf eine andere Weise. Hier sind die Schwarmtiere lediglich kleine Punkte. Einzelne Individuen sind hier kaum erkennbar, weil diese miteinander verschmelzen können. Der in Texturform hinterlegte Schwarm wird von Shadern als Punkte-Wolke dargestellt. Beispielsweise mittels \textit{Texture-Based Volume Rendering} \cite{GPUGems1}.  
+
+
+
+
+
+%\section{Aufbau dieser Arbeit}
+%... mach ich am Ende...
+
+
+
+
+
+
+
+
+
+
+
+%----------------stud--------------------
+%%Eine klassische Problemstellung in der Spiele-Programmierung, ist die Erstellung von fotorealistischen Wasserflächen, auch \glqq Wasser-Shader\grqq{} genannt, auf denen sich Wellen ausbreiten.
+%%
+%%\bild{OceanShader}{14cm}{Ein mit der Unreal Engine 4 erstellter \glqq Wasser-Shader\grqq{}.}
+%%
+%%Mithilfe der \ac{UE4} lassen sich fotorealistische Wasser-Shader mit verhältnismäßig wenig Programmieraufwand erstellen, zumal bereits einige ausgereifte Algorithmen existieren, mit deren Hilfe besonders realistisch aussehende Wellenbewegungen erzeugt werden können. 
+%%
+%%Methoden, wie \zb FFT-Algorithmen \cite{tessendorf}, zur Simulation von Wellenbewegungen, sind heutzutage weit verbreitet und kommen in einigen Videospielen zum Einsatz.
+%%Was solche Wasser-Shader-Programme allerdings nicht standardmäßig umsetzen, ist ein interaktives Verhalten der Wasserfläche.
+%%
+%%Während in der Realität ein ins Wasser geworfener Ball kreisförmige Wellenbewegungen auf der Wasseroberfläche auslösen wird, passiert bei herkömmlichen Wasser-Shadern hingegen nichts dergleichen. Fällt ein 3D-Modell auf einen herkömmlichen Wasserflächen-Shader, verursacht dieser weder Wellen, noch schwimmt das Modell auf der animierten Wasseroberfläche. Stattdessen fällt das 3D-Modell durch das Wasser hindurch, während die Animation der Wellenbewegung unverändert bleibt. Die Wellenbewegung ist nur von der Zeit abhängig und nicht von äußeren, virtuell-physikalischen Einflüssen.
+%%
+%%Im Rahmen dieser Studienarbeit soll mithilfe der \ac{UE4} eine interaktive Wasseroberfläche entstehen, welche sich wie folgt verhält: Fällt ein Objekt, dessen Dichte geringer als die von Wasser ist, auf das virtuelle Wasser, werden auf der Wasseroberfläche Wellen ausgelöst und das Objekt bewegt sich mit den Wellen mit, so als ob es schwimmen würde. Ein schwimmendes Objekt soll auch durch das Wasser hindurchgezogen werden können, was Wellenschleppenformationen generiert.
+%%
+%%Eine interaktive Wasseroberfläche, die, wie soeben beschrieben, auf andere Objekte reagiert, hebt sich von gewöhnlichen Wasser-Shadern ab. Mithilfe eines interaktiven Wasser-Shaders und Auftriebssimulationen lassen sich einige Rätsel für den Videospielnutzer kreieren. Das macht das Endprodukt dieser Studienarbeit interessant für zukünftige Videospiele und die \ac{UE4}-Community.
+%
+
+
+

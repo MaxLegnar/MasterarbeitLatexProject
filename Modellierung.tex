@@ -1,0 +1,134 @@
+% Die Arbeit besteht aus Kapiteln (chapter)
+\chapter{CheatSheet}
+
+In diesem Kapitel wird das vorliegende System betrachtet und es werden Differentialgleichungen ermittelt, die das System mathematisch beschreiben. Besonderer Augenmerk wird hierbei auf die translatorische und rotatorische Bewegung des Systems gelegt. Gesucht sind zwei gekoppelte Differenzialgleichungen, die sowohl
+die $X$-Position des Wagens, als auch die Drehung $\theta$ des Pendels beschreiben. In
+mindestens einer der beiden Gleichungen muss die Stellkraft $U$ enthalten sein.
+Zur Vereinfachung wird das Gesamtsystem in zwei Teilsysteme unterteilt. Durch
+Freischneiden am Gelenk des Pendelstabes erhalten wir die Teilsysteme Wagen
+und Pendel die nun einzeln Analysiert werden. 
+
+
+\section{Modellierung des Wagens}
+\subsection{Mathematische Modellierung des Wagens}
+Zuerst wird das Teilsystem Wagen untersucht. Hierbei wird vor allem die translatorischen Bewegungen des Systems betrachten, um zu analysieren, wie sich der Wagen verhält. 
+
+Auf ihn wirken die folgenden Kräfte:
+
+\bild{TeilsystemWagen}{6cm}{Teilsystem Wagen}
+
+Der Wagen kann sich nur in $X$-Richtung bewegen. Daher sind nur die Horizontalen Kräfte von Interesse. In positiver $X$-Richtung wirkt die Stellkraft $U$, in negativer Richtung wirkt die Kraft $F_x$. $F_x$ ist die Kraft, welche der Stab des Pendels auf den Wagen ausübt.
+
+Zunächst wird Newton II auf das dynamische System angewandt:
+
+\begin{equation}
+M \cdot \ddot{x}_w =  U -F_x
+\label{Fx0}
+\end{equation}
+
+$x_w$ ist die horizontale Position des Wagens. Aus Gleichung \ref{Fx0} ergibt sich für $\ddot{x}_w$:
+
+\begin{equation}
+\ddot{x}_w =  \frac{U - F_x}{M}
+\label{x_wpp}
+\end{equation}
+
+Nun liegt eine Gleichung vor, in der $\ddot{x}_w$, beziehungsweise $x_w$ enthalten ist. Um die translatorische Bewegung des Systems vollständig beschreiben zu können, muss nun noch die Kraft $F_x$ hergeleitet werden. Da es sich hierbei um die Kraft handelt, mit welcher der Stab horizontal auf den Wagen einwirkt, wird nun das Teilsystem Pendel mathematisch untersucht, um einen Ausdruck für die Kraft $F_x$ zu finden:
+
+\bild{TeilsystemPendel}{6cm}{Teilsystem Pendel}
+
+Der Stab hat die Länge $l$ und sein Massenschwerpunkt liegt bei $l/2$. Auch in diesem Fall werden ausschließlich die horizontalen Kräfte berücksichtigt. Gemäß des dritten Newtonschen Axioms Actio gleich Reactio wirkt auf den Stab dieselbe Kraft $F_x$ wie auf den Wagen. Des Weiteren wirkt die horizontale Trägheitskraft $F_T$ auf das Pendel.
+
+Laut Newton II gilt:
+
+\begin{equation}
+F_T = m \cdot \ddot{x} = F_x
+\label{pendel0}
+\end{equation}
+%\clearpage
+Wobei sich $x$ aus der Summe der Position des Wagens $x_w$ und der relativen Position
+des Stabes $x_s$ zusammen setzt:
+
+\bild{positionX}{6cm}{$x = x_w + w_s$}
+
+Dieser Sachverhalt kommt daher, dass $F_T$  nicht nur von der Bewegung des Pendels ($x_s$), sondern auch von der Bewegung des Wagens ($x_w$) abhängt. $x$ beschreibt also die absolute Position des Schwerpunktes des Pendels.
+
+Setzen wir nun Gleichung \ref{pendel0} in Gleichung \ref{x_wpp} ein, ergibt sich für $\ddot{x}_w$:
+
+\begin{equation}
+\ddot{x}_w =  \frac{U}{M} - \frac{m \cdot \ddot{x}}{M}=\frac{U}{M} - \frac{m(\ddot{x}_w+\ddot{x}_s)}{M}
+\label{x_wpp2}
+\end{equation}
+
+Durch Ausklammern von $\ddot{x}_w$ und Umformen nach $\ddot{x}_w$ ergibt sich schlussendlich: 
+
+\begin{equation}
+\ddot{x}_w =  \frac{1}{M+m} \cdot (U-m\cdot \ddot{x}_s) 
+\label{x_wpp3}
+\end{equation}
+Dieser Ausdruck lässt sich nun wie gewünscht für $F_x$ einsetzen, vorher muss jedoch noch $x_s$ mithilfe von $\theta$ ausgedrückt werden. Nach Betrachtung der gegebenen Geometrie ergibt sich:
+
+\begin{equation}
+x_s = f(\theta) = \frac{l}{2} \cdot \sin(\theta)
+\label{x_s}
+\end{equation}
+
+Mit dem Wissen, dass $\theta$ von der Zeit abhängig ist, lässt sich auch $\ddot{x}_s$ bilden, indem $x_s=f(\theta)$ zwei mal nach der Zeit abgeleitet wird:
+
+\begin{equation}
+\dot{x}_s=\frac{l}{2} \cdot \dot{\theta} \cdot \cos(\theta)
+\label{x_sp}
+\end{equation}
+
+\begin{equation}
+\ddot{x}_s=\frac{l}{2} \cdot [\ddot{\theta}\cos(\theta) - \dot{\theta}^2\cdot \sin(\theta)]
+\label{x_spp}
+\end{equation}
+
+Abschließend muss nur noch Gleichung \ref{x_spp} in Formel \ref{x_wpp3} eingesetzt werden:
+
+\begin{equation}
+\ddot{x}_w=\frac{1}{M+m} \cdot [U-\frac{1}{2}ml \cdot (\ddot{\theta}\cos(\theta)-\dot{\theta}^2\cdot\sin(\theta))]
+\label{x_wpp_final}
+\end{equation}
+
+Damit ergibt sich nun eine Formel, welche die Bewegung des Wagens in $X$-Richtung beschreibt. Der Ausdruck ist von der Stellkraft $U$ und vom Winkel $\theta$ abhängig. Wie bereits erwähnt wird hierbei die Reibung des Wagens vernachlässigt.
+
+Linearisiert man diese Gleichung um den Arbeitpunkt $\theta=0$ ergibt sich:
+
+\begin{equation}
+\ddot{x}_w \approx \frac{1}{M+m}[U-\frac{1}{2}ml\ddot{\theta}]
+\label{x_wpp_final_lin}
+\end{equation}
+
+
+
+\clearpage
+\subsection{Modellierung des Wagens mit Simulink}%..............Modellierung des Wagens mit Simulink.........................
+Nachdem die Systemgleichung des Wagens hergeleitet wurde, wird mit Simulink ein entsprechendes Blockschaltbild für Gleichung \ref{x_wpp_final} entworfen:
+
+\bild{Wagensimulink}{12cm}{Simulink Modell des Wagensystems}
+
+Das Simulink-Modell für die linearisierte Gleichung (\ref{x_wpp_final_lin}) ist etwas kompakter:
+
+\bild{WagensimulinkLin}{11cm}{Simulink Modell des linearisierten Wagensystems}
+
+
+\begin{table}[h]
+  \caption{Auswahl der Regler}
+  \label{reglerTab}
+  \renewcommand{\arraystretch}{1.2}
+  \centering
+  \sffamily
+  \begin{footnotesize}
+    \begin{tabular}{l l l}
+    \toprule
+    \textbf{Teilsystem} & \textbf{Übertragungsverhalten} & \textbf{Regler}\\
+    \midrule
+    Wagen	&	$I$	& 	$PI$\\
+    Pendel	&	$P-T_2$		&	$PID$\\
+    \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+  \rmfamily
+\end{table}

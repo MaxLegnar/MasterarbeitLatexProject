@@ -1,0 +1,408 @@
+\chapter{Implementation von Chirurgischen Szenarien}
+\label{chap_Umsetzung}
+
+Welche Use Cases habe ich implementiert und wie? Und wie klappte das?
+
+\section{Soft Body Interaktion mit Motion Controller}
+
+Idee und Umsetzung von “VR-Physics2.0”, wie ich es genannt habe
+
+\section{Nadel-Gewebe Interaktion}
+
+Wie umgesetzt, welche Tricks angewandt? Constraints? Geeignete Simulationsparameter?
+
+\section{Weitere Chirurgische Szenarien}
+Häute, schneiden und Reißen, Pinzette
+SPH und Körperflüssigkeiten?
+
+
+% ---------------------------- ALT -----------------------------------
+
+%Das konzipierte Simulationsmodell wird im Rahmen dieser Arbeit mithilfe der Unreal Engine 4 prototypisch implementiert. Bei dieser Implementierung wird der Fokus darauf gelegt, den Prototypen möglichst umfangreich und flexibel zu gestalten. Die Software bietet besonders viele Einstellungsmöglichkeiten und so können einige unterschiedliche Methoden und Variationen miteinander verglichen werden.
+%
+%Der Prototyp simuliert den Schwarm  ausschließlich im zweidimensionalem Raum. Die Darstellung des Schwarms erfolgt daher mit einer einfachen, zweidimensionalen Textur. Die Simulation eines dreidimensionalen Schwarms konnte aus Zeitgründen nicht mehr implementiert werden, zumal die verwendete Unreal Engine 4.18 zu diesem Zeitpunkt noch keine dreidimensionalen Texturen unterstützte.
+%
+%
+%\section{Softwareübersicht}
+%\label{sec_SoftwareuebersichtUmsetzung}
+%
+%Der in Kapitel \ref{sec_ShaderUebersichttheorie} gezeigte Aufbau für die Simulations-Shaderpipeline ist lediglich ein exemplarisches Beispiel. Die Shaderpipeline kann auch anders strukturiert werden. Wichtig ist nur, dass dabei alle Arbeitsschritte, aus Kapitel \ref{chap_Theorie}, ausgeführt werden. 
+%
+%Im Rahmen dieser Bachelorarbeit wurden möglichst viele Arbeitsschritte in einem Shader zusammengefasst, um weniger sogenannte \glqq Draw-Calls\grqq{}, also \glqq Zeichnungs-Aufrufe\grqq{}, zu generieren. So nennt man den Prozess des Beschreibens einer Textur. Das Beschreiben einer Textur nimmt signifikant Zeit in Anspruch, unabhängig von der Komplexität des zeichnenden Shaders. Daher macht es Sinn, die Anzahl der Schreibprozesse in der Shader-Pipeline klein zu halten.
+%
+%Wie Abbildung \ref{UebersichtUmsetzung} zeigt, besteht die implementierte Shader-Pipeline aus zwei Haupt-Shadern. Es werden also nur zwei Draw-Calls pro Simulationsschritt generiert. Der Shader \textit{SBoidBrush} wird nur dann ausgeführt, wenn der Nutzer der Software neue Individuen, mithilfe eines digitalen Pinsels, in $D$ zeichnet.
+%
+%\bild{UebersichtUmsetzung}{14cm}{Eine vereinfachte Softwareübersicht des entwickelten Prototyps. Im wesentlichen besteht dieser aus einer Shader-Pipeline, die von der Blueprint-Klasse \textit{FlockingSimBP} kontrolliert wird. Während die beiden Shader \textit{SGenerateControlSignals} und \textit{SBoidTransport} in gleichmäßigen Intervallen nacheinander ausgeführt werden, wird der  \textit{SBoudBrush}-Shader nur dann ausgeführt, wenn der Nutzer neue Boids erstellt.}
+%
+%Zuerst wird der Shader \glqq \textit{SGenerateControlSignals}\grqq{} ausgeführt. Dieser wendet alle eingesetzten Verhaltensregeln an und generiert direkt die finalen Steuervektoren, $\vec{V}$, durch gewichtete Summierung aller Einzelsteuersignale, $\vec{v}_i$. 
+%
+%\textit{SGenerateControlSignals} generiert die folgenden Einzelsteuersignale:
+%	
+%
+%\begin{itemize}
+%  \item Reynolds drei Grundverhaltensregeln:
+%    \begin{itemize}
+%      \item Kohäsion, $\vec{v}_c$
+%      \item Separation, $\vec{v}_s$    
+%      \item Ausrichtung, $\vec{v}_a$
+%    \end{itemize}  
+%  \item Zusatzverhaltensregeln:
+%    \begin{itemize}
+%      \item Punkt verfolgen, $\vec{v}_{cp}$
+%      \item Punkt meiden, $\vec{v}_{sp}$      
+%    \end{itemize}
+%\end{itemize}
+%
+%Die Berechnungen der jeweiligen Einzelsteuersignale erfolgte genau so, wie in Kapitel \ref{chap_Theorie} beschrieben.
+%
+%All diese Einzelsteuersignale werden dann gewichtet und zu $\vec{V}$ summiert. Danach löscht \textit{SGenerateControlSignals} alle Steuervektoren, die zu einer leeren Zelle gehören. Dieser nachträgliche Löschvorgang wurde in Kapitel \ref{subsec_leereZellen} empfohlen um Fehlinterpretationen zu vermeiden. 
+%
+%Nach dem Löschvorgang ist die Steuervektoren-Textur bereit für die Übergabe in den zweiten Shader der Shader-Pipeline:  \glqq \textit{SBoidTransport}\grqq{}.
+%
+%Dieser Shader übernimmt den Transport der Boids. Hierfür stehen alle Verteilungsmethoden bereit, die in Kapitel \ref{section_BewDerBoids} vorgeschlagenen wurden.
+%
+%Die Parameterübergabe an die beiden Shader-Programme erfolgt von der CPU aus. Eine Klasse namens  \glqq \textit{FlockingSimBP}\grqq{} übernimmt diese Aufgabe. Diese Klasse erstellt und initialisiert alle Shader und Texturen. Danach steuert sie, wann welcher Shader mit welchen Parametern ausgeführt werden soll. Sie regelt auch, wie oft die Shader-Pipeline pro Sekunde abgearbeitet werden soll. 
+%
+%\section{Interaktivität}
+%
+%Die Klasse \textit{FlockingsSimBP} stellt auch die Schnittstelle zum Menschen dar und lässt einen Nutzer mit dem virtuellen Schwarm interagieren. Jegliche Interaktion wird ermöglicht, indem \textit{FlockingsSimBP} zur Simulationslaufzeit bestimmte Parameter der Shader-Pipeline ändert. 
+%
+%Der Nutzer kann mit der Maus entweder einen Kohäsions- oder einen Separations-Punkt in die Schwarm-Textur zeichnen. Diese Punkte wurden in Kapitel \ref{subsec_Zusatzvorschriften} eingeführt. Der Schwarm kann so in Echtzeit gejagt oder angelockt werden. Wenn gerade keiner der beiden Punkte eingesetzt wird, setzt \textit{FlockingsSimBP} die Gewichtung der Kohäsions- und Separations-Punkte auf 0. Wird einer der beiden Punkte vom Nutzer verwendet, wird dieser mit einer Gewichtung, die größer als 0 ist, versehen.  Wenn der Nutzer einen aktiven Punkt bewegt, übergibt \textit{FlockingsSimBP} die neuen Koordinaten an \textit{SGenerateControlSignals} weiter.
+%
+%Mithilfe des Kohäsionspunktes können zwei Boid-Gruppen zusammengeführt werden. Zudem kann mit diesem anziehenden Punkt vermieden werden, dass eine Gruppe den Simulationsbereich verlässt.
+%
+%Mit dem Separationspunkt können Gruppen gejagt werden. Bewegt der Nutzer einen Separationspunkt langsam durch einen Schwarm hindurch, kann eine Schwarm-Teilung erzwungen werden.
+%
+%\bild{Schwarmteilung}{8cm}{Eine vom Nutzer erzwungene Schwarmteilung. Die rötlich leuchtende Markierung stellt den eingesetzten Separationspunkt dar. Die beiden neu entstandenen Gruppen nehmen recht zügig abgerundete Formen an.}
+%
+%Abbildung \ref{Schwarmteilung} zeigt eine solche Schwarmteilung.
+%
+%Außerdem kann der Nutzer mit der Maus neue Boids zum Schwarm hinzufügen, indem er direkt in die Schwarm-Textur, $D$, zeichnet.
+%
+%\bild{Pinsel}{12cm}{Egal ob ungleichmäßig, gleichmäßig oder punktuell verteilt. Mithilfe eines implementierten Pinsel-Tools können unterschiedlichste Schwärme gezeichnet und editiert werden. Auch während der Simulationslaufzeit.}
+%
+%Hierfür wurden unterschiedliche \textit{Pinsel}-Shader angelegt, damit der Schwarm mithilfe unterschiedlicher Zeichenwerkzeuge  \glqq gezeichnet\grqq{} werden kann. In Abbildung \ref{Pinsel} sind Beispiele der zur Verfügung gestellten Pinsel-Muster zu sehen.
+%
+%\section{Darstellung des Schwarms}
+%
+%Bei der Darstellung des simulierten Schwarms ging es primär darum, interessante Zustände und Zwischengrößen erkennen zu können. Auf optisch aufwändigere Render-Techniken wurde vorerst verzichtet. 
+%
+%Der Nutzer hat die Möglichkeit die Schwarm-Textur, $D$ und die derzeitigen Steuervektoren, $\vec{V}$, zu beobachten. 
+%
+%\bild{Schwarmdarstellung}{10cm}{Links ist eine leicht nachbearbeitete Version der Boid-Textur, $D$, zu sehen. Rechts davon lässt sich beobachten in welcher Richtungen die Steuervektoren der Zellen zeigen.}
+%
+%In Abbildung \ref{Schwarmdarstellung} ist ein Screenshot davon zu sehen. Die Steuersignal-Textur wird unverändert angezeigt. Das Skalarfeld, $D$, wird hingegen leicht  \glqq aufgehübscht\grqq{}. Der Schwarm wird mit einer türkis-leuchtenden Grundfarbe gezeichnet. Dabei gilt: Je heller ein Pixel, desto mehr Boids enthält es. Wenn sich besonders viele Boids auf engem Raum aufhalten, wird dies durch hellere Farben erkenntlich. Dabei kann die Grundfarbe so stark aufgehellt werden, dass manche Pixel weiß strahlen. Weiße Pixel stellen also eine besonders volle Zelle dar. In Abbildung \ref{Schwarmdarstellung} können im Schwarm unterschiedliche Helligkeitsstufen erkannt werden. Solche Bilder entstehen meistens nur dann, wenn der Schwarm in Bewegung ist. Bewegt sich eine Gruppe Boids nicht, oder wenig, erscheinen alle Boids in etwa im selben Farbton. Eine stehende Gruppe befindet sich in einem stabilen Zustand, was voraussetzt, dass benachbarte Zellen ähnliche Zustände und somit auch den selben Farbton besitzen.
+%
+%Wenn mit starken Kohäsions-Gewichten gearbeitet wird, verdichten sich die Schwärme stärker, wodurch immer stärker leuchtende Gruppen entstehen. 
+%
+%%\clearpage
+%\bild{KomprimierteGruppe}{4cm}{Wenn mit starker Kohäsion gearbeitet wird, nehmen die Zellen besonders viele Boids auf. Dadurch steigt die Boid-Dichte, die Schwärme werden kleiner und heller.}
+%
+%
+%
+%
+%\section{Verhaltensänderungen}
+%
+%Die in Kapitel \ref{subsec_Verhaltensaenderungen} vorgeschlagenen Verhaltensänderungen wurden auch im Prototypen implementiert. So kann jederzeit per Knopfdruck  eine signifikante Verhaltensänderung im Schwarm ausgelöst werden, indem gezielt Gewichtungen verändert werden. Wie erhofft kann der Schwarm mit dieser einfachen Technik noch lebendiger und eigenwilliger wirken. Eine Änderung des Verhaltens erinnert auch an eine Änderung der Gemütszustände der Individuen. Vor allem die beiden Gegensätze  \glqq Aufregung\grqq{} und  \glqq Ruhe\grqq{} können gut erzeugt werden, indem das in Kapitel \ref{subsec_Verhaltensaenderungen} erwähnte \textit{Konkurrenzverhalten} gesteigert oder abgeschwächt wird. 
+%
+%Um Verhaltensänderungen für den Betrachter noch auffälliger zu gestalten, wird mit dem Gemütszustand auch die Farbe des Schwarms geändert. Der Schwarm ändert langsam seine Farbe von türkis nach rot, wenn sein Gemütszustand von ruhig nach aufgeregt wechselt.
+%
+%
+%
+%\section{Variierter Einsatz von Wahrnehmungsvektoren}
+%
+%In Kapitel \ref{subsec_nachbarsucheMitTestvektoren} wurden die sogenannten Wahrnehmungsvektoren, $\vec{s}$, eingeführt. Je nachdem wie viele und in welchen Konstellationen Wahrnehmungsvektoren eingesetzt werden, wirkt sich das unterschiedlich auf die Simulation aus.
+%
+%Im Rahmen dieser Arbeit wurde mit einigen unterschiedlichen Konstellationen experimentiert, um herauszufinden, wann und wie die Wahrnehmungsvektoren am effizientesten funktionieren. Es folgen nun einige Erfahrungsberichte über diese Thematik. Jegliche Beurteilungen über Simulationsqualitäten sind an dieser Stelle allerdings weitgehend subjektiv.
+%
+%%\subsection{gesonderte Separations-Vektoren}
+%%Es könnte sinnvoll sein, kürzere Wahrnehmungsvektoren für die Separation einzusetzen, weil sich ein Boid bei diesem Gesetz mehr für die zu nah befindlichen Nachbarn  \glqq interessiert\grqq{}. Denn bei der Separation geht es darum, zu nah kommenden Nachbarn auszuweichen und so Kollisionen zu vermeiden. Daher könnten gesondert Wahrnehmungsvektoren für die Separation eingesetzt werden. Separations-Wahrnehmungsvektoren sind kürzer als die Wahrnehmungsvektoren für die restlichen Verhaltensregeln, weil für die Separation im Grunde nur die nahen Nachbarn interessant sich. 
+%%
+%%\bild{SeparationsWahrnehmungsvektoren}{6cm}{slkfdj sdf j}
+%%
+%%In Abbildung \ref{SeparationsWahrnehmungsvektoren} wird verdeutlicht, was gemeint ist. Auf der linken Seite ist ein Boid zu sehen, das zusätzliche Wahrnehmungsvektoren (, in Form von grünen Pfeilen,) besitzt. Sie sind ausschließlich für die Generierung von Separations-Steuersignalen, $\vec{v}_s$, gedacht. Rechts ist ein Boid dargestellt, welches für alle Verhaltensregeln die selben Wahrnehmungsvektoren einsetzt. 
+%%
+%%Aus Abbildung \ref{SeparationsWahrnehmungsvektoren} geht hervor, dass für diese Methode insgesamt mehr Wahrnehmungsvektoren eingesetzt werden müssen. Dann werden auch mehr Stichproben gezogen, wodurch ein insgesamt größerer Arbeitsaufwand entsteht. Dennoch wurde mit gesonderten Separations-Vektoren experimentiert, in der Hoffnung das sich der Mehraufwand mit einer besseren Simulationsqualität bezahlt macht.
+%%
+%%Im Test hat sich allerdings gezeigt, dass der Einsatz von gesonderten Separations-Vektoren keinen Mehrwert mit sich bringt. Werden für alle drei Grundverhaltensregeln die selben Wahrnehmungsvektoren eingesetzt, können gleichwertige Simulationsergebnisse erzielt werden, wie bei der Verwendung von gesonderten Separations-Vektoren. Hierfür müssen nur unterschiedliche Gewichtungen eingesetzt werden.
+%
+%%Eine interessante Erkenntnis ist hierbei die Tatsache, dass in diesem Simulationsmodell keine Separation entsteht, weil benachbarte Boids einen zu geringen Abstand zueinander haben. In diesem System separieren sich Boids, wenn in einer benachbarten Zelle zu viele Boids enthalten sind. Hier ist also weniger die Entfernung, sondern vielmehr die Menge ausschlaggebend. Nichts desto trotz können auch in diesem System besonders realistisch wirkende Sachwarmbewegungen entstehen.
+%
+%
+%\subsection{Anzahl der eingesetzten Wahrnehmungsvektoren}
+%
+%Abbildung \ref{schwarmUnterschPara4VS8Vecs} zeigt einige Bilder aus Schwarmsimulationen mit unterschiedlich vielen Wahrnehmungsvektoren. Für die blau eingefärbten Schwärme wurden 4 Wahrnehmungsvektoren eingesetzt. Die rot gezeichneten Schwarmformationen entstanden hingegen beim Einsatz von 8 Wahrnehmungsvektoren. Auf den ersten Blick können nur schwer signifikante Unterschiede ausgemacht werden.
+%
+%\bild{schwarmUnterschPara4VS8Vecs}{10cm}{Die beiden oberen Schwärme verwendeten 4 Wahrnehmungsvektoren, während  die roten Schwärme mit 8 Wahrnehmungsvektoren ausgestattet waren. Es sind keine großen Unterschiede erkennbar.}
+%
+%Sowohl mit 4 als auch mit 8 Wahrnehmungsvektoren können abgerundete und individuelle  Schwarmformationen gebildet werden. Die Anzahl an eingesetzten Wahrnehmungsvektoren schien geringe Auswirkungen auf die Formbildung von Gruppen zu haben.
+%
+%Es hat sich schnell herausgestellt, dass auch mit wenigen Wahrnehmungsvektoren zufriedenstellende Bewegungen erzeugen werden können.
+%
+%
+%
+%
+%
+%
+%
+%\clearpage
+%\subsection{Länge der Wahrnehmungsvektoren}
+%\label{subsec_laengeDerWahrnehmungsvektoren}
+%Abbildung \ref{SchwarmUnterschVLength} zeigt wie sich die Länge der eingesetzten Wahrnehmungsvektoren auf die Optik des simulierten Schwarms auswirkt.
+%
+%\bild{SchwarmUnterschVLength}{14cm}{Für diese Bilderreihe wurden unterschiedliche lange Wahrnehmunsvektoren eingesetzt. Von links nach rechts betragen die Vektorlängen 1, 2, 3, 5 und 10. Nicht nur die Körnung steigt an. Es entstehen auch ungleichmäßigere Schwarmformationen mit steigenden Vektorlängen.}
+%
+%Für diese Bilderreihe wurden immer 4 gleichmäßig verteilte Wahrnehmungsvektoren eingesetzt. Außerdem wurden für alle 5 Bilder die selben Gewichtungen verwendet. Von links nach rechts steigen die Längen der Wahrnehmungsvektoren.
+%
+%Aus Abbildung \ref{SchwarmUnterschVLength} geht deutlich hervor, dass die  \glqq Körnung\grqq{} von $D$ mit der Länge der Wahrnehmungsvektoren steigt. Mit Körnung ist gemeint, dass im Schwarm eindeutiger voneinander separierte Induviduen erkennbar sind. Es bilden sich sozusagen eindeutig erkennbare Untergruppen in einer Schwarm-Gruppe. Je länger die Wahrnehmungsvektoren sind, desto heller werden die Untergruppen, was bedeutet, dass dort die Boid-Dichten gestiegen sind.
+%
+%Die Längen der Wahrnehmungsvektoren scheint laut Abbildung \ref{SchwarmUnterschVLength} auch einen Einfluss auf die äußeren Formen des Schwarms zu haben. Sie wirken mit steigender Vektorlänge unförmiger und weniger abgerundet.
+%
+%Das Bewegungsverhalten der Schwärme verändert sich auch mit steigenden Vektorlängen. Die Boids können im übertragendem Sinne  \glqq weiter sehen\grqq{}, wenn sie mit längeren Wahrnehmungsvektoren ausgestattet werden. Das macht sich bemerkbar. Wenn die Individuen mit einer  \glqq weiteren Sicht\grqq{} ausgestattet werden, finden sie sich auch schneller zu Gruppen zusammen.
+%
+%Generell sollte ein Wahrnehmungsvektor immer länger als 1 sein. Ein kürzerer Vektor sorgt dafür, dass sich eine Zelle teilweise selbst ausliest.
+%
+%Je länger die Wahrnehmungsvektoren sind, desto stärker werden auch die generierten Steuersignale der Boids. Die Länge der Wahrnehmungsvektoren beeinflusst also auch das Bewegungsverhalten des Schwarms. Dem kann mithilfe von entsprechender Gewichtung entgegengewirkt werden.
+%
+%
+%\subsection{Anordnung und Ausrichtung der Wahrnehmungsvektoren}
+%Durch Experimente mit unterschiedlich angeordneten Wahrnehmungsvektoren ergaben sich die folgenden Erkenntnisse:
+%
+%\subsubsection{Asymmetrische Anordnung}
+%Erwartungsgemäß entstehen durch asymmetrisch angeordnete Wahrnehmungssensoren auch asymmetrisch formierte Schwarmformationen. 
+%
+%Dies hat auch Auswirkungen auf die Bewegung des Schwarms. Der Schwarm bewegt sich schneller in die Richtungen, in die die Wahrnehmungsvektoren am häufigsten zeigen. Je weniger x-Anteile die Vektoren besitzen, desto seltener und langsamer bewegen sich die Individuen auch in diese Richtung. Existiert kein x-Anteil, finden auch keine Bewegungen in diese Richtung statt. 
+%
+%\subsubsection{Aymmetrische und gleichmäßige Anordnung}
+%Um realistischere Bewegungen und Formationen zu erhalten, sollten die Wahrnehmungsvektoren symmetrisch und gleichmäßig um ein Boid herum angeordnet werden.
+%
+%Nur mit solchen Anordnungen bilden sich besonders abgerundete Gruppen. Außerdem bewegen sich die Schwärme dann in alle Richtungen gleich schnell, was vermutlich in den meisten Fällen erwünscht ist.
+%
+%\subsubsection{Bewegte Wahrnehmungsvektoren}
+%
+%In Kapitel \ref{subsec_nachbarsucheMitTestvektoren} wurde vorgeschlagen,  die Wahrnehmungsvektoren in Abhängigkeit von der Zeit zu bewegen. Eine Besonderheit ist hierbei, dass die Bewegung der Wahrnehmungsvektoren auch von der \ac{CPU} übernommen werden kann. Die Bewegung muss also nicht unbedingt die \ac{GPU} belasten, die ohnehin bereits von der Schwarmsimulation in Anspruch genommen wird.
+%
+%Die Vektoren dehnen und schrumpfen zu lassen, wirkt sich vor allem auf die Körnung der Schwarm-Textur aus. Dadurch entstehen nämlich die in Kapitel \ref{subsec_laengeDerWahrnehmungsvektoren} erwähnten Effekte. So ändert sich die Körnung der Schwarm-Textur mit der Zeit. Dieser Effekt kann bei Bedarf aber auch gezielt hervorgerufen werden, um den Schwarm optisch interessanter zu gestalten. Bei gezielter Parametrisierung können  pulsierende Effekte im Schwarm entstehen.
+%
+%Die Wahrnehmungsvektoren mit einer konstanten Rotationsgeschwindigkeit um einen Boid herum rotieren zu lassen, erwies sich im Test als lohnenswert. Dies wirkte sich vor allem positiv auf das Erscheinungsbild des Schwarms aus, wie Abbildung \ref{SchwarmRotierenNichtRotieren} zeigt.
+%
+%
+%\bild{SchwarmRotierenNichtRotieren}{10cm}{Bei fixierten Wahrnehmungsvektoren entstehen ausgefranste Ausläufe an den Rändern der Schwärme (links). Dieser Effekt kann geglättet werden, indem rotierende Wahrnehmungsvektoren eingesetzt werden (rechts). }
+%
+%In \ref{SchwarmRotierenNichtRotieren} ist auf der rechten Seite ein Schwarm abgebildet, der mir rotierenden Wahrnehmungsvektoren arbeitet. Dieser wirkt geordneter und seine Ränder sind weniger  \glqq ausgefranst\grqq{} im Vergleich zum linken Schwarm. Der links abgebildete Schwarm arbeitet mit herkömmlichen, fixierten Wahrnehmungsvektoren. Mithilfe rotierender Vektoren konnten außerdem ruhigere und stabilere Schwärme erzeugt werden. Damit sind Schwärme gemeint, die sich ruhiger bewegen und rundere Formen bilden.
+%
+%
+%
+%\section{Einsatz der drei Grundverhaltensregeln}
+%
+%Mit den beiden Verhaltensregeln Kohäsion und Separation können bereits erste Erfolge erzielt werden. Mit diesen Regeln versetzen sich bereits erste Boids in Bewegung, um stabile Gruppen zu bilden. Sobald sich aber eine Gruppe zusammengetan hat, stabilisiert sich das System und die Gruppe bewegt sich nicht mehr. Solch ein stiller Schwarm wirkt nicht sehr \glqq lebendig\grqq{}. Deswegen hat die Verhaltensregel Ausrichtung einen hohen Stellenwert in der Simulation. Diese Verhaltensregeln kann nämlich bei optimaler Parametrisierung einem Schwarm mehr \glqq Leben\grqq{} einhauchen. Die Ausrichtung kann eine Eigendynamik in einer Gruppe auslösen, die zu selbstständigen Bewegungen führt. Solche Bewegungen können einen Schwarm mehr wie ein lebendiges und eigenwilliges Wesen aussehen lassen.
+%
+%In Kapitel \ref{subsec_Ausrichtung} wurden zwei unterschiedliche Formeln für die Berechnung des Steuersignals für die Ausrichtung, $v_a$, vorgeschlagen.
+%
+%Zuerst wurde eine exakte Berechnung angestrebt, wodurch Formel \ref{Form_Align} entstand. Danach wurde Formel \ref{Form_Align} vereinfacht, wodurch Formel \ref{Form_AlignCa} hergeleitet wurde. 
+%
+%Im Test zeigte sich, das mit beiden Rechenmethoden gute Simulationsergebnisse erzielt werden können. Es konnten keine signifikanten Unterschiede erkannt werden. 
+%
+%
+%
+%
+%\section{Boid-Transporttechniken}
+%\label{sec_LoseBoids}
+%
+%%-------------------messunge------------------------
+%%fixe vektoren, r=2, 8 T, 4 wahrnehmungsvektoren: 	2997.4307	1662.9481   1661.5632
+%%
+%%rot vektoren, r=2, 8 T, 4 wahrnehmungsvektoren: 	2997.4307	2457.9767
+%%
+%%rot vektoren, r=1,2,  8 T , 8 wahrnehmungsvektoren: 	2997.4307	2702.9867
+%%
+%%rot vektoren, r=2,3,  8 T , 8 wahrnehmungsvektoren: 	2997.4307	2567.455
+%%
+%%fix vektoren, r=1,2,  8 T , 8 wahrnehmungsvektoren: 	2997.4307	2512.7107
+%%
+%%
+%%fix vektoren, r=2, 4 T, 4 wahrnehmungsvektoren: 	2997.4307	382.9346
+%%
+%%rot vektoren, r=2, 4 T, 4 wahrnehmungsvektoren: 	2997.4307	1686.3750
+%%
+%%rot vektoren, r=1,2,  4 T , 8 wahrnehmungsvektoren: 	2997.4307	2426.6205 <-
+%%
+%%fix vektoren, r=1,2,  4 T , 8 wahrnehmungsvektoren: 	2997.4307	2603.3807
+%%
+%%
+%%fix vektoren, r=2,  4 T smooth, 4 wahrnehmungsvektoren: 	2997.4307	.2362077
+%%
+%%rot vektoren, r=2,  4 T smooth, 4 wahrnehmungsvektoren: 	2997.4307	1.288783
+%%
+%%fix vektoren, r=2,  4 T smooth, 8 wahrnehmungsvektoren: 	2997.4307	47.120405
+%%
+%%rot vektoren, r=2,  4 T smooth, 8 wahrnehmungsvektoren: 	2997.4307	269.78772
+%
+%
+%In Kapitel \ref{sec_Zellenbesuch} wurden zwei unterschiedliche Methoden vorgestellt, wie die Fortbewegung der Boids erfolgen kann. Dies wurde auch als Boid-Transport bezeichnet. Hierfür wurden die beiden Verteilungsgesetze  \glqq \textit{Verteilung in eine Zelle}\grqq{} und  \glqq \textit{Verteilung in zwei Zellen}\grqq{} definiert. 
+%
+%Die beiden Methoden werden nun miteinander verglichen. Hierbei ist nicht nur darauf zu achten, wie sich der Schwarm bewegt und verteilt, es wird auch kontrolliert, ob die Anzahl der im System befindlichen Boids konstant bleibt (Einhaltung des Gesetzes \ref{Form_BoidFlussKonst}).
+%
+%\subsection{Erhaltungsmessungen}
+%
+%Es wurden Erhaltungsmessungen vorgenommen, um einen möglichen Boid-Verlust nachzuweisen. 
+%
+%Hierfür wurde ein Shader erstellt, der alle Boids, die sich im Zellensystem befinden, zählt. Dieser Shader summiert alle Farbwerte von allen Pixeln aus der $D$-Textur. Für die Messungen war immer die selbe Anfangsbedingung gegeben, indem die Boid-Dichte-Textur wie folgt initialisiert wurde (siehe Abbildung \ref{InitBoids}):
+%
+%\bild{InitBoids}{6cm}{Die Boid-Dichte-Textur wurde mithilfe eines ungleichmäßigen Gradienten initialisiert. Alle Messungen wurden also mit der selben Menge Boids (2997,4307 an der Zahl) durchgeführt und die Menge war immer auf gleiche Weise verteilt.}
+%
+%Daher waren bei allen Messungen exakt die selben Anfangsbedingungen gegeben. Mithilfe eines Kohäsionspunkts, der sich genau im Zentrum des Systems befand, wurde dafür gesorgt, dass der Schwarm während einer Messung nicht aus der Textur heraus fliegt. 
+%
+%Die Messungen erfolgten nicht besonders detailliert, es ging nur darum, Boid-Verluste anhand von Stichproben nachzuweisen. Ein Messvorgang verlief folgendermaßen: Das Messprogramm speicherte während der Initialisierung die Anfangsmenge der Boids. Danach wurden 18000 Simulationsschritte durchgeführt. Dies entspricht einer Laufzeit von 5 Minuten, wenn 60 Simulationsschritte pro Sekunde abgearbeitet werden. Danach wurde gezählt, wie viele Boids übrig geblieben sind. Ein Messvorgang bestand also aus zwei Stichproben. Eine Anfangsmenge und eine Endmenge. Wie viele Boids in 5 Minuten verloren gegangen sind, kann durch Vergleich der Anfangsmenge und Endmenge in Erfahrung gebracht werden.
+%
+%In
+%Tabelle \ref{Erhaltungsmessungen} 
+%werden die Messergebnisse präsentiert:
+%\clearpage
+%
+%% Please add the following required packages to your document preamble:
+%% \usepackage{booktabs}
+%\begin{table}[]
+%\centering
+%\caption{Einige Boid-Erhaltungsmessungen. Der Verlust von Boids konnte eindeutig nachgewiesen werden. Vor allem bei der Verteilung in zwei Zellen traten massive Verluste auf. }
+%\label{Erhaltungsmessungen}
+%\begin{tabular}{@{}llll@{}}
+%\toprule
+%\begin{tabular}[c]{@{}l@{}}Anzahl der\\ Wahrnehmungsvektoren\end{tabular} & Transportmethode                                                               & \begin{tabular}[c]{@{}l@{}}absoluter \\ Verlust\end{tabular} & \begin{tabular}[c]{@{}l@{}}prozentualer\\ Verlust\end{tabular} \\ \midrule
+%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=8$\end{tabular}  & 539,454                                                      & 17,99                                                          \\
+%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=8$\end{tabular}  & 294,444                                                      & 9,82                                                           \\ \midrule
+%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=4$\end{tabular}  & 1311,055 & 43,73                                                          \\
+%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=4$\end{tabular}  & 570,810 & 19,04                                                          \\ \midrule
+%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ zwei Zellen,\\ $N_c=4$\end{tabular} & 2996,141 & 99,95                                                          \\
+%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ zwei Zellen,\\ $N_c=4$\end{tabular} & 2727,642 & 90,99                                                         
+%\end{tabular}
+%\end{table}
+%
+%Aus den Messergebnissen aus Tabelle \ref{Erhaltungsmessungen} geht hervor, dass bei allen getesteten Transportmethoden Boids verloren gehen. Besonders schlimm ist dieses Problem bei der Verteilung in zwei Zellen. Hier war der Boid-Verlust auch mit bloßem Auge erkennbar.
+%
+%Ein Grund des Boid-Verlustes könnte die in Kapitel \ref{subsec_BilFiltUV} angesprochene bilineare Filterung sein, die sich in der Unreal Engine 4 nicht ohne weiteres deaktivieren lässt. 
+%
+%Wenn eine Zelle Boids von einer Nachbarzelle aufnimmt, geschieht dies indem sie ausliest wie viele Boids in der Nachbarzelle enthalten sind. Danach addiert sie den ausgelesenen Wert zu ihrem Boid-Bestand hinzu. Das Problem hierbei ist, dass der ausgelesene Wert ein bilinear gefilterter Wert ist. Es wird zwar versucht den exakten Pixelwert auszulesen, indem gezielt auf die Mitte eines Texels zugegriffen wird, dies ist allerdings, wie bereits erwähnt, nicht immer möglich. So könnte es vielleicht dazu kommen, dass Zellen 100\% von ihren Boids verlieren, aber andere Zellen nur 99\% davon aufnehmen. Kleine Verluste summieren sich dann über längere Zeit auf.
+%
+%Dies sind allerdings nur Vermutungen. Um das Problem genauer zu untersuchen blieb leider keine Zeit.
+%
+%
+%\subsection{Simulationsqualitäten von unterschiedlichen Transportmethoden}
+%
+%Zwischen den beiden Transportmethoden \textit{Verteilung in eine Zelle} und  \textit{Verteilung in zwei Zellen} ist ein besonders deutlicher optischer Unterschied erkennbar, wie Abbildung \ref{SmoothAdvect} zeigt:
+%
+%\bild{SmoothAdvect}{10cm}{Links: Eine Gruppe Boids, die sich beim Transport in zwei Zellen verteilen. Dadurch entstehen sehr gleichmäßige Formen. Rechts: Eine Gruppe Boids, die sich in nur eine Zelle verteilen. Hier ist eine deutlich stärkere Körnung erkennbar.}
+%
+%Auf der linken Seit ist ein Schwarm zu sehen, der sich mittels \textit{Verteilung in zwei Zellen} fortbewegt. Auf der rechten Seite wird hingegen mit der \textit{Verteilung in eine Zelle} gearbeitet. Der rechte Schwarm ist deutlich körniger als der linke.
+%
+%Es hat sich außerdem gezeigt, dass sich der Einsatz von 8 möglichen Bewegungsrichtungen ($N_c=8$) lohnt. Der Rechenaufwind ist nicht sehr viel größer als bei $N_c=4$ und die Simulationsqualität steigt deutlich an. Wenn sich ein Individuum in nur 4 Richtungen bewegen kann, macht sich das deutlich in den Bewegungsmustern des Schwarms bemerkbar. Richtungswechsel wirken hart und abrupt.
+%
+%
+%
+%\clearpage
+%\section{Instabilitäten}
+%
+%Erfahrungsgemäß ist die Simulation stabil, solange die folgenden Regeln befolgt werden:
+%
+%\begin{itemize}
+%  \item Kapitel \ref{subsec_DefUVorschr}: Ein Boid darf beim Transport niemals eine Zelle überspringen.
+%
+%  \item Kapitel \ref{subsec_VerlasseneZellen}: Ein finales Steuersignal, $\vec{V}$, darf niemals größer als 1 sein.
+%
+%\end{itemize}
+%
+%Im Rahmen dieser Arbeit wurden keine Randbedingungen für das Simulationsmodell aufgestellt. Dies sollte nachgeholt werden, weil dadurch Probleme entstehen können. Im Test hat sich der simulierte Schwarm teilweise ins unendliche  \glqq aufgebläht\grqq{}, wenn er an den Rand der Textur geriet (siehe Abbildung \ref{Aufblaehen}). 
+%
+%\bild{Aufblaehen}{5cm}{Wenn eine Gruppe Boids dem Rand der Textur zu nahe kommt, kann sich der Schwarm aufblähen. Um dies zu vermeiden sollten Randbedingungen definiert werden.}
+%
+%
+%
+%
+%
+%
+%\section{Performance-Messungen }
+%\label{sec_performance}
+%
+%Die in dieser Arbeit genutzte Unreal Engine 4.18 beinhaltet einen umfangreichen Profiler \cite{GPUProfiling}. Mit Ihm konnte gemessen werden, wie lange die Abarbeitung der prototypischen Shader-Pipeline dauert. So entstanden einige Zeitmessungen, wobei stets mit unterschiedlichen Simulationseinstellungen experimentiert wurde. Der simulierte Schwarm wurde von unterschiedlich groß aufgelösten Texturen, $R$ mal $R$, beschrieben. Außerdem arbeiteten die Zellen mit unterschiedlich vielen Wahrnehmungsvektoren, $N_s$ und transportierten die Boids in unterschiedlich viele Richtungen, $N_c$.
+%
+%Die Messergebnisse sind in Tabelle \ref{gtx} aufgelistet. 
+%
+%
+%\clearpage
+%% Please add the following required packages to your document preamble:
+%
+%% \usepackage{booktabs}
+%
+%\begin{table}[]
+%
+%\centering
+%
+%\caption{Die prototypische Shader-Pipeline benötigt vor allem dann mehr Rechenzeit, wenn größere Texturen eingesetzt werden.}
+%
+%\label{gtx}
+%
+%\begin{tabular}{@{}lllllll@{}}
+%
+%\toprule
+%
+%                                                                                & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=256$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=1024$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=4096$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=256$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=1024$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=4096$\end{tabular} \\ \midrule
+%
+%\multicolumn{1}{l|}{Zeit-}                                                      & 0,39                                                                & 1,89                                                                 & 4,66                                                                 & 1,27                                                                & 1,55                                                                 & 4,6                                                                  \\
+%
+%\multicolumn{1}{l|}{messungen}                                                  & 0,44                                                                & 1,67                                                                 & 4,59                                                                 & 3,79                                                                & 5,87                                                                 & 5,45                                                                 \\
+%
+%\multicolumn{1}{l|}{in ms}                                                      & 0,42                                                                & 0,47                                                                 & 4,59                                                                 & 1,28                                                                & 1,57                                                                 & 4,78                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 2,11                                                                 & 5,16                                                                 & 1,37                                                                & 0,63                                                                 & 5,8                                                                  \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,39                                                                & 2,53                                                                 & 3,62                                                                 & 1,49                                                                & 2,12                                                                 & 4,63                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 2,01                                                                 & 5,07                                                                 & 1,80                                                                & 2,06                                                                 & 4,91                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 1,51                                                                 & 3,86                                                                 & 0,17                                                                & 2,13                                                                 & 4,57                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 1,51                                                                 & 5,14                                                                 & 1,22                                                                & 2,33                                                                 & 4,79                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 2,07                                                                 & 5,09                                                                 & 2,03                                                                & 2,28                                                                 & 4,85                                                                 \\
+%
+%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 2,19                                                                 & 3,64                                                                 & 0,39                                                                & 5,92                                                                 & 4,67                                                                 \\ \midrule
+%
+%\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Mittelwert\\ in ms\end{tabular}} & 0,422                                                               & 1,796                                                                & 4,542                                                                & 1,481                                                               & 2,646                                                                & 4,9050                                                               \\
+%
+%\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Streuung\\ in ms\end{tabular}}   & 0,0193                                                              & 0,5637                                                               & 0,6206                                                               & 0,9893                                                              & 1,7844                                                               & 0,4036                                                             
+%
+%\end{tabular}
+%
+%\end{table}
+%
+%
+%Die in Tabelle \ref{gtx} zu sehenden Messergebnisse ergaben sich mit einem Computer, der mit einer NVIDIA GTX 970 Grafikkarte und einer intel Xeon E3-1230 v3 CPU ausgestattet war.
+%
+%Wie bereits erwähnt zeichnen sich Shader, die mit der Unreal Engine programmiert wurden, durch eine besonders gute Portabilität aus. Deswegen konnte der Prototyp ohne Umstände auf einem Laptop, der keine separate Grafikkarte besitzt, getestet werden. Es handelte sich dabei um ein \textit{ThinkPad X240}, das mit einer \textit{Intel Core i5-4210U}-CPU ausgestattet war.
+%
+%
+%\clearpage
+%Der Prototyp lief mit über 30 Bildern pro Sekunde auf diesem Testgerät. Die Messergebnisse werden in Tabelle \ref{ThinkPad} aufgelistet.
+%
+%
+%\begin{table}[]
+%\centering
+%\caption{Die Verarbeitungsdauer der Shader-Pipeline auf einem etwas schwächerem Gerät.}
+%\label{ThinkPad}
+%\begin{tabular}{@{}ll@{}}
+%\toprule
+%                                & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=256$\end{tabular} \\ \midrule
+%                                & 1,89 ms                                                                \\
+%                                & 1,43 ms                                                               \\
+%                                & 1,30 ms                                                                \\
+%                                & 1,41 ms                                                                                                                               \\
+%                                & 1,85 ms                                                                                                                               \\
+%                                & 1,86 ms                                                                                                                               \\
+%                                & 1,76 ms                                                                                                                               \\
+%                                & 1,32 ms                                                                                                                               \\
+%                                & 1,91 ms                                                                                                                               \\
+%                                & 1,32 ms                                                                                                                               \\ \midrule
+%\multicolumn{1}{l|}{Mittelwert in ms} & 1,605                                                               \\
+%\multicolumn{1}{l|}{Streuung in ms}   & 0,2682                                                             
+%\end{tabular}
+%\end{table}

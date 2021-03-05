@@ -1,0 +1,76 @@
+% -------------------------------------------------------
+% Daten für die Arbeit
+% Wenn hier alles korrekt eingetragen wurde, wird das Titelblatt
+% automatisch generiert. D.h. die Datei titelblatt.tex muss nicht mehr
+% angepasst werden.
+
+\newcommand{\hsmasprache}{de} % de oder en für Deutsch oder Englisch
+
+% Titel der Arbeit auf Deutsch
+\newcommand{\hsmatitelde}{Chirurgische Simulationen in VR mit Position Based Dynamics und Game Engines}
+
+% Titel der Arbeit auf Englisch
+\newcommand{\hsmatitelen}{Surgery simulations in VR with Position Based Dynamics and game engines}
+%implementation of a buoyancy simulation and an interactive fluid surface for video games
+
+% Weitere Informationen zur Arbeit
+\newcommand{\hsmaort}{Heidelberg}    % Ort
+\newcommand{\hsmaautorvname}{Maximilian} % Vorname(n)
+\newcommand{\hsmaautornname}{Legnar} % Nachname(n)
+\newcommand{\hsmadatum}{01.11.2020 - 30.04.2021} % <----------Datum der Abgabe
+\newcommand{\hsmajahr}{2021} % Jahr der Abgabe
+\newcommand{\hsmafirma}{Ruprecht-Karls-Universität Heidelberg} % Firma bei der die Arbeit durchgeführt wurde
+\newcommand{\hsmabetreuer}{Prof. Dr. Jürgen Hesser} % Betreuer an der Hochschule
+\newcommand{\hsmazweitkorrektor}{Prof. Dr. XXX} % Betreuer im Unternehmen oder Zweitkorrektor
+\newcommand{\hsmafakultaet}{I} % I für Informatik
+\newcommand{\hsmastudiengang}{MEB} % IB IMB UIB IM MTB
+
+% Zustimmung zur Veröffentlichung
+\setboolean{hsmapublizieren}{true}   % Einer Veröffentlichung wird zugestimmt
+\setboolean{hsmasperrvermerk}{false} % Die Arbeit hat keinen Sperrvermerk
+
+% -------------------------------------------------------
+% Abstract
+
+% Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
+\newcommand{\hsmaabstractde}
+{
+
+Ziel: Potential von PBD für serious games für chirurgischen Bereich untersuchen. Kann mit handelsüblichen VR Geräten realistische Operations-Szenarien nachgebildet werden?
+
+NVIDIA Flex wird mit Spiele Engine (Unreal Engine) um Funktionalitäten erweitert, die für Serious Games benötigt werden, ohne Flex-Bibliothek zu verändern.
+
+(Brücke zwischen PnysX und Flex hergestellt...)
+
+Use Case in dieser Arbeit: Werkzeuge können in VR mit virtuellen Händen aufgehoben und benutzt werden. Mit Werkzeugen können soft bodies manipuliert werden und virtuelle Operationen durchgeführt werden. Werkzeuge: Nadel und Pinzette.
+
+Nadel-Gewebe-Interaktionen untersucht. Wie kann man das mit dem gegebenen Modell gut erreichen?
+
+%Basierend auf Reynolds Boid-System \cite{Reynolds87flocks} wird ein Modell für die Simulation von Tierschwärmen entwickelt. Wesentlicher Fokus liegt dabei auf lebendig wirkende Schwarmbewegungen, interaktives Verhalten und Performance. 
+%
+%Statt den simulierten Schwarm wie ein Partikelsystem zu behandeln, wird Reynolds Boid-Modell in ein Zellensystem, das mit den zellulären Automaten verwandt ist, transferiert. Diese Anpassung wird vorgenommen, damit die Simulation von herkömmlichen Shadern ausgeführt werden kann.
+%
+%Das Simulationsmodell unterteilt den Schwarm nicht in einzelne separate Individuen. Stattdessen ist der Schwarm eine im Raum ungleichmäßig verteilte Menge.
+%Der Schwarm wird daher als leuchtende Punkte-Wolke, von einer Textur dargestellt.
+%
+%Die konzipierte Schwarmsimulation wird mittels Content-Driven Multipass Rendering prototypisch implementiert und in Echtzeit ausgeführt.
+
+
+
+
+%Im erstem Teil der Arbeit wird eine Auftriebssimulation für Videospiele entwickelt, um 3D-Modelle auf Wasserflächen schwimmen lassen zu können. Das zugrundeliegende mathematische Modell diese Simulation basiert auf dem archimedischem Prinzip. Die Auftriebssimulation wird mit der Unreal Engine 4 implementiert und ihre integrierte Physik Engine, nvidia PhysX3.3, wird genutzt um Auftriebskräfte auf virtuelle Schwimmkörper wirken zu lassen, welche einem 3D-Modell zugeordnet werden.
+%
+%Im zweitem Teil der Arbeit wird eine interaktive Wasseroberfläche für Videospiele entwickelt. Lösungsansatz ist hierbei das sogenannte \glqq IWave-Verfahren\grqq{} \cite{tessendorf}. Dieses Verfahren wird mit der Unreal Engine 4 und einer Technik namens \glqq Content Driven Multipass Rendering\grqq{} umgesetzt.
+
+%\cite{tessendorf}
+}
+
+% Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Englisch
+
+\newcommand{\hsmaabstracten}
+{
+ ... Abstract in English kommt hier hin...
+}
+
+
+

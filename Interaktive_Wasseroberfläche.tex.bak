@@ -1,0 +1,290 @@
+\chapter{ht2}
+
+%
+%\label{chap_IWave}
+%\section{Begleitendes Videomaterial}
+%Begleitend zu Kapitel \ref{chap_IWave} wurden dieser Arbeit zwei Präsentations-Videos namens \textit{\glqq IWaveSplat\grqq{}} und \textit{\glqq IWaveSteps\grqq{}} hinzugefügt. In diesen Videos wird kurz gezeigt was mit der implementierten Wasserfläche alles möglich ist und wie sie in Aktion aussieht.
+%
+%\section{Das IWave Verfahren} % nicht auf die Formeln eingehen, sondern eine Übersicht geben
+%\label{Kap_IWave}
+%Um eine interaktive Wasserfläche in Echtzeit zu simulieren, wird das sogenannte \textit{IWave}-Verfahren von Tessendorf verwendet. Ansatz sind hierbei die Navier Stokes Gleichungen für inkompressible Fluide, die das grundlegende mathematische Modell in der Strömungsmechanik sind. Diese Gleichungen werden in \cite{tessendorf} schritt für schritt vereinfacht um schlussendlich auf eine Gleichung zu kommen, die die Wellenbewegungen einer Wasseroberfläche ausreichend genau beschreibt und numerisch gelöst werden kann.
+%
+%\begin{equation}
+%\frac{\delta^2 h(x,y,t)}{\delta^2 t} + \alpha \frac{\delta h(x,y,t)}{\delta t} = -g \sqrt{-\triangledown^2}h(x,y,t)
+%\label{IWave}
+%\end{equation}
+%
+%Gleichung \ref{IWave} beschreibt die Bewegung der Wellen auf einer Wasseroberfläche, wobei $h(x,y,t)$ die Höhe an einer Stelle zu einem Zeitpunkt ist. Der linke Term ist die vertikale Beschleunigung einer Welle und der Zweite Term, mit der Konstante $\alpha$, hat eine dämpfende Wirkung auf die Wellenbewegungen. 
+%
+%Der Term $\sqrt{-\triangledown^2}$ ist ein Massenerhaltungsoperator und wird auch als vertikale Ableitung bezeichnet. Er sorgt dafür, dass das Wasservolumen stets konstant bleibt, wenn Wellen generiert werden. Dieser Term kann auf effiziente Weise mit einer Faltungsoperation berechnet werden \cite{tessendorf}:
+%
+%\begin{equation}
+%\sqrt{-\triangledown^2}h(i,j) = \sum\limits_{k=-P}^P \sum\limits_{l=-P}^P G(k,l) h(i+k,j+l)
+%\label{FaltungFormel1}
+%\end{equation}
+%
+%Wobei die Kernfunktion $G$ rotationssymmetrisch ist, was ausgenutzt werden kann um die Faltung weiter zu vereinfachen (Mehr dazu in Kapitel \ref{kap_Faltung}).
+%
+%
+%Die endgültige numerische Lösung von Gleichung \ref{IWave} sieht schlussendlich wie folgt aus \cite{Gems4}:
+%
+%\begin{equation}
+%h(i,j,t + \Delta t) = h(i,j,t) \frac{ 2- \alpha \Delta t }{1 + \alpha \Delta t} -  \frac{h(i,j,t - \Delta t)}{1+ \alpha \Delta t} - \frac{g \Delta t^2}{1 + \alpha \Delta t} \cdot \sqrt{-\triangledown^2}h(i,j)
+%\label{IWaveUpdate}
+%\end{equation}
+%
+%Für die Simulation sollte ein Zeitschritt $\Delta t$ etwa $1/60$ Sekunden betragen um eine möglichst flüssig aussehende Animation zu erhalten. Als nächstes wird Formel \ref{IWaveUpdate} in einzelne Arbeitsschritte unterteilt, um das IWave-Verfahren in der UE4 per \ac{CDMR}-Technik umzusetzen.
+%
+%
+%\section{Implementierung des IWave-Verfahrens mit UE4}
+%
+%\subsection{Überblick}
+%\label{IwaveUeberblick}
+%
+%Mithilfe der Multipass Rendering-Technik (Siehe Kapitel \ref{kap_CDMR}) und der Unreal Engine 4 soll Gleichung \ref{IWave} zum Großteil von der Grafikkarte gelöst werden. Dafür wird eine Shader-Pipeline erstellt, die Formel \ref{IWaveUpdate} Schritt für Schritt berechnet. Jeder Arbeitsschritt wird von einem Shader-Programm bewältigt. Das Höhenfeld der Wasseroberfläche, $h(x,y,t)$, wird dabei von einer 256 mal 256 Pixel großen Render Target-Textur namens \textit{\glqq H\grqq{}} repräsentiert.
+%
+%Das IWave-Verfahren besteht im Wesentlichen aus drei Arbeitsschritten:
+%
+%\begin{enumerate}
+%  \item Aktuelle Wasseroberfläche, $H$, mit Kernfunktion, $G$, falten um die vertikale Ableitung, $\sqrt{-\triangledown^2}$, zu erhalten.
+%  \item Nächsten Zeitschritt nach Gleichung \ref{IWaveUpdate} berechnen und $H$ aktualisieren.
+%  \item $H_{pref}$ aktualisieren.
+%\end{enumerate}
+%
+%Dabei behalte man im Hinterkopf, dass jede genannte Variable eine Textur ist.
+%
+%\clearpage
+%Aus den drei Arbeitsschritten entstehen in der Unreal Engine vier Shader-Programme und fünf Render Target-Texturen. All diese Objekte bilden zusammen eine Shader-Pipeline, um den IWave-Algorithmus von der GPU ausführen zu lassen. Abbildung \ref{ShaderPipeline} vermittelt einen Überblick von dieser Shader-Pipeline.
+%
+%\bild{ShaderPipeline}{14cm}{Diese Shader-Pipeline setzt das IWave-Verfahren auf der GPU um. Die vier Kreise repräsentieren jeweils ein Shader-Programm, während die rechteckigen Objekte Render Target-Texturen darstellen. Die Shader werden nacheinander von links nach rechts ausgeführt.
+%}
+%
+%Ob eines der rund umrahmten Shader-Programme eine rechteckige Textur ausliest oder beschreibt, kann an den Pfeilrichtungen erkannt werden. Zeigt ein Pfeil auf einen Shader, wird die angehängte Textur ausgelesen. Zeigt der Pfeil in die andere Richtung, speichert ein Shader seine Berechnungen in die Textur auf die der Pfeil zeigt. 
+%
+%Der erste Arbeitsschritt wird vom Shader namens $M_{Convolve}$ bewältigt. Dieser Shader greift auf die Wasserhöhen-Textur, $H$ und der Kernfunktion $G$ zu. Die beiden Texturen werden möglichst effizient miteinander gefaltet und das Faltungsergebnis wird in eine Rendertarget-Textur namens \textit{VD} gespeichert. \textit{VD} steht für \textit{\glqq Vertical Derivative\grqq{}} und hat die selbe Auflösung wie $H$. Dieser Arbeitsschritt, also die Faltung, ist der \glqq Flaschenhals\grqq{} der Shader-Pipeline, er ist also besonders rechenintensiv. Deswegen werden in Kapitel \ref{kap_Faltung} einige Optimierungen vorgenommen, damit $M_{Convolve}$ die Faltung möglichst schnell durchführt. 
+%
+%Nach der Berechnung der vertikalen Ableitung, \textit{VD}, kann prinzipiell die Berechnung des nächsten Zeitschritts nach Formel \ref{IWaveUpdate} erfolgen. Diese Arbeit übernimmt ein Shader namens $M_{Update_H}$. Allerdings kann ein Shader-Programm nicht in die selbe Render Target-Textur schreiben, welche es zugleich ausliest. Deswegen wird davor eine Kopie von $H$ erstellt und in $H_{temp}$ gespeichert. Diese Arbeit übernimmt der Shader $M_{Save_H}$. Erst danach kann die aktuelle Wasseroberflächenform mit Formel \ref{IWaveUpdate} berechnet und in $H$ gespeichert werden.
+%
+%Als letztes wird $H$ in eine Textur namens $H_{pref}$ gespeichert, um $h(t - \Delta t)$ zu erhalten.
+%
+%
+%Sobald ein 3D-Modell eine Kraft auf die simulierte Wasserfläche ausüben soll, werden einige Werte zur Textur $H$ addiert. Eine spontane Veränderung des Höhenfeldes ist wie wenn ein Teil der Wasserfläche beschleunigt werden würde, weil zum Beispiel ein Stein in das Wasser geworfen wurde. Solch eine Beschleunigung wird je nach Flächengröße, Flächenform und Beschleunigungsstärken unterschiedlichste Wellenformationen auslösen.
+%
+%\subsection{Bildung der Kernfunktion} %fertig
+%\label{kap_Kernfunktion}
+%Zur Bildung der Kernfunktion wird die folgende Formel verwendet \cite{Gems4}:
+%
+%\begin{equation}
+%G(k,l) = \sum\limits_{n=1}^{10000} q_n^2  \exp(- \sigma q_n^2)J_0(q_n \sqrt{k^2+l^2}) / G_0
+%\label{Kern}
+%\end{equation}
+%
+%Die Konstante $G_0$ dient dazu, die Funktion zu normieren, so das $G(0,0)=1$. Eine weitere Besonderheit ist die Verwendung der Bessel-Funktion ersten Grades, $J_0$. Als Bessel-Funktion wurde eine angenäherte Polynomfunktion aus \cite{HandBook} verwendet und per HLSL implementiert.
+%
+%Die Kernfunktion ist eine rotationssymmetrische Fläche im dreidimensionalem Raum und kann daher von einer Textur repräsentiert werden. Die Berechnung der Funktion muss nur einmalig erfolgen und wird dann in einer Render Target-Textur gespeichert. Diese Textur wird später von dem Shader, der die Faltung durchführt, ausgelesen.
+%
+%
+%\clearpage
+%Die Kernfunktion $G$ wird während einer Initialisierung von einem Shader-Programm nach Gleichung \ref{Kern} generiert und im Render Target $G$ abgespeichert. Die generierte Textur sieht wie folgt aus:
+%
+%\bild{GTextur}{7cm}{Unten wird $G$ als Textur abgebildet. Weil $G$ rotationssymmetrisch ist, genügt es, ein Viertel der Kernfunktion zu berechnen und in $G$ zu speichern. Aus den jeweiligen Farbwerten der Textur lässt sich der obere Graph generieren. Dimensionen und Form dieses Graphen stimmen mit der Vorlage aus \cite{Gems4} überein. 
+%}
+%
+%Der Uhrsprung der rotationssymatrischen Kernfunktion befindet sich oben links in der Textur. Dort befindet sich auch das Maximum von $G$, weswegen hier die hellste Farbe zu sehen ist. Die Auflösung der $G$-Textur beträgt 8 mal 8 Pixel. Daher beträgt der maximale Faltungsradius 7. Laut \cite{Gems4} hat sich ein Faltungsradius von 6 als optimal erwiesen, was Simulationsgenauigkeit und Berechnungsaufwand angeht. Im Rahmen dieser Studienarbeit wurde daher stets dieser Faltungsradius verwendet. 
+%
+%\subsection{Berechnung der vertikalen Ableitung} 
+%\label{kap_Faltung}
+%
+%\subsubsection{Faltung von Texturen}
+%
+%Die vertikale Ableitung von $H$ kann berechnet werden, indem $H$ mit der Kernfunktion $G$ (Siehe Kapitel \ref{kap_Kernfunktion}) gefaltet wird.
+%Wie bereits in Kapitel \ref{IwaveUeberblick} angedeutet, kann die Faltung mit Gleichung \ref{FaltungFormel1} erfolgen. Das Falten einer Höhentextur mit einer anderen Textur als Kernfunktion, kann also wie folgt verstanden werden:
+%
+%In Abbildung \ref{BildtexturFaltung} sei eine 3 mal 3 große Textur als Kernfunktion namens $G$ gegeben. Der Faltungsradius $P$ ist in diesem Fall somit 1. Die zu faltende Textur heißt $H$ und das Ergebnis der Faltung wird in eine Textur namens \textit{VD} geschrieben.
+%
+%\bild{BildtexturFaltung}{10cm}{In dieser Abbildung wird eine Faltungsoperation an der Stelle $(i,j)$ von $H$ durchgeführt. Das Ergebnis wird in die gelb markierte Textur namens \textit{VD} geschrieben.
+%}
+%
+%Wenn ein Pixel von $H$ an der Stelle $(i,j)$ gefaltet werden soll, kann man sich vorstellen, man schiebe den Mittelpunkt der Kernfunktion, $G(0,0)$, über $H(i,j)$. So ist $G$ auch in Abbildung \ref{BildtexturFaltung} ausgerichtet. Dann gibt es für jeden Pixel von $G$ ein gegenüberliegendes Pixel von $H$. Es existieren in diesem Fall also 3 mal 3, also 9 gegenüberliegende Pixelpaare. Nun werden 9 Produkte aus den jeweiligen Pixelpaaren gebildet. Dann wird die Summe aus diesen 9 Produkten gebildet, um somit auf das Endergebnis zu kommen. Das Ergebnis wird dann in \textit{VD} in die Stelle $(i,j)$ geschrieben. Abbildung \ref{BildtexturFaltung} visualisiert im Grunde Formel \ref{FaltungFormel1}.
+%
+%Diese Operationen werden für alle Pixel von $H$ durchgeführt. Bei der Berechnung eines Pixels, welches sich am Rand von $H$ befindet, wird nur der Teil von $G$ verrechnet, der mit $H$ überlagert ist. In solch einem Fall werden also weniger Produkte gebildet und miteinander summiert.
+%
+%Der Rechenaufwand ist vom Faltungsradius $P$ und von der Größe von $H$ abhängig. Für die Faltung eines Pixels werden $(2 \cdot P +1)^2$ Multiplikationen und $(2 \cdot P +1)^2 - 1$ Additionen benötigt.
+%
+%\subsubsection{Vereinfachungen}
+%
+%Die Faltung ist der aufwändigste Arbeitsschritt des \textit{IWave}-Verfahrens. Deswegen sollte die Faltung möglichst effizient durchgeführt werden.
+%
+%Die Kernfunktion $G$ ist um ihre Z-Achse rotationssymmetrisch und in ihrem Uhrsprung hat Sie den Wert Eins. Dieser Umstand kann ausgenutzt werden, um die Anzahl der nötigen Rechenschritte zu verringern.
+%
+%\bild{GSchematisch}{8cm}{
+%Eine schematische Darstung von $G$. Es wird nur etwas mehr als ein Viertel der Kernfunktion gezeigt. Die in den Kästchen zu sehenden Zahlenwerte sind der Radius $r = \sqrt{x^2+y^2}$. Weil $G$ rotationssymmetrisch ist, ist $G$ im Grunde nur von $r$ abhängig. Überall dort, wo $r$ gleich ist, wird $G$ auch den Selben Wert haben. Dieser Umstand kann ausgenutzt werden.
+%}
+%
+%In Abbildung \ref{GSchematisch} ist ein Viertel von $G$ schematisch abgebildet. Eine Stelle $(x,y)$ von $G$ lässt sich auch mit $r = \sqrt{x^2+y^2}$ beschreiben. $G$ ist im Grunde nur von einem Radius $r$ abhängig, wegen seiner Rotationssymmetrie. Die in den Kästchen eingetragenen Zahlen markieren nicht Werte der Funktion, sondern Stellen, als Radius ausgedrückt. Jedes Kästchen, aus Abbildung \ref{GSchematisch}, sei ein Pixel. Der weiß markierte Pixel ist der Uhrsprung der Kernfunktion, hier ist $r=0=\sqrt{0^2+0^2}$.  Weil $G$ rotationssymmetrisch ist, reicht es, nur ein Achtel der Funktion genauer zu betrachten. Nur in diesem Bereich hat $G$ einzigartige Werte. Das betrachtete Achtel ist in Abbildung \ref{GSchematisch} rot umrahmt.
+%
+%Alle in Abbildung \ref{GSchematisch} farblich markierten Bereiche tragen zur Vereinfachung von Formel \ref{FaltungFormel1} bei. Es lassen sich also 4 Vereinfachungen treffen. Mit diesen Vereinfachungen lässt sich eine effizientere Formel für die Faltung bilden. Die gesuchte Formel hat die folgende Form:
+%
+%\begin{equation}
+%\sqrt{-\triangledown^2}h(i,j) = A + B + C + D
+%\label{KernEinfachRoh}
+%\end{equation}
+%
+%Die Terme $A$,$B$,$C$ und $D$ entspringen aus den 4 farblich markierten Bereichen der Kernfunktion aus Abbildung \ref{GSchematisch}.
+%
+%Der Term $A$ entsteht durch Betrachtung des weißen Pixels aus Abbildung \ref{GSchematisch}.
+%Bei der Produktbildung aus $H(0,0)$ und $G(0,0)$ kann eine Multiplikation gespart werden, weil $G(0,0) = 1$ und daher $H(0,0) \cdot G(0,0) = H(0,0)$ ist. somit gilt für $A$:
+%
+%\begin{equation}
+%A = H(0,0)
+%\label{A}
+%\end{equation}
+%
+%Für den blau markiertem Bereich der Kernfunktion (Abbildung \ref{GSchematisch}) gilt folgende Regel: 
+%
+%\begin{equation}
+%G(x,x) = G(-x,-x) = G(-x,x) = G(x,-x) = G(r = \sqrt{2 \cdot x^2})
+%\label{RegelBlau}
+%\end{equation}
+%
+%An einer Stelle $r=\sqrt{\pm x^2 \pm x^2}$ wäre laut Formel \ref{FaltungFormel1} normalerweise die folgende Rechnung nötig um die Faltung durchzuführen:
+%
+%\begin{equation}
+%H(x,x) \cdot G(x,x) + H(-x,-x) \cdot G(-x,-x) + H(-x,x) \cdot G(-x,x) + H(x,-x) \cdot G(x,-x)
+%\end{equation} 
+%
+%Dieser Rechenschritt lässt sich aber mit Regel \ref{RegelBlau} vereinfachen zu:
+%
+%\begin{equation}
+%G(r=\sqrt{2 \cdot |x|^2}) \cdot [H(x,x) + H(-x,-x) + H(-x,x) + H(x,-x)] 
+%\label{VereinfachungBlau}
+%\end{equation}
+%
+%Damit lassen sich für jedes blaue Pixel, das sich im betrachtetem Achtel von $G$ befindet, 3 Multiplikationen einsparen. Das sind insgesamt $3 \cdot 6 = 18$ weniger Multiplikationen als zuvor. Diese Vereinfachung wird in $B$ zusammengefasst:
+%
+%\begin{equation}
+%B = \sum\limits_{x=1}^P G(r=\sqrt{2 \cdot x^2}) \cdot [H(x,x) + H(-x,-x) + H(-x,x) + H(x,-x) ]
+%\label{B}
+%\end{equation}
+%
+%Für den grünen Bereich aus Abbildung \ref{GSchematisch} gilt diese Regel: 
+%
+%\begin{equation}
+%G(x,0) = G(0,x) = G(-x,0) = G(0,-x)
+%\label{VereinfachungGruen}
+%\end{equation}
+%
+%Deswegen lässt sich die folgende Rechnung:
+%
+%\begin{equation}
+%H(x,0)G(x,0) + H(0,x)G(0,x) + H(-x,0)G(-x,0) + H(0,-x)G(0,-x) 
+%\end{equation}
+%
+%vereinfachen zu:
+%
+%\begin{equation}
+%G(r=|x|) \cdot [H(x,0) + H(0,x) + H(-x,0) + H(0,-x)]
+%\end{equation}
+%
+%Diese Vereinfachung wird über Term $C$ aus Gleichung \ref{KernEinfachRoh} ausgedrückt:
+%
+%\begin{equation}
+%C = \sum\limits_{x=1}^P G(r=x) \cdot [H(x,0) + H(0,x) + H(-x,0) + H(0,-x)]
+%\label{C}
+%\end{equation}
+%
+%Wie bei $B$ auch, können mit Term C 18 Multiplikationen eingespart werden.
+%
+%Als letztes wird der gelbe Bereich aus Abbildung \ref{GSchematisch} genauer betrachtet. Der gelbe Bereich lässt sich 8 mal in der gesamten  Kernfunktion finden. Für den gelben Bereich gilt die Regel:
+%
+%\begin{equation}
+%G_{(x,y)} = G_{(-x,-y)} = G_{(-x,y)} = G_{(x,-y)} = G_{(y,x)} =  G_{(-y,-x)} = G_{(-y,x)}  = G_{(y,-x)} 
+%\label{VereinfachungGelb}
+%\end{equation}
+%
+%Also lässt sich folge Rechnung vereinfachen:
+%
+%\begin{equation}
+%HG_{(x,y)} + HG_{(-x,-y)} + HG_{(-x,y)} + HG_{(x,-y)} + HG_{(y,x)} + HG_{(-y,-x)} + HG_{(-y,x)} + HG_{(y,-x)}
+%\end{equation}
+%
+%wobei mit $ HG_{(x,y)}$ das Produkt aus $H_{(x,y)}$ und $G_{(x,y)}$ gemeint ist. Laut \ref{VereinfachungGelb} lässt sich diese Rechnung zusammen fassen zu:
+%
+%\begin{equation}
+%G(x,y) \cdot H_i
+%\label{gelbform}
+%\end{equation}
+%
+%mit:
+%
+%\begin{equation}
+%H_{i} = H_{(x,y)} + H_{(-x,-y)} + H_{(-x,y)} + H_{(x,-y)} + H_{(y,x)} + H_{(-y,-x)} +H_{(-y,x)} +H_{(y,-x)}
+%\label{HI}
+%\end{equation}
+%
+%Somit ergibt sich aus Formel \ref{gelbform} und dem Gelben Bereich für $D$:
+%
+%\begin{equation}
+%D = \sum\limits_{x=1}^P \sum\limits_{y=x+1}^P  G(x,y) \cdot H_{i}
+%\label{D}
+%\end{equation}
+%
+%Mit dieser Vereinfachung lassen sich pro gelben Pixel 7 Multiplikationen einsparen. Im einzigartigem Achtel von $G$ gibt es 15 gelbe Pixel. Somit lassen sich mit Term $D$ insgesamt $15 \cdot 7 = 105$ Multiplikationen einsparen.
+%
+%Insgesamt benötigt die Faltung eines Pixels mit den soeben getroffenen Vereinfachungen zwar genau so viele Additionen, aber 142 Multiplikationen weniger als zuvor. Mit Formel \ref{FaltungFormel1} sind 169 Multiplikationen nötig, Formel \ref{KernEinfachRoh} benötigt hingegen nur 27 Multiplikationen.
+%Alle genannten Zahlen beziehen sich auf eine Faltung mit einem Faltungsradius von 6.
+%
+%Weil es bei der Bearbeitung dieser Studienarbeit an Fachwissen über hardwarenahe Shaderprogrammierung mangelte, konnten diese Vereinfachungen noch nicht in effizienter Weise implementiert werden. So konnte noch keine signifikant spürbare Geschwindigkeitsverbesserung mit diesen Vereinfachungen erreicht werden.
+%
+%
+%
+%
+%\section{Vergleich mit anderen Lösungen}
+%\label{sec_VergleichIWave}
+%
+%Wie in Kapitel \ref{chap_Einordnung} bereits erwähnt, wurde während der Bearbeitung dieser Studienarbeit eine andere Musterlösung für eine interaktive Wasserfläche von Epic Games, den Machern der Unreal Engine, veröffentlicht \cite{FluidSurface}. Bei dieser Lösung hat man sich auf das Wesentliche konzentriert und lediglich nach den richtigen mathematischen Operationen gesucht, um ringförmige, wellen-ähnliche Bewegungen in einer Höhentextur zu generieren.
+%
+%Soll bei diesem Ansatz eine kreisförmige Welle ausgelöst werden, wird zuerst ein weißer Punkt in die Höhentextur der Wasserfläche gezeichnet. Danach wird dieser Punkt Zeitschritt für Zeitschritt auseinander gezogen und so weiter verarbeitet, dass aus dem Punkt nach und nach ein sich ausbreitender, weißer Ring entsteht.
+%
+%\bild{splat}{14cm}{
+%Die animierte Höhentextur der interaktiven Wasseroberfläche von Epic Games.
+%}
+%
+%Der sich ausbreitende Ring aus Abbildung \ref{splat} ist wie eine positive, also nach oben ausgebeulte, Welle. Solch eine einzelne positive Amplitude erinnert allerdings noch nicht an eine echte Wasserwelle. Es fehlt noch ein abklingendes und schwingendes Verhalten. Deswegen wird zusätzlich dafür gesorgt, dass jede sich ausbreitende positive Amplitude, eine negative Amplitude hinter sich herzieht. Dies geschieht, vereinfacht ausgedrückt, indem die Höhentextur aus dem vorigem Zeitschritt, von der derzeitigen Höhentextur abgezogen wird. Die ältere Version eines Rings wird nämlich einen kleineren Radius als der derzeitige Ring besitzen, weil sich die Ringe mit der Zeit nach außen ausbreiten. Somit folgt jedem Ring seine eigene veraltete, negative Projektion. Außerdem wird dafür gesorgt, dass eine innere, umgekehrte Amplitude, immer etwas kleiner als dessen äußere, benachbarte Amplitude ist. Somit klingen die Wellen mit der Zeit ab.
+%
+%\subsection{Performance}
+%Mithilfe des in der Unreal Engine 4 integrierten GPU-Profilers kann gemessen werden, wie lange die Ausführung eines Shader-Programms dauert \cite{GPUProfiling}.
+%Mit diesem Profiler wird untersucht, welche der beiden Lösungsmethoden wie viel Zeit benötigt, um einen neuen Simulationszeitschritt zu berechnen. Tabelle \ref{MessergebnisseGTX} vergleicht die Performance des implementierten IWave-Verfahrens mit der Lösung von Epic Games.
+%
+%% Please add the following required packages to your document preamble:
+%% \usepackage{booktabs}
+%\begin{table}[h]
+%\centering
+%\caption{Performance-Messergebnisse der beiden konkurrierenden Flüssigkeitsflächen. Die Musterlösung von Epic Games ist deutlich schneller als das IWave-Verfahren. Es wurden jeweils 10 Messproben aufgenommen.}
+%\label{MessergebnisseGTX}
+%\begin{tabular}{@{}lll@{}}
+%\toprule
+%                                           & \textbf{IWave - Verfahren} & \textbf{Epic Games - Musterlösung} \\ \midrule
+%\multicolumn{1}{l|}{\textbf{Durchschnitt}} & 0,149 ms                   & 0,01 ms                            \\
+%\multicolumn{1}{l|}{\textbf{Streuung}}     & 0,0032 ms                  & keine Streuung messbar             \\ \bottomrule
+%\end{tabular}
+%\end{table}
+%
+%Die in Tabelle \ref{MessergebnisseGTX} zu sehenden Messergebnisse ergaben sich mit einem Computer, der mit einer NVIDIA GTX 970 Grafikkarte und einer intel Xeon E3-1230 v3 CPU ausgestattet war. Es wurden jeweils 10 Messproben genommen. 
+%
+%Die Musterlösung von Epic Games wurde in diesem Fall nahezu 15 mal schneller als das IWave-Verfahren abgearbeitet. Beide Verfahren arbeiteten mit einer 256 mal 256 Pixel großen Höhentextur. Das IWave-Verfahren arbeitet mit kleineren Texturen auffällig schneller, während die Musterlösung von Epic Games nahezu mit unveränderter Geschwindigkeit arbeitet, unabhängig davon, wie hoch die Höhentextur aufgelöst ist.
+%
+%
+%\subsection{Aussehen der Wellenformen}
+%
+%Ein auffälliger Unterschied zwischen den beiden Wellenflächen, ist das Aussehen ihrer Schleppen. Sogenannte Wellenschleppen sind Wellenformationen, die entstehen wenn sich beispielsweise ein Motorboot durch das Wasser bewegt.
+%
+%\bild{IWaveVSEpic}{14cm}{
+%Die Wellenschleppen der beiden Lösungen im Vergleich. Im Oberen Bild handelt es sich um das IWave-Verfahren. Darunter ist die Lösung von Epic Games zu sehen. Mit beiden Lösungsmethoden lassen sich Wellenschleppen erzeugen.
+%}
+%
+%Wie man in Abbildung \ref{IWaveVSEpic} erkennen kann, können mit beiden Verfahren  Wellenschleppen generiert werden. Diese Schleppen werden erzeugt, wenn ein weißer Punkt durch die Höhentexturen der Wasserflächen hindurch bewegt wird. 
+%
+%Bei der Musterlösung von Epic Games lassen sich, im Gegensatz zum IWave-Verfahren, stets nebeneinander verteilte, ringförmige Wellen in den Schleppen ausmachen. Dies liegt vermutlich an der Tatsache, dass hier bei jedem Zeitschritt eine neue ringförmige Welle ausgelöst wird. Weil alle Wellen summiert werden, entstehen auch hier ansehnliche Wellenschleppen, bei genauerer Betrachtung lassen sich aber stets die einzelnen generierten Ringwellen erkennen. 
+%
+%Beim IWave-Verfahren verhält sich ein wandernder Punkt in der Höhentextur wie eine wandernde Kraft, die auf die simulierte Wasserfläche wirkt. Wenn ein Punkt im nächstem Zeitschritt verschoben wurde, wird hier die gesamte Veränderung der Wasserform wahrgenommen und in den Simulationsberechnungen berücksichtigt. Die entstehende Bewegung der Wasseroberfläche wird mithilfe eines physikalischen Modells berechnet. Daher lassen sich beim IWave-Verfahren nur selten überlagerte Kreiswellen ausmachen.
