@@ -2,75 +2,228 @@
 \chapter{NVIDIA FleX und Unreal Engine 4 für Serius Games}
 \label{chap_Flex_Engine}
 
-Hier kurz erläutern was das is, was das kann usw...
+In diesem Kapitel wird die verwendete Unreal Engine 4 mit FleX-integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
 
-\section{Evaluation}
+Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serius Games unverzichtbar ist, wird direkt präsentiert, wie die fehlende Funktionalität implementiert wurde.
 
-Die verwendete Unreal Engine 4 mit FleX-integration wird zunächst ausführlich evaluiert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im chirurgischen 
-% medizinischen?
-Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden sollten. 
+%nicht ändern, nur erweitern:
+%Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
+In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Unreal Integration. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
-\subsection{Performance}
+\subsubsection{Über Unreal Engine 4 mit Flex integration}
+
+Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA Flex 1.2. 
+
+% Funktionalitäten:
+So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA Flex, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygon-Modelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygon-Modelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt werden.
+
+% Doku und Lizenz:
+Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von github bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Source Code nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
+
+
+
+\section{Performance}
+
 
 %\subsubsection{NVIDIA FleX}
-NVIDIA FleX zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
+NVIDIA Flex zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
 
-So wirkt sich die Partikelanzahl weniger stark auf die Performance aus, wie der Partikelradius oder die Anzahl der verwendeten Constraints \cite{FlexD3D}. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
+So wirkt sich die Partikelanzahl weniger stark auf die Performance aus, wie der Partikelradius oder die Anzahl und komplexität der verwendeten Constraints \cite{FlexD3D}. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
 
-Außerdem kommt es  auf die Komplexität der verwendeten Constraints an. Die Constraints 
-\textbf{X, X und X} 
-sind beispielsweise deutlich rechenaufwändiger, als ein einfaches 
-\textbf{X-Constraint} 
-(siehe \cite{FlexD3D}).% und wirken sich daher stärker auf die Rechenzeit aus.
+%Die Constraints \textbf{X, X und X} sind beispielsweise deutlich rechenaufwändiger, als ein einfaches \textbf{X-Constraint} (siehe \cite{FlexD3D}).% und wirken sich daher stärker auf die Rechenzeit aus.
 
+Im Kapitel \ref{subsec_perf} wollen wir untersuchen, ob die Performance von Flex auch zusammen in einer komplexen Game Engine zufriedenstellend ist.
 
-%\subsubsection{Unreal Integration}
+\subsubsection{Test Hardware}
 
-Zunächst wollen wir untersuchen, ob die Performance von Flex auch zusammen in einer Game Engine zufriedenstellend ist.
+Für diese Arbeit und für alle durchgeführten Messungen und Tests stand die Hardware aus Tabelle \ref{table_hardware} zur Verfügung.
 
-Für chirurgische Simulationen sind vor allem Soft Bodies interessant. Daher wurde eine Szene simuliert, in der sich ausschließlich Soft Bodies befinden. Dabei haben sich die Messdaten aus Abbildung \ref{PerfGTX1} ergeben.
+\clearpage
+
+\begin{table}[]
+\caption{Die verwendete Hardware für diese Arbeit.}
+\label{table_hardware}
+\begin{tabular}{l|l}
+ \hline
+CPU & Intel Core i7-9700K  \\ \hline
+GPU & NVIDIA GTX 1070 - 8GB GDDR5      \\ \hline
+RAM & 4 x 8GB DDR4            \\ \hline
+\end{tabular}
+\end{table}
+
+Die verwendete Grafikkarte gehört zur vorletzten Generation der NVIDIA Grafikkarten und ist somit weniger aktuell und nicht übermäßig stark.
+
+%% Please add the following required packages to your document preamble:
+%% \usepackage{booktabs}
+%\begin{table}[]
+%\centering
+%\caption{Einige Boid-Erhaltungsmessungen. Der Verlust von Boids konnte eindeutig nachgewiesen werden. Vor allem bei der Verteilung in zwei Zellen traten massive Verluste auf. }
+%\label{Erhaltungsmessungen}
+%\begin{tabular}{@{}llll@{}}
+%\toprule
+%\begin{tabular}[c]{@{}l@{}}Anzahl der\\ Wahrnehmungsvektoren\end{tabular} & Transportmethode                                                               & \begin{tabular}[c]{@{}l@{}}absoluter \\ Verlust\end{tabular} & \begin{tabular}[c]{@{}l@{}}prozentualer\\ Verlust\end{tabular} \\ \midrule
+
+\subsubsection{Test Szenario}
+
+Für die Anwendungsfälle dieser Arbeit sind vor allem Soft Bodies interessant. Daher wird nun eine Szene simuliert, in der sich ausschließlich Soft Bodies befinden (siehe Abbildung \ref{PerfGTX1Scene}). 
+
+\bild{PerfGTX1Scene}{12cm}{In der Testszene befinden sich mehrere unterschiedliche Soft Bodies, die eine Treppe hinunter rollen.}
+
+Die simulierten Körper kollidierten und verformten sich dabei stets augenscheinlich realistisch.
+
+Folgenden Simulationsparameter wurden eingesetzt (siehe Abbildung \ref{PerfGTX1Set}):
+
+\bild{PerfGTX1Set}{10cm}{Die verwendeten Simulationsparamer für die erste Testreihe.}
+
+Für alle Messungen wurde der Simulationsparameter \textit{Sleep Threshold} auf einen negativen Wert gesetzt, um zu verhindern, dass zu langsame Partikel von der Simulation ausgeschlossen werden.
+
+Alle Messungen wurden mithilfe des Befehls \textit{stat flex} ermittelt. In \cite{UE4FlexDoc} unter \url{gameworksdocs.nvidia.com/FleX/1.2/ue4_docs/FLEXUe4_Debug.html} kann nachgeschlagen werden, was die gemessenen und gezeigten Attribute bedeuten.
+
+\subsubsection{Messergebnisse}
+
+%Typische Frametime: 15 ms bis 17ms sind im 60 fps-Bereich (1000ms / 15 ms = 66,66… FPS)
+
+In Abbildung \ref{PerfGTX1} sind die Messdaten zu sehen, die sich ergaben.
 
 \bild{PerfGTX1}{14cm}{TEMP!!! Performance Messungen bei unterschiedlichen Partikelanzahlen mit einem Partikelradius von 10cm. Die durchschnittliche Solver Zeit steigt flach und linear mit der Partikelanzahl an.}
 
-LESEZEICHEN 
--> Hinweis, dass Messungen mit deaktiviertem sleep enthoben wurden!
+Zu den Messdaten sei gesagt, dass \textit{Solve Sync Time} mithilfe der CPU gemessen wurde. \textit{Solve Sync Time} repräsentiert also nicht nur die Zeit, die der Flex-Solver benötigt, sondern zusätzlich die CPU-GPU Synchronisierungszeit. Dennoch ist dies ein gutes Maß für die Performance von NVIDIA Flex. 
 
-%Kurz auf Flex 1.2 Präsentation aus GDC17 eingehen, wo auf performance mit D3D eingegangen wurde?
+Zur gemessenen Performance: 
+Die Messungen zeigen eindeutig, dass NVIDIA Flex besonders gut für Echtzeitanwendungen geeignet ist. Selbst bei 70000 simulierten Partikeln (134 Soft Bodies) benötigt der Flex Solver durchschnittlich nur 1 ms zum Lösen aller Constraints, wobei er maximal 2,5 ms benötigt, was immer noch im akzeptablen Bereich liegt. 
+
+In Abbildung \ref{PerfGTX1} zeigt die Linie \textit{SumAvg} an, wie lange der gesamte Simulationsprozess im Durchschnitt gedauert hat. Der gesamte Simulationsprozess ergibt sich aus den Zeiten der folgenden Arbeitsschritte, summiert (Abbildung \ref{PerfStats}):
+
+\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc}}
+
+Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit 120 \ac{FPS} gerendert werden, bei einer Auflösung von ca. 1080p. So ist noch ausreichend Luft für größere Auflösungen, die vor allem im für VR-Anwendungen benötigt werden. So wie in \cite{FlexD3D} bereits erwähnt, hat die Anzahl der simulierten Partikel einen geringen Einfluss auf die Geschwindigkeit des Solvers.
+
+%Auch wenn die Messungen viel versprechen, wird sich erst am Ende dieser Arbeit zeigen (siehe Kapitel \ref{chap_Szenarien}), ob NVIDIA Flex für Serius Games im chirurgischen Bereich geeignet ist.
+
+%% ----EVT TODO--------
+%Dann nochmal mit kleineren Partikeln und mehr substeps simulieren, weil das besser auf chirurges-szenario passt. In einigen anderen Arbeiten wurden ja auch recht kleine radi verwendet und mehr substeps usw (könnte man auch kurz drauf verweisen, auf diese paper und argumentieren das wir daher besser auf solche szenarien achten sollten)
+
+\section{Funktionalitäten}
+In der Einleitung von \cite{UE4FlexDoc} wird bereits darauf hingewiesen, dass die Unreal Integration noch nicht weit genug entwickelt ist, um Gameplay-beeinflussende Physikszenarios zu erstellen. In diesem Kapitel wird genauer untersucht, welche   Funktionalitäten  die Unreal Integration bereits bietet und welche noch fehlen. 
+%Hierfür gehen wir nach und nach alle funktionalen Anforderungen aus Kapitel \textbf{XXX} durch und kontrollieren, ob Anforderungen fehlen oder nur teilweise vorhanden sind.
+
+\subsection{Synchronisation mit Flex Simulation}
+
+\subsection{Transformationsmanipulationen}
 
 
-Dann Messungen präsentieren:
+Game Engines verfügen in der Regel über eine umfangreiche Bibliothek für Transformationsberechnungen. So können Punkte oder Richtungen mit homogenen Transformationen manipuliert und die Transformationsmatrizen von unterschiedlichen 3D-Objekten miteinander verrechnet werden.
+Dies ist eine wichtige Grundlage um 3D-Objekte bewegen, rotieren und skalieren zu können. 
 
-Dann nochmal mit kleineren Partikeln und mehr substeps simulieren, weil das besser auf chirurges-szenario passt. In einigen anderen Arbeiten wurden ja auch recht kleine radi verwendet und mehr substeps usw (könnte man auch kurz drauf verweisen, auf diese paper und argumentieren das wir daher besser auf solche szenarien achten sollten)
+Die Unreal Engine bietet hierfür den Datentyp \textit{FTransform} und die Bibliothek \textit{TransformCalculus.h} an. Jedes 3D-Objekt besitzt eine eigene Transformation, die zur Laufzeit manipuliert werden kann. Häufig werden die beiden Funktionen \textit{SetWorldTransform($T_{world}$)} und \textit{SetRelativeTransform($T_{relative}$)} genutzt um 3D-Objekte relativ zur Welt oder relativ zum derzeitigen Parent-Objekt zu bewegen.
+
+Bei der Unreal Engine mit Flex Integration wurde das Transformations-Framework nur teilweise für Flex-Objekte angepasst. Obwohl alle FlexComponents eine eigene Transformation vom Typ FTransform besitzen, kann diese weder relativ noch absolut gesetzt werden. Die beiden Funktionen \textit{SetWorldTransform()} und \textit{SetRelativeTransform()} haben keine Auswirkung auf FlexComponents.
+
+Diese wichtige Funktionalität muss also noch hinzugefügt werden. Dabei wollen wir das bereits bestehende Transformations-Framework der Unreal Engine nutzen.
+
+\subsubsection{\textit{SetWorldTransform()}}
+
+Um die Welt-Transformation eines Flex-Objekts zu ändern, müssen die Positionen all seiner Partikel mithilfe einer homogenen Transformationsmatrix, $T_{world}$, transformiert werden. Über die NVIDIA FleX Bibliothek können die lokalen Positionen, $\vec{p}_{local}$, der Partikel eines Flex-Assets 
+%(\textit{float* NvFlexExtInstance::NvFlexExtAsset::particles}) % das hier evt weg machen!!!!
+ermittelt werden. Das sind die lokalen Partikelpositionen des Flex-Assets, in seiner Ruheposition. Die neue Position, $\vec{p}_{new}$ eines Partikels ergibt sich dann mit Gleichung \ref{form_worldtransf}.
+
+\begin{equation}
+\vec{p}_{new} = T_{world} \cdot \vec{p}_{local}
+\label{form_worldtransf}
+\end{equation}
+
+Gleichung \ref{form_worldtransf} ist im Grunde nichts anderes als die Transformation eines Punktes vom Objekt-Koordinatensystem ins Weltkoordinatensystem. Im Rahmen dieser Arbeit hat es sich als hilfreich erwiesen, die Geschwindigkeiten der transformierten Partikel auf null zu setzen, um das versetzte Flex-Objekt sofort in einen ruhigen Simulationszustand zu versetzten. 
+
+Soll ein Flex-Objekt  über einen längeren Zeitraum entlang einer Trajektorie bewegt werden, ist es sinnvoll, die bewegten Partikel von der Flex-Simulation auszuschließen, indem ihre invertierten Massen auf null gesetzt werden. Dadurch sind die bewegten Partikel unendlich schwer und können nicht mehr von der Flex-Simulation bewegt werden \cite{PBD} \cite{UPP}. 
+
+Weil bewegte Partikel von der Simulation ausgeschlossen werden, erscheinen bewegte Weichkörper starr. Um bewegte Weichkörper weiterhin elastisch erscheinen zu lassen, wird nur eine Teilmenge der Partikel bewegt. Dann erscheint nur ein Teil des bewegten Körpers starr und der Rest bleibt elastisch und folgt den bewegten Partikeln.
+
+\subsubsection{\textit{SetRelativeTransform()}}
+
+Um ein Partikel relativ zu einer Parent-Szene zu bewegen (\textit{SetRelativeTransform()}), wird zunächst die allgemeine Situation aus Abbildung \ref{Transform1} betrachtet:
+
+% eventuel streichen!
+\bild{Transform1}{10cm}{Um ein Partikel mit $T_{rel}$ relativ zu \textit{ParentScene} zu transformieren, muss das Matrixprodukt aus der Welt-Transformation von \textit{ParentScene}, $T_{parent}$, und $T_{rel}$ gebildet werden.}
+
+Gegeben sei die Welt-Transformation einer Parent-Szene, $T_{parent}$ und die gewünschte Transformation, $T_{rel}$, die das Partikel relativ zur Parent-Szene einnehmen soll (siehe Abbildung \ref{Transform1}). Dann kann mit Gleichung \ref{form_reltransf} die neue Weltposition, $\vec{p}_{new}$, des Partikels berechnet werden.
+
+\begin{equation}
+\vec{p}_{new} = T_{parent} \cdot T_{rel} \cdot \vec{p}_{local}
+\label{form_reltransf}
+\end{equation}
+
+Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene Matrix-Vektor-Multiplikationen und sollten daher effizient von heutiger Hardware gelöst werden können. Außerdem kann die Berechnung der Partikelpositionen parallelisiert werden.
+
+\subsection{Attachment}
+
+%Soft joint gibts
+
+%RadialHardAttach-objekt
+
+%3D-modelle und ShapeComponents (box capsule sphere) lassen sich an FlexComponents befestigen, aber nicht einzelne partikel
+
+Für gewöhnlich arbeiten Game Engines mit sogenannten Scene Trees um 3D-Objekte hierarchisch zu organisieren (REFERENZ). Dabei repräsentiert jedes 3D-Objekt einen Knoten im Scene Tree. 3D-Objekte werden aneinander befestigt, so das sich eine Baumstruktur bildet, in der die Kinderobjekte an ihre Elternobjekte befestigt sind. Ändert sich die Transformation eines Elternknotens, bewegen sich all seine Kinderobjekte mit. 
+
+\bild{SceneTree}{10cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
+
+Die Struktur eines Scene Trees lässt sich zur Laufzeit eines Spiels ändern, indem 3D-Objekte per Funktionsaufruf von ihren Eltern gelöst (\textit{Detach()}) oder an andere 3D-Objekte befestigt (\textit{AttachTo(NewParent)}) werden. Diese beiden Funktionen werden in Computerspielen häufig benötigt, beispielsweise damit der Spieler 3D-Objekte aufheben (\textit{AttachTo(Hand)}) und wieder loslassen (\textit{Detach()}) kann.
+
+\subsubsection{Befestigung von Flex-Partikeln an Szenen}
+
+In der Unreal Integration können einzelne Flex-Partikel an ein SceneComponent befestigt werden. Hierfür stehen allerdings nur Funktionen zur Verfügung, bei denen alle Partikel, die sich innerhalb einer Kugel befinden, befestigt werden. Auf Grundlage dieser Funktion wurden daher weitere Funktionen angelegt, um einzelne Partikel via Partikelindex an SceneComponents befestigen zu können.
+
+Des weiteren musste eine Funktion zum Lösen von befestigten Partikel angelegt werden (\textit{DetachAllFlexParticles()}), weil auch solch eine Funktionalität fehlte.
 
 
-\subsection{Fehlende Funktionalitäten}
-Im Abschnitt \textit{Introduction} aus \cite{UE4FlexDoc} wird bereits erwähnt, dass die Unreal 4 Integration noch nicht weit genug entwickelt ist, um Gameplay-beeinflussende Physikszenarios zu erstellen. Dafür fehlen noch Funktionalitäten \cite{UE4FlexDoc}, die für 
+%%% EVT noch genauer beschreiben wie genau das Befestigen funktioniert...
+
+\subsubsection{Befestigung von SceneComponents an Flex-Objekte}
+
+Funktioniert schon ganz gut, wobei 3D-modelle nicht mit soft bodies mit rotieren...
+
+Fehlte:  Klasse die sich an einzelne partikel anhängen kann...
+
+\subsubsection{Befestigung von Flex-Objekte an Flex-Objekte}
+
+siehe SoftJoint
+
+...
+
+\subsection{Kollisionserkennung}
+
+
+Eine typische Funktionalität, die Game Engines bieten, ist ein Framework für die Erkennung von Kollisionen zwischen 3d-Modellen. Ein Kollisionserkennungs-Framework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings} (hier evt irgenwas REFERENZIEREN). 
+
+So verhält es sich auch bei der Unreal Engine 4. Hier bieten 3D-Modelle oder ShapeComponent-Abkömmlinge Events für unterschiedliche Kollisions-Events an. Zum Beispiel wird ein Overlap-Event ausgelöst, wenn sich zwei 3D-Modelle berühren oder überlappen. Beliebige Klassen können auf das Overlap-Event eines 3D-Modells hören (Event-Binding), dann werden Sie immer darüber informiert, wenn das 3D-Modell etwas berührt hat und können dann entsprechend reagieren (Spieler Leben abziehen, nächstes Level laden, oder ähnliches...).
+
+Für chirurgische Simulatoren wird ein Kollisionserkennungs-Framework benötigt, beispielsweise um zu erkennen ob ein Skalpell ein empfindliches Organ berührt oder ob eine die Spitze einer Kanüle eine Blutader getroffen hat.
+
+In der Unreal Integration können Flex-Objekte zwar grundsätzlich miteinander kollidieren, allerdings gibt es nicht die Möglichkeit, auf das Kollisions-Event eines Flex-Objekts zu hören oder eine Kollision zu erkennen.
+
+%Um diese fehlende Funktionalität zu ergänzen, soll das bereits bestehende Kollisionserkennungs-Framework der Unreal Engine 4 genutzt und erweitert werden. Dieses funktioniert nämlich bereits gut und ist mittels Spacial-Data-Ansatz (REFERENZ!!!) optimiert und entsprechend effizient.
+
+In \cite{UE4FlexDoc} wird empfohlen, fehlende Kollisionserkennungen mit einer traditionellen Rigid Body Physics Engine zu realisieren. Weil die Unreal Engine 4 bereits solch eine Physics Engine besitzt (\cite{ue4physics}), bietet es sich an, die fehlende Kollisionserkennung mit dieser zu realisieren.
+
+TODO: Erklären wie gemacht mit einer Bilder-Kollage!
+
+
+  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
+  
+\subsection{Interaktion zwischen Flex und PhysX}
+
+
+%Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  
-\section{Erweiterung}
+Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodys, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Engine mit Flex Integration können also sowohl FleX-Simulationen, als auch PhysX-Simulationen ausgeführt werden. Nun stellt sich die Frage ob und wie FleX-Objekte mit PhysX-Objekte interagieren.
 
-Um welche Funktionalitäten habe ich (und UE4) Flex erweitert und wie?
+\subsection{Kräfte und Momente}
 
-- Einfachere Benutzung von Flex mit BP-Script schnittstellen.
+Flex bietet nur RadialForceComponent. Kräfte lassen sich nicht auf einzelne Objekte anwenden
 
-- Kollisionserkennung.
-
-- FlexSynchronizeComponent
-
-- Attachment.
-
-- Kräfte/Impulse zwischen Flex und PhysX. (mit hinweis, das reaktionsktraft besser auf gpu berechnet werden sollte. cpu war halt einfacher)
-
-Kräfte und Momente auf Flex-Objekte.
-
-Transformationen von FlexComponents.
+Wofür? Künstliches Greifen, Flüssigkeiten absaugen (naja, das würde wohl einfacher vie partikel-zerstörung gehen
 
 
-In \cite{UE4FlexDoc} wird empfohlen, fehlende Kollisionserkennungen mit einer traditionellen Rigid Body Physics Engine zu realisieren. Weil die Unreal Engine 4 bereits solch eine Physic Engine besitzt (zitieren! verlinken!!!), bietet es sich an, die fehlende Kollisionserkennung mit dieser zu realisieren.
-
-
-
-
-
+\section{ALT}
 
 %-------------------------------------- ALT -----------------------------------------------
 %In Kapitel \ref{chap_Theorie} wird es darum gehen, Reynolds Boid-Simulationsmodell so anzupassen, dass alle für die Simulation nötigen Arbeitsschritte möglichst effizient von Shadern ausgeführt werden können.
