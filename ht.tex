@@ -179,7 +179,7 @@ Des weiteren musste eine Funktion zum Lösen von befestigten Partikel angelegt w
 
 \subsubsection{Befestigung von SceneComponents an Flex-Objekte}
 
-Funktioniert schon ganz gut, wobei 3D-modelle nicht mit soft bodies mit rotieren...
+Funktioniert schon ganz gut, wobei 3D-modelle nicht mit soft bodies rotieren...
 
 Fehlte:  Klasse die sich an einzelne partikel anhängen kann...
 
@@ -192,22 +192,30 @@ siehe SoftJoint
 \subsection{Kollisionserkennung}
 
 
-Eine typische Funktionalität, die Game Engines bieten, ist ein Framework für die Erkennung von Kollisionen zwischen 3d-Modellen. Ein Kollisionserkennungs-Framework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings} (hier evt irgenwas REFERENZIEREN). 
+Eine wichtige Funktionalität, die die meisten Game Engines bieten, ist ein Framework für die Erkennung von Kollisionen zwischen 3d-Modellen. 
+Ein Kollisionserkennungs-Framework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings} (hier evt irgenwas REFERENZIEREN). 
 
-So verhält es sich auch bei der Unreal Engine 4. Hier bieten 3D-Modelle oder ShapeComponent-Abkömmlinge Events für unterschiedliche Kollisions-Events an. Zum Beispiel wird ein Overlap-Event ausgelöst, wenn sich zwei 3D-Modelle berühren oder überlappen. Beliebige Klassen können auf das Overlap-Event eines 3D-Modells hören (Event-Binding), dann werden Sie immer darüber informiert, wenn das 3D-Modell etwas berührt hat und können dann entsprechend reagieren (Spieler Leben abziehen, nächstes Level laden, oder ähnliches...).
+So verhält es sich auch bei der Unreal Engine 4. Hier bieten 3D-Objekte unterschiedliche Kollisions-Events an. Zum Beispiel wird ein \textit{BeginOverlap}-Event ausgelöst, wenn sich zwei 3D-Modelle berühren oder überlappen. Beliebige Klassen können auf das \textit{BeginOverlap}-Event eines 3D-Modells hören (Event-Binding), dann werden Sie immer darüber informiert, wenn das 3D-Modell etwas berührt hat und können dann entsprechend reagieren (Spieler Leben abziehen, nächstes Level laden, oder ähnliches...).
 
 Für chirurgische Simulatoren wird ein Kollisionserkennungs-Framework benötigt, beispielsweise um zu erkennen ob ein Skalpell ein empfindliches Organ berührt oder ob eine die Spitze einer Kanüle eine Blutader getroffen hat.
 
-In der Unreal Integration können Flex-Objekte zwar grundsätzlich miteinander kollidieren, allerdings gibt es nicht die Möglichkeit, auf das Kollisions-Event eines Flex-Objekts zu hören oder eine Kollision zu erkennen.
+In der Unreal Integration können Flex-Objekte zwar grundsätzlich miteinander kollidieren, allerdings gibt es nicht die Möglichkeit, auf das Kollisions-Event eines Flex-Objekts zu hören (\textit{Event-Binding}) oder eine Kollision zu erkennen.
 
-%Um diese fehlende Funktionalität zu ergänzen, soll das bereits bestehende Kollisionserkennungs-Framework der Unreal Engine 4 genutzt und erweitert werden. Dieses funktioniert nämlich bereits gut und ist mittels Spacial-Data-Ansatz (REFERENZ!!!) optimiert und entsprechend effizient.
+Um diese fehlende Funktionalität zu ergänzen, wird das bereits bestehende Kollisionserkennungs-Framework der Unreal Engine 4 genutzt, welches auf NVIDIA PhysX aufbaut \cite{ue4physics}. Dieses Kollisionserkennungs-Framework ist nämlich bereits sehr umfangreich und ist mittels Spacial-Data-Ansatz (REFERENZ!!!) optimiert und entsprechend effizient.
 
-In \cite{UE4FlexDoc} wird empfohlen, fehlende Kollisionserkennungen mit einer traditionellen Rigid Body Physics Engine zu realisieren. Weil die Unreal Engine 4 bereits solch eine Physics Engine besitzt (\cite{ue4physics}), bietet es sich an, die fehlende Kollisionserkennung mit dieser zu realisieren.
+%In \cite{UE4FlexDoc} wird empfohlen, fehlende Kollisionserkennungen mit einer traditionellen Rigid Body Physics Engine zu realisieren. Weil die Unreal Engine 4 bereits solch eine Physics Engine besitzt (\cite{ue4physics}), bietet es sich an, die fehlende Kollisionserkennung mit dieser zu realisieren.
 
-TODO: Erklären wie gemacht mit einer Bilder-Kollage!
+Hier kommt es uns zugute, dass bei der Unreal Integration 3D-Modelle an Flex-Objekte befestigt werden können (siehe kap \textbf{XXXSceneTree}). So können auch PhysX-Kollisionskörper für Flex-Objekte modelliert und an diese befestigt werden, so wie in Abbildung \ref{Scalpel1} zu sehen.
 
+\bild{Scalpel1}{14cm}{Ein passender PhysX-Kollisionskörper (grünes Polygonmodel) wird an ein Flex-Asset befestigt um so die umfangreiche Kollisionserkennung der Unreal Engine nutzen zu können. Hier reicht ein ungenauer Kollisionskörper aus, weil in diesem Fall nur erkannt werden soll, ob eine virtuelle Hand nach dem Skalpell greift.}
 
-  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
+Die separaten Kollisionskörper werden dann so konfiguriert, dass sie keine Physik simulieren. Nur die Überlappungserkennung wird genutzt, um Überlappungen und Berührungen zu erkennen.
+
+An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwischen unterschiedlichen Berührungen unterscheiden zu können. Beispielsweise um zu erkennen ob die Klinge oder der Griff eines Skalpells etwas berührt hat.
+
+Hier evt nochmal ein Bild mit komplexeren Kollisionskörpern für Klinge, Griff, Kanülenspitze, Hauptader usw...
+
+%  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
 \subsection{Interaktion zwischen Flex und PhysX}
 
