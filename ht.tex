@@ -162,6 +162,8 @@ Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene
 
 %3D-modelle und ShapeComponents (box capsule sphere) lassen sich an FlexComponents befestigen, aber nicht einzelne partikel
 
+TODO!!!!!!
+
 Für gewöhnlich arbeiten Game Engines mit sogenannten Scene Trees um 3D-Objekte hierarchisch zu organisieren (REFERENZ). Dabei repräsentiert jedes 3D-Objekt einen Knoten im Scene Tree. 3D-Objekte werden aneinander befestigt, so das sich eine Baumstruktur bildet, in der die Kinderobjekte an ihre Elternobjekte befestigt sind. Ändert sich die Transformation eines Elternknotens, bewegen sich all seine Kinderobjekte mit. 
 
 \bild{SceneTree}{10cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
@@ -222,13 +224,105 @@ Hier evt nochmal ein Bild mit komplexeren Kollisionskörpern für Klinge, Griff,
 
 %Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  
-Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodys, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Engine mit Flex Integration können also sowohl FleX-Simulationen, als auch PhysX-Simulationen ausgeführt werden. Nun stellt sich die Frage ob und wie FleX-Objekte mit PhysX-Objekte interagieren.
+Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodys, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also sowohl FleX-Simulationen, als auch PhysX-Simulationen ausgeführt werden. Nun stellt sich die Frage ob und wie FleX-Objekte mit PhysX-Objekte interagieren können.
+
+TODO...
 
 \subsection{Kräfte und Momente}
 
-Flex bietet nur RadialForceComponent. Kräfte lassen sich nicht auf einzelne Objekte anwenden
+Eine Funktionalität, die einige Game Engines anbieten, ist die Möglichkeit per Funktionsaufruf Kräftevektoren auf einzelne Körper wirken zu lassen. 
+%Diese Funktionalität steht bei Game Engines als Funktion in der Form \textit{AddForce(FVector* ForceVector)} zur Verfügung, wie auch bei der Unreal Engine 4 (REEEEF). 
 
-Wofür? Künstliches Greifen, Flüssigkeiten absaugen (naja, das würde wohl einfacher vie partikel-zerstörung gehen
+Diese Funktionalität wird meist genutzt um kräftebasierte Effekte oder Systeme zu programmieren. Beispielsweise können Kräfte auf Körper, die sich innerhalb einer Explosion befinden, angewandt werden, damit sie von der Explosion weg geschleudert werden. In REEEEEFFFF wird diese Funktionalität genutzt, um Auftriebskräfte auf schwimmende Objekte wirken zu lassen. 
+Außerdem können mit dieser Funktionalität realistische Regelsysteme implementiert werden, die mit Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität (siehe Kapitel XXX).
+
+Bei der verwendeten Unreal Engine mit Flex Integration gibt es nicht die Möglichkeit, Kräfte auf einzelne Flex-Objekte oder Flex-Partikel wirken zu lassen.
+
+Die NVIDIA FleX Bibliothek bietet zwar die Möglichkeit an, Kraftfelder zu erstellen (\textit{NvFlexExtForceField}), allerdings gibt es nicht die Möglichkeit, Kräfte oder Momente gezielt auf einzelne Flex-Objekte oder Partikel wirken zu lassen. %Die Kräftefelder definieren nur einen Bereich, in dem konstante Kräftevektoren im Raum verteilt sind. Dann wirkt auf alle Partikel, die sich innerhalb eines Kräftefeldes befinden, eine Kraft, abhängig von den Partikelpositionen.
+
+%Idee und Nasatz:
+Eine einfache Möglichkeit die gewünschte Funktionalität zu ergänzen, ist die Manipulation der Partikelgeschwindigkeiten. Um eine Kraft, die auf ein Partikel wirken soll, zu simulieren, wird eine Geschwindigkeitsänderung, $\Delta\vec{v}$, zur aktuellen Geschwindigkeit, $\vec{v}$, des Partikels hinzu addiert. So kann die Flex-Simulation ungestört weiterlaufen und alle Constraints, wie das Kollisions-Constraint, wirken sich wie zuvor auf die simulierten Partikel aus.
+
+%Methode
+\subsubsection{Kräfte}
+Gegeben sei eine Kraft, $\vec{F}$, die auf ein Flex-Objekt, das aus $n$ Partikeln besteht, wirken soll. Dann wird $\vec{F}$ in $n$ gleichgroße Partikelkräfte, $\vec{F_i} = \vec{F} / n$ unterteilt. Jede Partikelkraft, $\vec{F_i}$, wird dann auf ein Partikel, $i$, mit einer Punktmasse von $m_i$, angewandt.
+
+Weil wir es mit Punktmassen zu tun haben, gilt für die Partikelkraft:
+
+\begin{equation}
+\vec{F_i} = m_i \cdot \vec{a} = m_i \dfrac{\Delta \vec{v_i}}{\Delta t}
+\label{form_F}
+\end{equation}
+
+Also ergibt sich die Geschwindigkeit, $\Delta \vec{v_i}$, die zur Geschwindigkeit des Partikels addiert werden muss durch:
+
+\begin{equation}
+\Delta \vec{v_i} = \dfrac{\vec{F_i}}{m_i}\Delta t
+\label{form_dv}
+\end{equation}
+
+Wobei $\Delta t$ der derzeitige Zeitschritt der Flex-Simulation ist. 
+
+%Um eine Kraft auf ein komplettes Flex-Objekt zu wirken, wird $\Delta \vec{v_i}$ auf all seine Partikel angewandt. 
+%Um die gesamte Kraft, die auf ein Flex-Objekt wirkt, zu berechnen, müssen alle Partikelkräfte, $F_i$ summiert werden.
+
+Mit dieser einfachen Methode können Flex-Objekte überraschend realistisch umher geschoben werden. Wird eine Kraft von $(0 , 0 , 9.81 )$ Newton auf ein Flex-Objekts mit einer Masse von 1 kg angewandt, wirkt es schwerelos (bei $g=(0 , 0 , -9.81 )$). Das zeigt, dass alle Einheiten korrekt berechnet wurden.
+
+%Die Masse eines Flex-Objekts ergibt sich durch die Summe all seiner $n$ Partikelmassen, beziehungsweise durch $n \cdot m_p$, wenn alle Partikelmassen, $m_p$, gleich groß sind.
+
+\subsubsection{Momente}
+
+Wirkt ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden.
+
+%Zunächst wird die Winkelgeschwindigkeit, $\Delta \omega$, berechnet. 
+Die Berechnung von $\Delta \omega$ erfolgt wie zuvor, nur im rotatorischem Sinne (Gleichung \ref{form_omega}):
+
+\begin{equation}
+\begin{split}
+M_i = m_i   \dot{\omega} = m_i \dfrac{\Delta \omega_i}{\Delta t} \\
+\Rightarrow  \Delta \omega_i = \dfrac{M_i}{m_i} \Delta t
+\end{split}
+\label{form_omega}
+\end{equation}
+
+Um die Rechenkomplexität zu senken, gehen wir davon aus, dass alle Partikel die selbe Masse haben, wodurch nun alle Partikel um die selbe Winkelgeschwindigkeit ($\Delta \omega_i$) rotiert werden müssen. 
+
+Neben der Größe des Moments, $M$, sei auch eine örtlich gebundene Achse definiert, die angibt in welche Richtung das Drehmoment wirkt. Diese Achse besteht aus einem normalisierten Richtungsvektor, $\vec{e}$, der sich an der Position, $\vec{c}$, befindet (siehe Abbildung \ref{moment}). $\vec{e}$ und $\vec{c}$ definieren also die örtlich gebundene Achse, um die sich das Flex-Objekt drehen wird, aufgrund des wirkenden Drehmoments. Das bedeutet, alle $n$ Partikel sollen sich nun zusätzlich mit einer Winkelgeschwindigkeit von $\Delta \omega_i$ um diese Drehmomentachse drehen.
+
+Nun muss berechnet werden, in welche vektorielle Richtung, $\Delta \vec{v_i}$ sich ein Partikel $i$ drehen muss, damit es sich mit der gewünschten Winkelgeschwindigkeit, $\Delta \omega_i$, um die Drehmomentachse dreht. Dabei habe das Partikel die Position $\vec{p_i}$. Abbildung \ref{moment} visualisiert diese Problemstellung.
+
+\bild{moment}{5cm}{Das Partikel $i$ muss sich zusätzlich in die Richtung $\vec{d}$ bewegen, damit es damit beginnt, sich um die Drehmomentachse zu drehen. Die Drehmomentachse habe die Position $\vec{c}$ und Ausrichtung $\vec{e}$}
+
+
+$\Delta \vec{v_i}$ besteht aus einer translatorischen Geschwindigkeit, $s$ und einer Bewegungsrichtung, $\vec{d}$, mit $|\vec{d}|=1$. 
+$s$ ist die Umfangsgeschwindigkeit des Partikels, um die gegebene Achse und berechnet sich mit Gleichung \ref{form_speed}.
+
+\begin{equation}
+s = \Delta \omega_i \cdot r
+\label{form_speed}
+\end{equation}
+
+$r$ ist dabei die kürzeste Entfernung, die das Partikel zur Drehmomentachse hat.
+Weil $|\vec{e}|=1$, kann $r$ aus dem folgenden Skalarprodukt berechnet werden (siehe Gleichung \ref{form_r}):
+
+\begin{equation}
+r = ||\vec{e} \cdot \vec{u}||
+\label{form_r}
+\end{equation}
+
+Mit $\vec{u}=\vec{p_i}-\vec{c}$. 
+
+Der Richtungsvektor, $\vec{d}$, muss orthogonal zu $\vec{u}$ und $\vec{d}$ sein und eine Länge von 1 haben. Also kann $\vec{d}$ nach Gleich \ref{form_dir} berechnet werden:
+
+\begin{equation}
+\vec{d} = e(\vec{u} \times \vec{d} )
+\label{form_dir}
+\end{equation}
+
+Wobei mit $e(...)$ der Einheitsvektor aus dem Kreuzprodukt $\vec{u} \times \vec{d} $ gemeint ist.
+
+Schlussendlich ergibt sich die Geschwindigkeit, die zur Partikelgeschiwindigkeit hinzu addiert werden muss durch $\Delta \vec{v_i} = s \cdot \vec{d}$.
+
 
 
 \section{ALT}
