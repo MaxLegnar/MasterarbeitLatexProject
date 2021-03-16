@@ -10,7 +10,7 @@ Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von S
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
 In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Unreal Integration. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
-\subsubsection{Über Unreal Engine 4 mit Flex integration}
+\subsubsection{Über Unreal Engine 4 mit Flex integration (evt in Grundlagen kapitel)}
 
 Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA Flex 1.2. 
 
@@ -67,6 +67,8 @@ Die verwendete Grafikkarte gehört zur vorletzten Generation der NVIDIA Grafikka
 
 Für die Anwendungsfälle dieser Arbeit sind vor allem Soft Bodies interessant. Daher wird nun eine Szene simuliert, in der sich ausschließlich Soft Bodies befinden (siehe Abbildung \ref{PerfGTX1Scene}). 
 
+TODO: Welche Constraints verwendet und wie viele???!!!
+
 \bild{PerfGTX1Scene}{12cm}{In der Testszene befinden sich mehrere unterschiedliche Soft Bodies, die eine Treppe hinunter rollen.}
 
 Die simulierten Körper kollidierten und verformten sich dabei stets augenscheinlich realistisch.
@@ -94,7 +96,7 @@ Die Messungen zeigen eindeutig, dass NVIDIA Flex besonders gut für Echtzeitanwe
 
 In Abbildung \ref{PerfGTX1} zeigt die Linie \textit{SumAvg} an, wie lange der gesamte Simulationsprozess im Durchschnitt gedauert hat. Der gesamte Simulationsprozess ergibt sich aus den Zeiten der folgenden Arbeitsschritte, summiert (Abbildung \ref{PerfStats}):
 
-\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc}}
+\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc} -> Das hier evt nur als Anlage???}
 
 Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit 120 \ac{FPS} gerendert werden, bei einer Auflösung von ca. 1080p. So ist noch ausreichend Luft für größere Auflösungen, die vor allem im für VR-Anwendungen benötigt werden. So wie in \cite{FlexD3D} bereits erwähnt, hat die Anzahl der simulierten Partikel einen geringen Einfluss auf die Geschwindigkeit des Solvers.
 
@@ -108,6 +110,8 @@ In der Einleitung von \cite{UE4FlexDoc} wird bereits darauf hingewiesen, dass di
 %Hierfür gehen wir nach und nach alle funktionalen Anforderungen aus Kapitel \textbf{XXX} durch und kontrollieren, ob Anforderungen fehlen oder nur teilweise vorhanden sind.
 
 \subsection{Synchronisation mit Flex Simulation}
+
+... kommt evt raus, ist ja nicht so wichtig....
 
 \subsection{Transformationsmanipulationen}
 
@@ -272,10 +276,10 @@ Mit dieser einfachen Methode können Flex-Objekte überraschend realistisch umhe
 
 \subsubsection{Momente}
 
-Wirkt ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden.
+Wirkt ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden. Wie bei der Kraft auch, zerlegen wir $M$ in $n$ gleichgroße Partikelmomente, $M_i=M/n$ und betrachten nun kleinere Momente, die auf Punktmassen wirken.
 
 %Zunächst wird die Winkelgeschwindigkeit, $\Delta \omega$, berechnet. 
-Die Berechnung von $\Delta \omega$ erfolgt wie zuvor, nur im rotatorischem Sinne (Gleichung \ref{form_omega}):
+Die Berechnung von $\Delta \omega_i$ erfolgt wie zuvor, nur im rotatorischem Sinne (Gleichung \ref{form_omega}):
 
 \begin{equation}
 \begin{split}
@@ -285,17 +289,18 @@ M_i = m_i   \dot{\omega} = m_i \dfrac{\Delta \omega_i}{\Delta t} \\
 \label{form_omega}
 \end{equation}
 
-Um die Rechenkomplexität zu senken, gehen wir davon aus, dass alle Partikel die selbe Masse haben, wodurch nun alle Partikel um die selbe Winkelgeschwindigkeit ($\Delta \omega_i$) rotiert werden müssen. 
+Um die Rechenkomplexität zu senken, gehen wir davon aus, dass alle Partikel die selbe Masse haben, wodurch alle Partikel um die selbe Winkelgeschwindigkeit ($\Delta \omega_i$) rotiert werden müssen. 
 
-Neben der Größe des Moments, $M$, sei auch eine örtlich gebundene Achse definiert, die angibt in welche Richtung das Drehmoment wirkt. Diese Achse besteht aus einem normalisierten Richtungsvektor, $\vec{e}$, der sich an der Position, $\vec{c}$, befindet (siehe Abbildung \ref{moment}). $\vec{e}$ und $\vec{c}$ definieren also die örtlich gebundene Achse, um die sich das Flex-Objekt drehen wird, aufgrund des wirkenden Drehmoments. Das bedeutet, alle $n$ Partikel sollen sich nun zusätzlich mit einer Winkelgeschwindigkeit von $\Delta \omega_i$ um diese Drehmomentachse drehen.
+Neben der Größe des Moments, $M_i$, sei auch eine örtlich gebundene Achse definiert, die angibt in welche Richtung das Drehmoment wirkt. Diese Achse besteht aus einem normalisierten Richtungsvektor, $\vec{e}$, der sich an der Position, $\vec{c}$, befindet (siehe Abbildung \ref{moment}). $\vec{e}$ und $\vec{c}$ definieren also die örtlich gebundene Achse, um die sich das Flex-Objekt drehen wird, aufgrund des wirkenden Drehmoments. Das bedeutet, alle $n$ Partikel sollen sich nun zusätzlich mit einer Winkelgeschwindigkeit von $\Delta \omega_i$ um diese Drehmomentachse drehen.
 
-Nun muss berechnet werden, in welche vektorielle Richtung, $\Delta \vec{v_i}$ sich ein Partikel $i$ drehen muss, damit es sich mit der gewünschten Winkelgeschwindigkeit, $\Delta \omega_i$, um die Drehmomentachse dreht. Dabei habe das Partikel die Position $\vec{p_i}$. Abbildung \ref{moment} visualisiert diese Problemstellung.
+Nun muss berechnet werden, in welche vektorielle Richtung, $\Delta \vec{v_i}$ sich ein Partikel $i$ bewegen muss, damit es sich mit der gewünschten Winkelgeschwindigkeit, $\Delta \omega_i$, um die Drehmomentachse dreht. Dabei habe das Partikel die Position $\vec{p_i}$. Abbildung \ref{moment} visualisiert diese Problemstellung.
 
 \bild{moment}{5cm}{Das Partikel $i$ muss sich zusätzlich in die Richtung $\vec{d}$ bewegen, damit es damit beginnt, sich um die Drehmomentachse zu drehen. Die Drehmomentachse habe die Position $\vec{c}$ und Ausrichtung $\vec{e}$}
 
 
-$\Delta \vec{v_i}$ besteht aus einer translatorischen Geschwindigkeit, $s$ und einer Bewegungsrichtung, $\vec{d}$, mit $|\vec{d}|=1$. 
-$s$ ist die Umfangsgeschwindigkeit des Partikels, um die gegebene Achse und berechnet sich mit Gleichung \ref{form_speed}.
+$\Delta \vec{v_i}$ besteht aus einer Geschwindigkeit, $s=|\Delta \vec{v_i}|$ und einer Bewegungsrichtung, $\vec{d}$, mit $|\vec{d}|=1$. Das heißt es gilt $\Delta \vec{v_i} = s \cdot \vec{d}$.
+
+$s$ ist die Umfangsgeschwindigkeit des Partikels, um die Drehmomentachse und ist abhängig von der Winkelgeschwindigkeit $\Delta \omega_i$ (siehe Gleichung \ref{form_speed}).
 
 \begin{equation}
 s = \Delta \omega_i \cdot r
@@ -306,24 +311,29 @@ $r$ ist dabei die kürzeste Entfernung, die das Partikel zur Drehmomentachse hat
 Weil $|\vec{e}|=1$, kann $r$ aus dem folgenden Skalarprodukt berechnet werden (siehe Gleichung \ref{form_r}):
 
 \begin{equation}
-r = ||\vec{e} \cdot \vec{u}||
+r = ||\vec{e} \cdot \vec{u_i}||
 \label{form_r}
 \end{equation}
 
-Mit $\vec{u}=\vec{p_i}-\vec{c}$. 
+-Mit $\vec{u_i}=\vec{p_i}-\vec{c}$. 
 
-Der Richtungsvektor, $\vec{d}$, muss orthogonal zu $\vec{u}$ und $\vec{d}$ sein und eine Länge von 1 haben. Also kann $\vec{d}$ nach Gleich \ref{form_dir} berechnet werden:
+Der Richtungsvektor, $\vec{d}$, muss orthogonal zu $\vec{u_i}$ und $\vec{e}$ sein und eine Länge von 1 haben. Also kann $\vec{d}$ mit Gleich \ref{form_dir} berechnet werden:
 
 \begin{equation}
-\vec{d} = e(\vec{u} \times \vec{d} )
+\vec{d} = unit(\vec{u_i} \times \vec{e} )
 \label{form_dir}
 \end{equation}
 
-Wobei mit $e(...)$ der Einheitsvektor aus dem Kreuzprodukt $\vec{u} \times \vec{d} $ gemeint ist.
+Wobei mit $unit(...)$ der Einheitsvektor aus dem Kreuzprodukt $\vec{u_i} \times \vec{e} $ gemeint ist.
 
-Schlussendlich ergibt sich die Geschwindigkeit, die zur Partikelgeschiwindigkeit hinzu addiert werden muss durch $\Delta \vec{v_i} = s \cdot \vec{d}$.
+Schlussendlich ergibt sich die Geschwindigkeit, die zur Partikelgeschiwindigkeit hinzu addiert werden muss durch (Gleichung \ref{form_momentfinal}):
 
+\begin{equation}
+\Delta \vec{v_i} =  \dfrac{M_i}{m_i} \Delta t ||\vec{e} \cdot \vec{u}|| \cdot unit(\vec{u_i} \times \vec{e} )
+\label{form_momentfinal}
+\end{equation}
 
+TODO: Kurz erläutern wie das funktioniert und was Probleme sind (Partikel wollen sich immer bisl weg von Achse bewegen, wodurch innere Spannungen auftreten, die con constraints aber gelöst werden...
 
 \section{ALT}
 
