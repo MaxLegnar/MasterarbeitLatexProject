@@ -8,15 +8,28 @@ Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulato
 
 %In Diesem Kapitel werden Testszenarien implementiert, die für chirurgische Simulatoren interessant sein könnten. Dabei kann experimentell untersucht werden, ob die erweiterte Unreal Integration für Serious Games im medizinischen Bereich geeignet ist.
 
-\section{Soft Body Interaktion mit Motion Controller}
+\section{Soft Body Interaktion mit simulierten Kräften}
 
 %Idee und Umsetzung von “VR-Physics2.0”, wie ich es genannt habe
 
-Im Rahmen dieser Arbeit wurde ein kleines Serius Game implementiert das in VR gespielt wird. Dabei wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
+Im Rahmen dieser Arbeit wurde eine Demoversion eines Serius Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
 
-Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Konfiguration gesetzt, wie die Motion Controller . Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil dieser die Motion Controller in den Händen hält (siehe Abbildung XXX). 
+Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die Motion Controller. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
+Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem Sie Flex-Objekte eindrücken oder weg schiebt. Abbildung \ref{VHand1} zeigt wie dies in der virtuellen Welt aussieht. Wie man Sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
 
-Um die Immersion des Simulators zu erhöhen, wird ein Kräftesystem entwickelt, das
+\bild{VHand1}{8cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von eine virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil Sie immer auf die Position des Motion Controllers (orange) gesetzt wird und die statische Mauer nicht zur Seite gedrückt werden kann.}
+
+Um die Immersion der VR-Anwendung zu erhöhen wäre es allerdings besser, wenn eine virtuelle Hand auch mit statischen Objekten kollidieren kann. Außerdem ist eine virtuelle Hand sozusagen unendlich stark: Soft Bodies können vom Spieler beliebig stark eingedrückt werden, egal wie steif oder schwer es ist. Das liegt daran, dass die virtuelle Hand immer auf die Position und Rotation des Motion Controllers gesetzt wird. Daher kann eine virtuelle Hand keine Physik simulieren und schiebt Objekte, die Phyik simulieren problemlos zur Seite.
+
+Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung weniger realistisch.
+
+Um für mehr Realismus zu sorgen, wird ein kräftebasiertes System für die virtuellen Hände entwickelt. Nun an ist die virtuelle Hand ein Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird Sie nun mit simulierten Kräften (und Moment) zum Motion Controller bewegt. Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis. 
+
+In Abbildung \ref{VHand2} ist das Endergebnis zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand.
+
+\bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) "drücken" die virtuelle Hand zum Motion Controller. Rechts: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert sie mit ihr und drückt mit einer simulierten Kraft dagegen. Links: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
+
+LESEZEICHEN!!!!!!!!!!!!
 
 
 
