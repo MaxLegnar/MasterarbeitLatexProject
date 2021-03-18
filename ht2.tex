@@ -12,7 +12,7 @@ Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulato
 
 %Idee und Umsetzung von “VR-Physics2.0”, wie ich es genannt habe
 
-Im Rahmen dieser Arbeit wurde eine Demoversion eines Serius Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
+Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
 
 Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die Motion Controller. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
 Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem Sie Flex-Objekte eindrücken oder weg schiebt. Abbildung \ref{VHand1} zeigt wie dies in der virtuellen Welt aussieht. Wie man Sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
