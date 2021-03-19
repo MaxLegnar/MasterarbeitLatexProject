@@ -9,31 +9,55 @@ Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulato
 %In Diesem Kapitel werden Testszenarien implementiert, die für chirurgische Simulatoren interessant sein könnten. Dabei kann experimentell untersucht werden, ob die erweiterte Unreal Integration für Serious Games im medizinischen Bereich geeignet ist.
 
 \section{Soft Body Interaktion mit simulierten Kräften}
-
+\label{sec_FSystem}
 %Idee und Umsetzung von “VR-Physics2.0”, wie ich es genannt habe
 
 Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
 
-Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die Motion Controller. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
+Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die des Motion Controllers. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
 Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem Sie Flex-Objekte eindrücken oder weg schiebt. Abbildung \ref{VHand1} zeigt wie dies in der virtuellen Welt aussieht. Wie man Sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
 
-\bild{VHand1}{8cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von eine virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil Sie immer auf die Position des Motion Controllers (orange) gesetzt wird und die statische Mauer nicht zur Seite gedrückt werden kann.}
+\bild{VHand1}{6cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von eine virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil
+%Sie immer auf die Position des Motion Controllers (orange) gesetzt wird und 
+die statische Mauer nicht zur Seite gedrückt werden kann.}
 
 Um die Immersion der VR-Anwendung zu erhöhen wäre es allerdings besser, wenn eine virtuelle Hand auch mit statischen Objekten kollidieren kann. Außerdem ist eine virtuelle Hand sozusagen unendlich stark: Soft Bodies können vom Spieler beliebig stark eingedrückt werden, egal wie steif oder schwer es ist. Das liegt daran, dass die virtuelle Hand immer auf die Position und Rotation des Motion Controllers gesetzt wird. Daher kann eine virtuelle Hand keine Physik simulieren und schiebt Objekte, die Phyik simulieren problemlos zur Seite.
 
 Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung weniger realistisch.
 
-Um für mehr Realismus zu sorgen, wird ein kräftebasiertes System für die virtuellen Hände entwickelt. Nun an ist die virtuelle Hand ein Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird Sie nun mit simulierten Kräften (und Moment) zum Motion Controller bewegt. Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis. 
+\subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
+Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
 
-In Abbildung \ref{VHand2} ist das Endergebnis zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand.
+In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die Umgebung zulässt.
 
-\bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) "drücken" die virtuelle Hand zum Motion Controller. Rechts: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert sie mit ihr und drückt mit einer simulierten Kraft dagegen. Links: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
+\bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) "drücken" die virtuelle Hand zum Motion Controller. Links: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert die Hand mit der Mauer und drückt mit einer simulierten Kraft dagegen. Rechts: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
 
-LESEZEICHEN!!!!!!!!!!!!
+%Werkzeuge
+Ersetzt man die virtuelle Hand durch ein anderes Flex-Objekt, wirkt es für den Spieler, als habe er ein Werkzeug, beispielsweise ein Skalpell, in seiner Hand (siehe Abbildung \ref{Scalpel2}). 
+%Ersetzen wir beispielsweise die virtuelle Hand durch ein Skalpell, wirkt es für den Spieler so, als habe er ein Skalpell in seiner Hand. 
+Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der Umgebung und der Spieler kann mit wenig oder viel Kraft schneiden, indem er seinen Motion Controller unterschiedlich bewegt und positioniert. Je größer der Unterschied zwischen Soll- und Ist-Position, desto stärker drückt das Skalpell auf das Gewebe und desto stärker wird es eingedrückt. Ist die Druckkraft stark und das modellierte Gewebe weich genug, drückt die Spitze des Skalpells die elastischen Gewebe-Partikel zur Seite und dringt in das Gewebe ein (siehe Abbildung \ref{Scalpel2}).
 
+\bild{Scalpel2}{10cm}{ Die virtuelle Hand kann durch beliebige Werkzeuge ersetzt werden, beispielsweise durch ein Skalpell. Dünne Flex-Objekte können bei genügend Druckkraft in Soft Bodies eindringen. }
 
+%im Ausblick nochmal drauf eingehen
+Über die Verformung des Gewebes oder über die Größe der Druckkraft können entsprechende Ereignisse ausgelöst werden, beispielsweise das Schneiden des Gewebes oder haptisches Feedback.
+
+Mit diesem Framework können beliebige Werkzeuge implementiert werden, die der Spieler in seine Hände nehmen, benutzen und wieder fallenlassen kann. Greift der Spieler mit einer virtuellen Hand nach einem Werkzeug, wird das Flex-Objekt der virtuellen hand mit dem Flex-Objekt des Werkzeugs ersetzt. Dadurch entsteht der Eindruck, der Spieler habe das Werkzeug aufgehoben.
+
+Im Rahmen dieser Arbeit wurde eine Pinzette und eine Nadel implementiert. Mithilfe der Pinzette können Fremdkörper aus Gewebe gezogen und nach Flex-Partikeln gegriffen werden. Eine Nadel ist ein besonders dünnen Flex-Objekt und kann daher gut in Gewebe eindringen und darin stecken bleiben (siehe Kapitel \ref{sec_needle}).
+
+\subsubsection{Regelung des kräftebasierten Interaktions-Systems}
+Das kräftebasierte Interaktions-System kann als Regelsystem betrachtet werden. Dieses Regelsystem drückt mit Kräften und Momenten ($U = (\vec{F} , \vec{M}$) auf die virtuelle Hand, um sie in eine gewünschte Soll-Konfiguration, $W$, zu versetzen. Die Soll-Konfiguration ist die Position und Rotation des Motion Controllers, $W = (\vec{P_s} , \vec{R_s})$. Der Regelfehler, $E$, ergibt sich aus der Differenz zwischen Soll-Konfiguration, $W$, und der derzeitigen Ist-Konfiguration, $X = (\vec{P_i , \vec{R_i}})$ der virtuellen Hand.
+
+\begin{equation}
+E = W - X
+\label{form_error}
+\end{equation}
+
+Die Regelstrecke dieses Regelsystems ist die Flex-Simulation, die der virtuellen Hand eine Trägheit verleiht...
 
 \section{Nadel-Gewebe Interaktion}
+\label{sec_needle}
 
 Wie umgesetzt, welche Tricks angewandt? Constraints? Geeignete Simulationsparameter?
 
@@ -43,7 +67,7 @@ SPH und Körperflüssigkeiten?
 
 
 
-\section{ALT}
+%\section{ALT}
 % ---------------------------- ALT -----------------------------------
 
 %Das konzipierte Simulationsmodell wird im Rahmen dieser Arbeit mithilfe der Unreal Engine 4 prototypisch implementiert. Bei dieser Implementierung wird der Fokus darauf gelegt, den Prototypen möglichst umfangreich und flexibel zu gestalten. Die Software bietet besonders viele Einstellungsmöglichkeiten und so können einige unterschiedliche Methoden und Variationen miteinander verglichen werden.
