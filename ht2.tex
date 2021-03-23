@@ -35,7 +35,7 @@ In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich 
 %Werkzeuge
 Ersetzt man die virtuelle Hand durch ein anderes Flex-Objekt, wirkt es für den Spieler, als habe er ein Werkzeug, beispielsweise ein Skalpell, in seiner Hand (siehe Abbildung \ref{Scalpel2}). 
 %Ersetzen wir beispielsweise die virtuelle Hand durch ein Skalpell, wirkt es für den Spieler so, als habe er ein Skalpell in seiner Hand. 
-Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der Umgebung und der Spieler kann mit wenig oder viel Kraft schneiden, indem er seinen Motion Controller unterschiedlich bewegt und positioniert. Je größer der Unterschied zwischen Soll- und Ist-Position, desto stärker drückt das Skalpell auf das Gewebe und desto stärker wird es eingedrückt. Ist die Druckkraft stark und das modellierte Gewebe weich genug, drückt die Spitze des Skalpells die elastischen Gewebe-Partikel zur Seite und dringt in das Gewebe ein (siehe Abbildung \ref{Scalpel2}).
+Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der Umgebung und der Spieler kann mit wenig oder viel Kraft schneiden, indem er seinen Motion Controller unterschiedlich bewegt und positioniert. Je größer der Unterschied zwischen Soll- und Ist-Position, desto stärker drückt das Skalpell auf das Gewebe und desto stärker wird es eingedrückt. Ist die Interaktionskraft stark und das modellierte Gewebe weich genug, drückt die Spitze des Skalpells die elastischen Gewebe-Partikel zur Seite und dringt in das Gewebe ein (siehe Abbildung \ref{Scalpel2}).
 
 \bild{Scalpel2}{10cm}{ Die virtuelle Hand kann durch beliebige Werkzeuge ersetzt werden, beispielsweise durch ein Skalpell. Dünne Flex-Objekte können bei genügend Druckkraft in Soft Bodies eindringen. }
 
@@ -66,44 +66,106 @@ Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}
 
 Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werden kann
 
-\section{Nadel-Gewebe Interaktion}
+\section{Nadel-Gewebe Interaktion}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec_needle}
 
 %Wie umgesetzt, welche Tricks angewandt? Constraints? Geeignete Simulationsparameter?
 
 %In dieser Arbeit wurde auch untersucht ob mit Flex und UE4 Nadel-Gewebe Interaktionen realisiert werden können. %Grundsätzlich gelingt dies, allerdings kann es viel Zeit in Anspruch nehmen, die korrekten Simulationsparameter zu finden. 
-In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten getan werden muss (BEISPIEL PAPER REFERENZIEREN).
+In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt um in VR Nadeln in ein Gewebe hinein zu stecken. 
 
+Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten getan werden muss (BEISPIEL PAPER REFERENZIEREN).
+
+Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren \textit{Shape Matching Constraints} realisiert wird, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
+
+Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in denen bereits gute Simulationsparameter für unterschiedliche Gewebearten ermittelt wurden.
+
+\subsubsection{Simulationsparameter und Einstellungen: }    
+
+\begin{itemize}
+
+  \item \textit{Sparse Signed Distance Field Collision} sollte deaktiviert sein. \\ 
+  Diese Technik aus wird von NVIDIA Flex eingesetzt um zu vermeiden dass sich zwei Flex-Objekte ineinander verkeilen (siehe \cite{UPP} Kapitel 5.1). Befindet sich ein fremdes Partikel in einem Flex-Objekt, wird es mithilfe eines \ac{SDF} aus dem Flex-Objekt herausbewegt. In unserem Fall ist es allerdings erwünscht, dass Nadel-Partikel von Gewebe-Partikel festgehalten werden. Durch Anpassung der Steifheit, Partikeldichte und Partikelmasse des Gewebes kann eingestellt werden wie fest die Nadel-Partikel eingeklemmt werden.    
+    
+     \item Partikelradius, $r$: \\ Der Radius eines Partikels bestimmt seinen Interaktionsradius. Er wurde auf 0,5 bis 2 cm gestellt. Obwohl die Nadel eigentlich deutlich dünner als die Partikel war, konnten dennoch realistisch wirkende Ergebnisse erzielt werden. Kleinere Partikel wurden aus Performance Gründen nicht verwendet. Die benötigte Partikelmenge steigt nämlich kubisch mit abnehmendem Partikelradius.
+     
+      \item Reibungskoeffizient: \\ Der Parameter \textit{ParticleFriction} bestimmt wie stark die Reibung zwischen Partikeln sein soll. Mit ihm kann gut angepasst werden wie gut sich die Nadel im Gewebe bewegen lässt und wie stark sich das Gewebe heraus- oder herein-wölbt, wenn die Nadel bewegt wird.
+      
+      \item Iterations: Wurde auf 3 gesetzt, so wie von \cite{UE4FlexDoc} empfohlen.
+      
+      \item Substeps:  Wurde die auf 3 oder 4 gesetzt. 
+      
+      \item Gravitation: Wurde auf $(0 , 0 , -980) cm/s^2$ gesetzt, entsprechend der Erde.
+      
+      \item Partikel Dämpfung: \\ Mithilfe des Simulationsparameters \textit{Damping} können alle Partikelbewegungen gedämpft werden, als währen diese in einer Flüssigkeit. Es erwies sich als hilfreich etwas Dämpfung ($0,1$) zu verwenden um das Auftreten von zitternden Bewegungen zu verringern.
+      
+\end{itemize}
+    
+
+\subsubsection{Modellierung der Nadel}
 Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel als Flex-Objekt modelliert, so wie in Abbildung \ref{Needle3} zu sehen. Hierbei wurde darauf geachtet, dass sich die Partikel der Nadel berühren und das Partikelmodel möglichst dünn, beziehungsweise Nadelförmig ist.
 
 \bild{Needle3}{8cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewbe-Modell eingeführt.}
 
-Das Flex-Asset für das simulierte Gewebe wurde als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren \textit{Shape Matching Constraints} realisiert wurde, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
+Eine Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt wurde. In günstigen Situationen bleibt die Nadel dann im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen. 
+Ob die Nadel im Gewebe stecken bleibt hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
+Ist die Gravitationskraft auf die Nadel-Partikel zu groß, fällt die Nadel nahezu ungehindert durch das Gewebe hindurch und schiebt dabei alle Gewebe-Partikel zur Seite. Daher ist darauf zu achten, die Partikelmassen der Nadel entsprechend klein zu halten, damit eine kleine Gravitationskraft auf die Nadel wirkt. Allerdings hat es eine leichte Nadel deutlich schwerer im Gewebe einzudringen. Wenn die Nadel-Partikel deutlich leichter sind als die Gewebe-Partikel, lassen sich die Gewebe-Partikel kaum von den Nadel-Partikeln verschieben.
+
+Um dieses Problem zu lösen wird das Gewicht der Nadel je nach Situation angepasst: Während der Spieler die Nadel in der Hand hält, werden die Massen der Nadel-Partikel erhöht, damit Sie besser in das Gewebe eindringen können. Lässt der Spieler die Nadel los, wird die Masse der Nadel auf einen geringen Wert gesetzt, damit die Gravitationskraft auf die Nadel so klein ist, dass Sie nicht durch das Gewebe hindurch fällt. 
+
+Alternativ kann die Nadel auch an das Gewebe befestigt werden (wie in Kapitel \textbf{XXX} beschrieben), wenn sie sich im Gewebe befindet und losgelassen wird.
+
+%\subsubsection{Parametrisierung für Nadel und Gewebe}
+
+
+%Um das soeben beschriebene Verhalten zwischen Nadel und Gewebe zu erhalten, wurde bei der Modellierung und Parametrisierung auf die folgenden Punkte geachtet: 
+
+%Um das zuvor beschriebene Verhalten zu erreichen müssen bei der Parametrisierung und Modellierung die folgenden Punkte beachtet werden:
+
+%\begin{itemize}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Modellierung des Gewebes:}
+Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. Die folgenden Punkte erwiesen sich bei der Modellierung als wichtig:
+
+    \begin{itemize}
+    
+      \item Partikelabstand, $d$: \\ Die Gewebe-Partikel sollten sich nicht berühren ($d>2r$) sonst können instabile Zustände entstehen, bei denen einzelne Partikel keine Ruheposition (=lokales Minimum im Kräftefeld) mehr finden und dauerhaft umher springen und zittern. Gleichzeitig sollten die Gewebe-Partikel nah genug beisammen sein, damit Nadel-Partikel nicht durch Lücken fallen können, also $d<4r$. 
+      %Ein Partikelabstand zwischen 2r und 3r erwies sich dabei als optimal.
+      
+      \item Irreguläre Anordnung der Partikel: \\ Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu sich Entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiederstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
+      
+      \bild{Tissue1}{8cm}{Links: Partikelanordnung als reguläres 3D Gitter. Rechts: Chaotische Verteilung der Partikel, wobei die Partikeldichte weitestgehend homogen verteilt ist.}
+      
+      \item Keine Eigenkollision im Gewebe: \\ Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstehen häufiger instabile Zustände bei denen Partikel keine Ruheposition finden und zittern.
+      
+    \end{itemize}
+    
+%\end{itemize}%%%%%%%%%%%%%%%%%%%%%
+
+
 
 \subsubsection{Erzieltes Verhalten}
-Dank des zuvor eingeführten kräftebasierten Interaktions-Systems kann die Nadel mit dem Gewebe kollidieren und drückt dann mit einer simulierten Kraft dagegen. 
+%Mithilfe des gegebenen Frameworks konnte nach längerem Experimentieren das folgende Verhalten erreicht werden:
+
+Dank des  kräftebasierten Interaktions-Systems (aus Kapitel \ref{sec_FSystem}) kann die Nadel mit dem Gewebe kollidieren und drückt dann mit einer simulierten Kraft dagegen. 
 %Durch gezielte Positionierung des Motion Controllers kann die Stärke und Richtung der ausgeübten Kraft gezielt justiert werden. 
-Weil das Gewebe verformbar ist, kann die starre Nadel in das Gewebe eingeführt werden, wenn die aufgewendete virtuelle Kraft groß genug ist. Dann drücken die Nadel-Partikel die Gewebe-Partikel zur Seite. Aufgrund der dünnen Form kann die Nadel nur mit axialen Bewegungen in das Gewebe eingeführt werden. Wird sie in einem ungünstigen Winkel eingeführt, kann sie seitlich wegrutschen, ohne in das Gewebe einzudringen (siehe Abbildung \ref{Needle4}). Ein ungünstiger Winkel ist ein besonders flacher Winkel zur Gewebeoberfläche. Dann ist die Richtung der simulierten Interaktionskraft ungünstig und der Kraftanteil, der in das Gewebe hineingeht, zu gering.
+%Weil das Gewebe verformbar ist, kann die starre Nadel in das Gewebe eingeführt werden, wenn die aufgewendete virtuelle Kraft groß genug ist. Dann drücken die Nadel-Partikel die Gewebe-Partikel zur Seite. 
+Ist die Interaktionskraft stark genug, drücken die Nadel-Partikel Gewebe-Partikel zur Seite und die Nadel dringt in das Gewebe ein.
+Aufgrund der dünnen Form kann die Nadel nur mit axialen Bewegungen in das Gewebe eingeführt werden. Wird sie in einem ungünstigen Winkel eingeführt, kann sie seitlich wegrutschen, ohne in das Gewebe einzudringen (siehe Abbildung \ref{Needle4}). Ein ungünstiger Winkel ist ein besonders flacher Winkel zur Gewebeoberfläche. Dann ist die Richtung der simulierten Interaktionskraft ungünstig und der Kraftanteil, der in das Gewebe hineingeht, zu gering.
 
 !!! Zu diskutieren: Ist dieses weg rutschen überhaupt realistisch??? Eine Nadel kann sehr flach angesetzt werden!
 
 %Reibung
-Befindet sich die Nadel im Gewebe, sorgt die von NVIDIA Flex simulierte Partikel-Partikel-Reibung dafür, dass der Spieler noch mehr Kraft aufwenden muss, um die Nadel zu bewegen. Die Gewebe-Partikel, die in Kontakt mit der Nadel sind, haften an der Nadel und bewegen sich mit ihr mit. Dadurch verformt sich das Gewebe ein wenig, wenn die Nadel bewegt wird. Wird die Nadel herausgezogen, wölbt sich das Gewebe nach außen, wird sie hineingeschoben, wölbt sich das Gewebe nach innen (siehe Abbildung \ref{Needle4}).
+Befindet sich die Nadel im Gewebe, sorgt die simulierte Partikel-Reibung und Partikel-Kollision dafür, dass der Spieler noch mehr Kraft aufwenden muss, um die Nadel zu bewegen. Die Gewebe-Partikel, die in Kontakt mit der Nadel sind, haften an der Nadel und bewegen sich mit ihr mit. Dadurch verformt sich das Gewebe wenn die Nadel bewegt wird. Wird die Nadel herausgezogen, wölbt sich das Gewebe nach außen, wird sie hineingeschoben, wölbt sich das Gewebe nach innen (siehe Abbildung \ref{Needle4}).
 
-\bild{Needle4}{10cm}{Oben: Verformung des Gewebes bei axialer Bewegung der Nadel. Unten: Abrutschen der Nadel bei ungünstigem Stechwinkel.}
+\bild{Needle4}{10cm}{Oben: Verformung des Gewebes bei axialer Bewegung der Nadel. Unten links: Abrutschen der Nadel bei ungünstigem Stechwinkel. Unten rechts: Mehrere Nadeln wurden in unterschiedlichen Tiefen und Winkeln in das Gewebe gesteckt.}
 
 %Steckenbleiben der Nadel:
-Eine weitere Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt würde. In günstigen Situationen bleibt die Nadel dann sogar im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen können. 
-Ist die Gravitationskraft auf die Nadel-Partikel zu groß, fällt die Nadel nahezu ungehindert durch das Gewebe hindurch und schiebt dabei alle Gewebe-Partikel zur Seite. Daher ist darauf zu achten, die Partikelmassen der Nadel entsprechend klein zu halten, damit eine kleine Gravitationskraft auf die Nadel wirkt.
-
-\subsubsection{Parametrisierung für Nadel und Gewebe}
-
-LESEZEICHEN!!!!!!
+Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadel-Partikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadel-Partikel einen kurzen Moment von den Kraftfeldern bewegt bis sie ein lokales Minimum finden und dort zur Ruhe kommen.
 
 \section{Weitere Chirurgische Szenarien}
-Häute, schneiden und Reißen, Pinzette
-SPH und Körperflüssigkeiten?
 
+Erwähnen: Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.
 
 
 
