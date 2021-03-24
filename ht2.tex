@@ -82,6 +82,8 @@ Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in d
 
 \subsubsection{Simulationsparameter und Einstellungen: }    
 
+In \cite{PBDKidney} und \cite{BreastBiopsy} wurden bereits sehr gute Simulationseinstellungen gefunden um unterschiedliche Gewebearten realitätsnahe zu simulieren. Die in diesen Arbeiten empfohlenen Simulationseinstellungen wurden daher zum Großteil übernommen.
+
 \begin{itemize}
 
   \item \textit{Sparse Signed Distance Field Collision} sollte deaktiviert sein. \\ 
@@ -91,13 +93,14 @@ Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in d
      
       \item Reibungskoeffizient: \\ Der Parameter \textit{ParticleFriction} bestimmt wie stark die Reibung zwischen Partikeln sein soll. Mit ihm kann gut angepasst werden wie gut sich die Nadel im Gewebe bewegen lässt und wie stark sich das Gewebe heraus- oder herein-wölbt, wenn die Nadel bewegt wird.
       
-      \item Iterations: Wurde auf 3 gesetzt, so wie von \cite{UE4FlexDoc} empfohlen.
+      %in \cite{PBDKidney} und \cite{BreastBiopsy} wird substep 3 und iterations 9 genommen
+      \item Simulation Substeps:  3%, so wie in \cite{PBDKidney} und \cite{BreastBiopsy} empfohlen.
       
-      \item Substeps:  Wurde die auf 3 oder 4 gesetzt. 
+      \item Substep Iterations: 9%, so wie in \cite{PBDKidney} und \cite{BreastBiopsy} empfohlen
       
       \item Gravitation: Wurde auf $(0 , 0 , -980) cm/s^2$ gesetzt, entsprechend der Erde.
       
-      \item Partikel Dämpfung: \\ Mithilfe des Simulationsparameters \textit{Damping} können alle Partikelbewegungen gedämpft werden, als währen diese in einer Flüssigkeit. Es erwies sich als hilfreich etwas Dämpfung ($0,1$) zu verwenden um das Auftreten von zitternden Bewegungen zu verringern.
+      \item Partikel Dämpfung: \\ Mithilfe des Simulationsparameters \textit{Damping} können alle Partikelbewegungen gedämpft werden, als währen diese in einer Flüssigkeit. Es erwies sich als hilfreich etwas Dämpfung (0,1 bis 1) zu verwenden um das Auftreten von zitternden Bewegungen zu verringern.
       
 \end{itemize}
     
@@ -105,7 +108,7 @@ Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in d
 \subsubsection{Modellierung der Nadel}
 Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel als Flex-Objekt modelliert, so wie in Abbildung \ref{Needle3} zu sehen. Hierbei wurde darauf geachtet, dass sich die Partikel der Nadel berühren und das Partikelmodel möglichst dünn, beziehungsweise Nadelförmig ist.
 
-\bild{Needle3}{8cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewbe-Modell eingeführt.}
+\bild{Needle3}{9cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewbe-Modell eingeführt.}
 
 Eine Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt wurde. In günstigen Situationen bleibt die Nadel dann im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen. 
 Ob die Nadel im Gewebe stecken bleibt hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
@@ -136,7 +139,7 @@ Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. D
       
       \bild{Tissue1}{8cm}{Links: Partikelanordnung als reguläres 3D Gitter. Rechts: Chaotische Verteilung der Partikel, wobei die Partikeldichte weitestgehend homogen verteilt ist.}
       
-      \item Keine Eigenkollision im Gewebe: \\ Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstehen häufiger instabile Zustände bei denen Partikel keine Ruheposition finden und zittern.
+      \item Keine Eigenkollision im Gewebe: \\ Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstanden häufiger instabile Zustände bei denen Partikel keine Ruheposition fanden.
       
     \end{itemize}
     
