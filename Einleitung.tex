@@ -3,47 +3,57 @@
 \chapter{Einleitung}
 \label{chap_Einleitung}
 
-teste quellen ref: \cite{SurgSim}
+
 
 \section{Motivation und Problemstellung}
 
 
+% Motivation für Serous Games:
+Die klassische Art, Chirurgie praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Dieser Ansatz wird zunehmend durch rechtliche und ethische Bedenken hinsichtlich der Patientensicherheit, des Zeitbedarfs erfahrener Chirurgen und der Kosten für die OP-Zeit behindert \cite{SurgSim}.
 
-%Das Vorkommen von Tierschwärmen in der Natur ist ein ganz besonderes Phänomen.
-%Es ist beeindruckend, wie ein Schwarm komplexe Problemstellungen löst, indem einzelne Individuen einfache Regeln befolgen. Eine einzelne Ameise erscheint auf den ersten Blick nicht besonders intelligent. Betrachtet man aber den gesamten Ameisenschwarm, ist ein intelligentes Verhalten zu erkennen. Deswegen wird dieses Naturphänomen auch als Schwarmintelligenz bezeichnet.
-%
-%Im Rahmen dieser Bachelorarbeit wird ein Schwarmverhalten simuliert, mit dem Ziel, Schwarmbewegungen als Stilmittel in Videospielen einzusetzen. Die Simulation soll die typischen Bewegungen eines Tierschwarms nachahmen, wie sie zum Beispiel bei Vögel- oder Fischschwärmen vorkommen.
-%
-%Außerdem kann ein menschlicher Spieler mit dem simulierten Schwarm interagieren, wodurch das Spielerlebnis intensiviert werden soll. Damit eine möglichst vielfältige Interaktion mit dem virtuellen Schwarm realisiert werden kann, werden die Schwarmbewegungen in Echtzeit simuliert. 
-%
-%Die Simulationssoftware besteht dabei zum Großteil aus einer Shader-Pipeline und der virtuelle Schwarm wird von Texturen beschrieben. Der in Texturform vorliegende Schwarm wird als Punkte-Wolke dargestellt. Einzelne Individuen sind dann kaum erkennbar, wodurch sich der optische Fokus auf den Schwarm als Gesamtsystem verschiebt. Jedes Individuum ist ein kleiner leuchtender Punkt. Mehrere Individuen können zu einer heller leuchtenden Gruppe verschmelzen.
-%
-%Entstehen soll dabei ein neuartiger Schwarm-Effekt für Videospiele, der durch seine Optik und Interaktivität, an ein intelligentes Lebewesen erinnert.
+Deswegen sind Serius Games in der Medizin wichtige Hilfsmittel um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
 
+% Motivation VR Serous Games:
+Mithilfe von handelsüblichen VR-Geräten und haptischem Feedback können Echtzeitsimulatoren erstellt werden, die besonders immersiv und realistisch wirken. Validierungsstudienergebnisse zeigen, dass solche VR-Anwendungen gut geeignet sind, um medizinische Fachkräfte effektiv für gezielte Operationsverfahren auszubilden \cite{VRSim20}.
+
+%Aufgrund der erfolgreichen Entwicklung von chirurgischen Echtzeitsimulatoren wird in dieser Arbeit un
+
+%Motivation PBD:
+
+LESEZEICHEN!!! Weiter mit Motivation für \ac{PBD}!!!!!
+
+Beliebt im medizinischem bereich weil:
+
+- Einfach (einfacher zu implementieren und zu erweitern auch weil wirs mit punktmassen zutun haben, siehe kapitel xxx!), hohe Effizienz, Stabilität, Echtzeitleistung, 
+
+im Gegensatz zu Kraftbasierte methoden: PBD projiziert Position direkt als Lösung (lösung von constraints) statt Beschleunigungen zu integrieren (um equilibrium confi zu erreichen). Dadurch beseitigt PBD das Überschießproblem. PBD ist nicht so genau wir kraftbasierte Methoden
+
+Kann visuell plausible Ergebnisse liefern \cite{PBDKidney} \cite{BreastBiopsy}, obwohl ungenau .
+
+Wurde schon erfolgreich eingesetzt für:
+
+Simulation von chirurgischen Fäden (nähen, mit haptic feedback) \cite{PBDThread}, 
+der Simulation von laparoskopischen Operationen in VR \cite{VRLaparoscop}, 
+dem chirurgischen Schneiden \cite{PBDCutting}
+und der Simulation von Roboteroperationen \cite{VRRobSim} (auch in VR).
 
 \section{Einordnung und Abgrenzung}
 
-%Um die Bewegungen von Tierschwärmen zu simulieren, hat sich das sogenannte Boid-Modell von Reynolds etabliert. Auch in dieser Arbeit werden seine bekanntesten Werke, \cite{Reynolds87flocks} und \cite{Reynolds99steeringbehaviors}, als Fundament genutzt, um ein Modell für die Simulation aufzustellen.
-%
-%In dieser Arbeit wird nicht versucht, etablierte Techniken für Schwarmsimulationen weiter zu optimieren, wie beispielsweise in \cite{Kennedy95particleswarm}. Stattdessen werden die grundlegenden Prinzipien von Reynolds aufgegriffen um ein neuartiges System zu modellieren, das besonders gut von Shadern und Texturen beschrieben werden kann.
-%
-%Für gewöhnlich wird ein Boid-System wie ein Partikelsystem  behandelt \\ \cite{Reynolds87flocks}, so wie in \cite{Oliver14Tschesche}. In solch einem System ist jedes Individuum des Schwarms ein eigenständiges Objekt, das sich frei im Raum bewegen kann. In dieser Arbeit wird der Schwarm hingegen mithilfe eines Zellensystems beschrieben, in dem jede Zelle örtlich gebunden ist. Jede Zelle kann dabei von mehreren Individuen besucht werden. Im Zellensystem befinden sich keine einzelnen Schwarmtiere, die eindeutig voneinander trennbar sind. Stattdessen \glqq fließt\grqq{} der Schwarm vielmehr, als zum Teil kontinuierlich zusammenhängende Menge, durch das Zellensystem. Das Zellensystem wird dabei von Texturen beschrieben.
-%
-%Der im Rahmen dieser Arbeit entstandene algorithmische Aufwand ist weniger von der Anzahl der simulierten Individuen abhängig, so wie es in \cite{Reynolds87flocks} der Fall ist. Stattdessen steigt hier der Rechenaufwand in Abhängigkeit von der Anzahl der verwendeten Zellen.
-%
-%Reynolds Boid-System wird, wie in \cite{Oliver14Tschesche}, meist mithilfe von Grafikkartenschnittstellen wie \textit{OpenCV} oder \textit{CUDA} berechnet. In dieser Arbeit wird statt dessen auf die Verwendung von herkömmlichen Shadern gesetzt.
-%
-%Schwarmtiere werden für gewöhnlich als einzelne 3D-Modelle dargestellt. Beispielsweise als einzelne Fische \cite{Tu94artificialfishes:} oder Vögel  \cite{Oliver14Tschesche}.
-%In dieser Arbeit erfolgt die Darstellung des Schwarms auf eine andere Weise. Hier sind die Schwarmtiere lediglich kleine Punkte. Einzelne Individuen sind hier kaum erkennbar, weil diese miteinander verschmelzen können. Der in Texturform hinterlegte Schwarm wird von Shadern als Punkte-Wolke dargestellt. Beispielsweise mittels \textit{Texture-Based Volume Rendering} \cite{GPUGems1}.  
-%
+Sehr ähnlich zu \cite{VRSim20}. Unterschied: In \cite{VRSim20} wirkt sich Reaktionskraft auf echtes Werkzeug (haptische Hardware) aus. Hier wird Reaktionskraft auf virtuelles Werkzeug angewandt und Spieler erhält nur visuelles Force Feedback. 
+
+Ist dann zwar Weniger realistisch (das ist natürlich unbestreitbar), dafür kann Software mit jedem handelsüblichen VR-Gerät genutzt werden. Zusätzliche haptische Hardware wird nicht benötigt. Gute VR-Geräte gibts schon für 300 euro, Jede Privatperson die ein VR-Gerät mit PC oder gar PS-VR hat, könnte Trainings-Software nutzen.
+
+Habe Für Gewebe SelfCollision verboten, im Gegensatz zu vielen anderen Arbeiten (\cite{BreastBiopsy} \cite{PBDKidney}).
+
+Einfache Nadel-Gewebe-Interaktion ohne Verletzung oder schneiden, mit virtuellen Kräften auf Nadel (Reibungs und Klemmkräfte, Interaktionskraft usw)
 
 
-
+%Falls bei präsi gefragt: Wie wird kann force feedback berrechnet werden? Siehe Fig. 7 aus \cite{VRSim20} virtuelles Lyaryngoskop (proxy) drückt Partikel ein (Partikel sehen Proxy-Werkzeug als statische Wand die sich nicht verschieben lässt). Vektoren zu Rest-positionen werden gespannt, Durchschnitt, multiplizieren mit stiffnes-faktor für das Gewebe. Genau so hab ichs am Anfang ja auch gemacht, das war aber zu aufwändig und inperformant.
 
 \section{Aufbau dieser Arbeit}
 %... mach ich am Ende...
 
-
+...Mach ich zum Schluss, aber nur wenn es die Betreuer auch haben möchten...
 
 
 

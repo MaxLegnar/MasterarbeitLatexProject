@@ -82,12 +82,96 @@
 
 @Article{PBDKidney,
   author    = {Mafalda Camara · Erik Mayer · Ara Darzi · Philip Pratt},
+  journal   = {International journal of computer assisted radiology and surgery vol. 11},
   title     = {Soft tissue deformation for surgical simulation: a position-based dynamics approach},
   year      = {2016},
   keywords  = {Ultrasound tracking ; Biomechanical model ; Position-based dynamics ; Ultrasound-guided breast biopsy},
   pdf       = {https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4893362/pdf/11548_2016_Article_1373.pdf},
   publisher = {{CrossMark}},
   url       = {https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4893362/},
+}
+
+@Article{VRNeuro,
+  author  = {Ali Alaraj and Michael Lemole and Joshua Finkle and Rachel Yudkowsky and Adam Wallace},
+  journal = {Surgical neurology international vol. 2},
+  title   = {Virtual reality training in neurosurgery: Review of current status and future applications},
+  year    = {2011},
+}
+
+@Article{VRSim20,
+  author  = {Xiao Xiao and Shang Zhao and Yan Meng and Lamia Soghier and Xiaoke Zhang and James Hahn},
+  journal = {Proc IEEE Conf Virtual Real 3D User Interfaces},
+  title   = {A Physics-based Virtual Reality Simulation Framework for Neonatal Endotracheal Intubation},
+  year    = {2020},
+}
+
+@InProceedings{VRLaparoscop,
+  author    = {Qian, Kun and Bai, Junxuan and Yang, Xiaosong and Pan, Junjun and Zhang, Jianjun},
+  booktitle = {Proceedings of the 21st ACM Symposium on Virtual Reality Software and Technology},
+  title     = {Virtual Reality Based Laparoscopic Surgery Simulation},
+  year      = {2015},
+  address   = {New York, NY, USA},
+  pages     = {69–78},
+  publisher = {Association for Computing Machinery},
+  series    = {VRST '15},
+  abstract  = {With the development of computer graphic and haptic devices, training surgeons with virtual reality technology has proven to be very effective in surgery simulation. Many successful simulators have been deployed for training medical students. However, due to the various unsolved technical issues, the laparoscopic surgery simulation has not been widely used. Such issues include modeling of complex anatomy structure, large soft tissue deformation, frequent surgical tools interactions, and the rendering of complex material under the illumination of headlight. A successful laparoscopic surgery simulator should integrate all these required components in a balanced and efficient manner to achieve both visual/haptic quality and a satisfactory refreshing rate. In this paper, we propose an efficient framework integrating a set of specially tailored and designed techniques, ranging from deformation simulation, collision detection, soft tissue dissection and rendering. We optimize all the components based on the actual requirement of laparoscopic surgery in order to achieve an improved overall performance of fidelity and responding speed.},
+  doi       = {10.1145/2821592.2821599},
+  isbn      = {9781450339902},
+  keywords  = {collision detection, deformation, dissection, laparoscopic surgery, rendering},
+  location  = {Beijing, China},
+  numpages  = {10},
+  url       = {https://doi.org/10.1145/2821592.2821599},
+}
+
+@Article{PBDCutting,
+  author  = {I. {Berndt} and R. {Torchelsen} and A. {Maciel}},
+  journal = {IEEE Computer Graphics and Applications},
+  title   = {Efficient Surgical Cutting with Position-Based Dynamics},
+  year    = {2017},
+  number  = {3},
+  pages   = {24-31},
+  volume  = {37},
+  doi     = {10.1109/MCG.2017.45},
+}
+
+@Article{VRRobSim,
+  author   = {Heredia-Pérez, Saúl A. and Harada, Kanako and Padilla-Castañeda, Miguel A. and Marques-Marinho, Murilo and Márquez-Flores, Jorge A. and Mitsuishi, Mamoru},
+  journal  = {The International Journal of Medical Robotics and Computer Assisted Surgery},
+  title    = {Virtual reality simulation of robotic transsphenoidal brain tumor resection: Evaluating dynamic motion scaling in a master-slave system},
+  year     = {2019},
+  note     = {e1953 RCS-17-0137.R1},
+  number   = {1},
+  pages    = {e1953},
+  volume   = {15},
+  abstract = {Abstract Background Integrating simulators with robotic surgical procedures could assist in designing and testing of novel robotic control algorithms and further enhance patient-specific pre-operative planning and training for robotic surgeries. Methods A virtual reality simulator, developed to perform the transsphenoidal resection of pituitary gland tumours, tested the usability of robotic interfaces and control algorithms. It used position-based dynamics to allow soft-tissue deformation and resection with haptic feedback; dynamic motion scaling control was also incorporated into the simulator. Results Neurosurgeons and residents performed the surgery under constant and dynamic motion scaling conditions (CMS vs DMS). DMS increased dexterity and reduced the risk of damage to healthy brain tissue. Post-experimental questionnaires indicated that the system was well-evaluated by experts. Conclusion The simulator was intuitively and realistically operated. It increased the safety and accuracy of the procedure without affecting intervention time. Future research can investigate incorporating this simulation into a real micro-surgical robotic system.},
+  doi      = {https://doi.org/10.1002/rcs.1953},
+  eprint   = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/rcs.1953},
+  url      = {https://onlinelibrary.wiley.com/doi/abs/10.1002/rcs.1953},
+}
+
+@InProceedings{PBDThread,
+  author    = {Kubiak, Blazej and Pietroni, Nico and Ganovelli, Fabio and Fratarcangeli, Marco},
+  booktitle = {Proceedings of the 2007 ACM Symposium on Virtual Reality Software and Technology},
+  title     = {A Robust Method for Real-Time Thread Simulation},
+  year      = {2007},
+  address   = {New York, NY, USA},
+  pages     = {85–88},
+  publisher = {Association for Computing Machinery},
+  series    = {VRST '07},
+  abstract  = {In this paper, we present a physically based model for real-time simulation of thread dynamics. Our model captures all the relevant aspects of the physics of the thread, including quasi-zero elasticity, bending, torsion and self-collision, and it provides output forces for the haptic feedback. The physical properties are modeled in terms of constraints that are iteratively satisfied while the numerical integration is carried out through a Verlet scheme. This approach leads to an unconditionally stable, controllable and computationally light simulation [M\"{u}ller et al. 2007]. Our results demonstrate the effectiveness of our model, showing the interaction of the thread with other objects in real time and the creation of complex knots.},
+  doi       = {10.1145/1315184.1315198},
+  isbn      = {9781595938633},
+  keywords  = {physically based animation, surgical simulation},
+  location  = {Newport Beach, California},
+  numpages  = {4},
+  url       = {https://doi.org/10.1145/1315184.1315198},
+}
+
+@Article{SimRole,
+  author  = {Roberta Rehder and Muhammad Abd-Elbarr and Kristopher Hooten and Peter Weinstock and Joseph Madsen and Alan Cohen},
+  journal = {Childs Nerv Syst. 2016},
+  title   = {The role of simulation in neurosurgery},
+  year    = {2016},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

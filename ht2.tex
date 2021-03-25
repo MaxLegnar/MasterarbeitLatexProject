@@ -25,6 +25,8 @@ Um die Immersion der VR-Anwendung zu erhöhen wäre es allerdings besser, wenn e
 
 Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung weniger realistisch.
 
+HIER EVT NOCH EINE SOFTWAREÜBERSICHT EINFÜGEN!!! so wie in \cite{VRSim20}, da wurds sehr schön gemacht!
+
 \subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
 Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
 
@@ -64,7 +66,7 @@ Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}
 
 \subsubsection{Experimentelle Parametrisierung für Gewebe}
 
-Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werden kann
+Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werden kann, mittels Gewichte die auf Gewebe gelegt werden.
 
 \section{Nadel-Gewebe Interaktion}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec_needle}
@@ -74,9 +76,9 @@ Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werde
 %In dieser Arbeit wurde auch untersucht ob mit Flex und UE4 Nadel-Gewebe Interaktionen realisiert werden können. %Grundsätzlich gelingt dies, allerdings kann es viel Zeit in Anspruch nehmen, die korrekten Simulationsparameter zu finden. 
 In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt um in VR Nadeln in ein Gewebe hinein zu stecken. 
 
-Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten getan werden muss (BEISPIEL PAPER REFERENZIEREN).
+Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten getan werden muss (so wie in \cite{PBDCutting}, beispielsweise).
 
-Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren \textit{Shape Matching Constraints} realisiert wird, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
+Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren Cluster basierten \textit{Shape Matching Constraints} realisiert wird, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
 
 Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in denen bereits gute Simulationsparameter für unterschiedliche Gewebearten ermittelt wurden.
 
