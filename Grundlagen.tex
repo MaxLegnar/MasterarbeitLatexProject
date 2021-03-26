@@ -2,11 +2,13 @@
 zuerst Anforderungen klären, dann theoretische Grundlagen und benutzte Software Werkzeuge erläutern...
 
 \section{Serious Games in der Medizin}
-Was sind Serious Games, was gibts da so bis jetzt im medizinischen Bereich?
+%Was sind Serious Games, was gibts da so bis jetzt im medizinischen Bereich?
 
-was wird da benutzt? meist partikel basiert, technischen stand klären...
+%was wird da benutzt? meist partikel basiert, technischen stand klären...
 
-Übersicht: \cite{SurgSim}
+%Übersicht: \cite{SurgSim}
+
+
 
 In \cite{SimRole} wird zwischen Physical models (tote tiere, puppen) Virtual reality simulators (stereoscpische goggles, haptic feedback) und Mixed-reality simulator 
 
@@ -35,7 +37,20 @@ Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA erwähnen
 \subsection{Position Based Dynamics}
 \label{section_PBD}
 
+Beliebt im medizinischem bereich weil:
 
+- Einfach (einfacher zu implementieren und zu erweitern auch weil wirs mit punktmassen zutun haben, siehe kapitel xxx!), hohe Effizienz, Stabilität, Echtzeitleistung, 
+
+im Gegensatz zu Kraftbasierte methoden: PBD projiziert Position direkt als Lösung (lösung von constraints) statt Beschleunigungen zu integrieren (um equilibrium confi zu erreichen). Dadurch beseitigt PBD das Überschießproblem. PBD ist nicht so genau wir kraftbasierte Methoden
+
+Kann visuell plausible Ergebnisse liefern \cite{PBDKidney} \cite{BreastBiopsy}, obwohl ungenau .
+
+Wurde schon erfolgreich eingesetzt für:
+
+Simulation von chirurgischen Fäden (nähen, mit haptic feedback) \cite{PBDThread}, 
+der Simulation von laparoskopischen Operationen in VR \cite{VRLaparoscop}, 
+dem chirurgischen Schneiden \cite{PBDCutting}
+und der Simulation von Roboteroperationen \cite{VRRobSim} (auch in VR).
 
 
 \subsection{Erweiterungen von PBD}
