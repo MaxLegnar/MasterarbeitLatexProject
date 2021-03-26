@@ -9,7 +9,7 @@
 
 
 % Motivation für Serous Games:
-Die klassische Art, in der Chirurgie praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere hunderte durchgeführte Operationen. Dieser Ansatz wird zunehmend durch rechtliche und ethische Bedenken hinsichtlich der Patientensicherheit, des Zeitbedarfs erfahrener Chirurgen und der Kosten für die OP-Zeit behindert \cite{SurgSim}.
+Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Dieser Ansatz wird zunehmend durch rechtliche und ethische Bedenken hinsichtlich der Patientensicherheit, des Zeitbedarfs und der Kosten für die OP-Zeit behindert \cite{SurgSim}.
 
 Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
 
@@ -20,7 +20,8 @@ Die Simulationstechnik \ac{PBD} \cite{PBD} hat sich bereits in vielen Arbeiten a
 Aufgrund der guten Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX \cite{UPP}) genutzt um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die fast alle restlichen Elemente implementiert, die für Serious Games im chirurgischem Bereich benötigt werden. Dabei werden einige zusätzliche Elemente methodisch entwickelt und implementiert um die vorhandene Game- und Physik-Engine um zusätzliche Funktionalitäten zu erweitern, die für chirurgische Simulatoren nützlich sein könnten (Kapitel \ref{chap_Flex_Engine}).
 
 % Motivation VR Serous Games:
-Mithilfe von VR-Geräten und haptischem Feedback können Echtzeitsimulatoren erstellt werden, die besonders immersiv und realistisch wirken. Validierungsstudienergebnisse zeigen, dass VR-Anwendungen mit haptischem Feedback gut geeignet sind, um medizinische Fachkräfte effektiv für gezielte Operationsverfahren auszubilden \cite{VRSim20}.
+\ac{VR} spielt für Serous Games auch eine wichtige Rolle. Mit einem handelsüblichen \ac{HMD} kann die virtuelle Umgebung nämlich besonders immersiv dargestellt werden.
+Mithilfe von VR-Geräten und haptischem Feedback können Echtzeitsimulatoren erstellt werden, die besonders immersiv und realistisch wirken. Validierungsstudienergebnisse zeigen, dass VR-Anwendungen mit haptischem Feedback gut geeignet sein können, um medizinische Fachkräfte effektiv für bestimmte Operationsverfahren auszubilden \cite{VRSim20}.
 
 % Überleitung problemstellung 2:
 In dieser Arbeit wird hingegen eine Methode präsentiert, mit der chirurgische VR-Simulatoren ohne haptisches Feedback erstellt werden können. Der Nutzer benötigt nur eine handelsübliche VR-Anlage 

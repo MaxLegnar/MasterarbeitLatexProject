@@ -174,4 +174,11 @@
   year    = {2016},
 }
 
+@Misc{VRmagic,
+  howpublished = {\url{vrmagic.com/medical-simulators/eyesi-surgical}},
+  note         = {aufgerufen: 14:57, 26 März 2021},
+  title        = {VRmagic Webseite},
+  year         = {2021},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
