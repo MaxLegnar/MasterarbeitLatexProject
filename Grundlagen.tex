@@ -9,65 +9,116 @@
 
 Unter Serous Games versteht man Videospiele die nicht der reinen Unterhaltung dienen, sondern primär zum Lernen und Trainieren eingesetzt werden (REF???).
 
-Vor allem in der Chirurgie können Serious Games in Form von chirurgischen Simulationen eingesetzt werden, um Personal auf bestimmte Operationen vorzubereiten. Dabei geht es nicht nur darum, Operationsabläufe zu verinnerlichen. Auch die motorischen Fähigkeiten und das motorische Gedächtnis des Spielers wird dabei trainiert. 
+Vor allem in der Chirurgie werden immer häufiger Serious Games in Form von chirurgischen Simulationen eingesetzt, um Personal auf bestimmte Operationen vorzubereiten und auszubilden. Dabei geht es nicht nur darum, Operationsabläufe zu verinnerlichen. Auch die motorischen Fähigkeiten und das motorische Gedächtnis des Spielers wird dabei trainiert. So kann die Sicherheit der Patienten und die Ausbildungszeit verbessert werden \cite{SimRole}.
 
 %par Simulatoren als Beispiel:
 In \cite{VRSim20} wird beispielsweise ein VR-Simulator für die neonatale endotracheale Intubation entwickelt, weil niedrige Intubationserfolgsraten darauf hinweisen, dass das derzeitige Trainingsprogramm nicht ausreicht, um positive Erfolgsraten zu erzielen (siehe Abbildung \ref{VRSim20}).
 
 \bild{VRSim20}{14cm}{Aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Lyaryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Lyaryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnehmen kann.}
 
+Aus diversen Studien geht hervor, dass VR-Simulatoren mit haptischem Feedback besonders gute Lernefeckte erzielen \cite{VRHapticSim}.
+
 Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen entstanden die sich auf dieses Gebiet spezialisiert haben. Beispielsweise stellt die Firma \textit{VRmagic} \cite{VRmagic} Simulatoren für die intraokulare Chirurgie her. In Abbildung \ref{SurSim2} ist der Simulator \textit{Eyesi Surgical} von VRmagic zu sehen. Wie man in der Abbildung rechts sieht, werden hierfür virtuelle Werkzeuge und ein virtuelles Auge fotorealistisch gerendert.
 
-\bild{SurSim2}{14cm}{Aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Position und Orientierung des Werkzeugs wird mittels entsprechender Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
+\bild{SurSim2}{14cm}{Aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
 
-Die wichtigste Anforderung von solchen Simulatoren ist die Echtzeitfähigkeit. LESEZEICHEN!!! HIER WEITER!!!...
+Eine wichtige Anforderung von solchen Simulationen ist die Echtzeitfähigkeit. In der Regeln wird eine Bildwiederholungsrate von mindestens 30Hz benötigt %\cite{SimUpdate}
+, damit eine Animation realistisch wirkt. %wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
+Für realistisches Force Feedback benötigt die haptische Hardware sogar eine Aktualisierungsrate von 1kHz \cite{SimUpdate}. 
 
-%...In \cite{SimRole} wird zwischen Physical models (tote tiere, puppen) Virtual reality simulators (stereoscpische goggles, haptic feedback) und Mixed-reality simulator ...
+%Somit können Physik Engines schnell an ihre Grenzen kommen, weil diese nicht nur sehr schnell, sondern auch ausreichen genau und realistisch simulieren müssen. 
+Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulationsgenauigkeit Abstriche gemacht werden \cite{SimUpdate}.
 
-
+%Um zumindest der erforderlichen Bildwiederholungsrate nachkommen zu können, werden meistens P
 
 \section{Anforderungen}
 \label{sec_Anforderungen}
 Folgende Anforderungen werden an das zu entwickelnde System und dieser Arbeit gestellt: ...
 
-\subsubsection{Interaktion und Echtzeit}
+\subsubsection{Modularität}
+
+Dadurch einfacher, übersichtlicher, austauschbar, erweiterbar...
+
+\subsubsection{Interaktion}
 ...
 
 \subsubsection{Performance}
+Hier wird 90Hz benötigt, das sind xx ms, fürs rendern wird ca xx ms benötigt, bleibt xx ms für simulation...
 
 \subsubsection{Simulationsgenauigkeit}
 Muss nicht so gut sein.
 
-\section{Simulationstechniken und Physik Engines für chirurgische Simulatoren}
-Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA erwähnen, SOFA
+\subsubsection{Funktionale Anforderungen}
+...
+
+\section{Simulationsmethoden und Physik Engines für chirurgische Simulatoren}
+%Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA, SOFA...
+
+\subsubsection{Physik Engines für chirurgische Simulatoren}
+
+Wie bereits erwähnt werden für chirurgische Physik Simulationen vor allem schnelle Rechenergebnisse benötigt, während die Simulationsgenauigkeit geringere Priorität hat. Es reicht aus wenn die Simulation rein optisch einen realistischen Eindruck vermittelt.
+
+%... inzwischen werden immer häufiger auch Soft Bodies unterstützt?
+
+Deswegen können Physik Engines, die für Videospiele konzipiert wurden, für chirurgische Simulatoren eingesetzt werden. Solche Physik Engines sind bereits auf eine gute Echtzeitfähigkeit ausgelegt und konnten beispielsweise in \cite{SimUpdate} erfolgreich für chirurgische Simulationen eingesetzt werden. 
+Im Computerspielebereich werden häufig die Physik Engines NVIDIA PhysX oder Havok eingesetzt. 
+%Solche Physik Engines reichen allein aber nicht für chirurgische Simulatoren aus, weil sie in der Regel nur traditionelle Rigid Body Simulationen unterstützen. Für chirurgische Simulatoren werden neben Rigid Body- auch Soft Body- Simulationen benötigt, beispielsweise für elastisches Gewebe. 
+
+Physik Engines führen ihre Simulationen in der Regel auf der Grafikkarte oder SIMD-Recheneinheiten aus um die Berechnungen zu parallelisieren. Dadurch kann die Simulation um ein vielfaches beschleunigt werden.
+
+Geläufige Physik Engines, vor allem NVIDIA PhysX, sind bereits in den meisten Game Engines integriert, beispielsweise in der Game Engine Unreal Engine 4. 
+%Weil Game Engines auch weitere wichtige Elemente implementieren, die für chirurgische Simulatoren benötigt werden, bietet es sich an Game Engines zu verwenden
+
+Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren interessant um Körperflüssigkeiten zu simulieren.
+
 \subsection{Position Based Dynamics}
 \label{section_PBD}
 
-Beliebt im medizinischem bereich weil:
+Position Based Dynamics (PBD), aus dem Werk \cite{PBD}, ist eine Partikelsystem-basierte Simulationsmethode, die sich vor allem durch eine gute Echtzeitfähigkeit, Stabilität und Vielseitigkeit auszeichnet. Mit Vielseitigkeit ist gemeint, dass mit nur einem Solver (\textit{PBD-Solver}) unterschiedlichste Simulationen ausgeführt werden können. Beispielsweise können Rigid Bodies, Soft Bodies, Flüssigkeiten, Stoffe und weitere Objekte simuliert werden. 
 
-- Einfach (einfacher zu implementieren und zu erweitern auch weil wirs mit punktmassen zutun haben, siehe kapitel xxx!), hohe Effizienz, Stabilität, Echtzeitleistung, 
+%vorteile einheitlicher solver
+Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können dann Objekte unterschiedlicher Art (Soft Bodies, Flüssigkeiten, etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
 
-im Gegensatz zu Kraftbasierte methoden: PBD projiziert Position direkt als Lösung (lösung von constraints) statt Beschleunigungen zu integrieren (um equilibrium confi zu erreichen). Dadurch beseitigt PBD das Überschießproblem. PBD ist nicht so genau wir kraftbasierte Methoden
+PBD konnte bereits in vielen Arbeiten erfolgreich für chirurgische Simulationen eingesetzt werden. Beispielsweise in \cite{PBDThread} für chirurgisches Nähen, in \cite{VRLaparoscop} für laparoskopische Operationen, in \cite{PBDCutting} für chirurgisches Schneiden oder in \cite{VRRobSim} für die roboterunterstützte Chirurgie. PBD konnte auch erfolgreich für die realitätsnahe Echtzeitsimulation unterschiedlicher Gewebearten eingesetzt werden. Beispielsweise für die Simulation von Brustgewebe \cite{BreastBiopsy} oder Nierengewebe \cite{PBDKidney}.
 
-Kann visuell plausible Ergebnisse liefern \cite{PBDKidney} \cite{BreastBiopsy}, obwohl ungenau .
+\subsubsection{Grundprinzip}
 
-Wurde schon erfolgreich eingesetzt für:
+%partikelsystem:
+\ac{PBD} besteht grundlegend aus einem Partikelsystem. Dabei hat jedes Partikel eine Position, $p_i$, eine Geschwindigkeit, $v_i$, eine invertierte Masse, $w_i$ und eine Phasennummer für Kollisionsfilterung. 
+%Partikelsysteme werden in Videospielen häufig eingesetzt, daher wurden Grafikkarten für die parallelisierte Verarbeitung von Partikelsystemen optimiert. 
 
-Simulation von chirurgischen Fäden (nähen, mit haptic feedback) \cite{PBDThread}, 
-der Simulation von laparoskopischen Operationen in VR \cite{VRLaparoscop}, 
-dem chirurgischen Schneiden \cite{PBDCutting}
-und der Simulation von Roboteroperationen \cite{VRRobSim} (auch in VR).
+%Grundprinzip und Eigenschaften:
+Ein Objekt besteht dann aus $N$ Partikeln die über $M$ \textit{Constraints} miteinander verbunden sind. Durch Formulierung unterschiedlicher Constraint-Funktionen, $C_j, j \in [1,...,M] $, können benachbarte Partikel auf unterschiedliche Weise aufeinander reagieren. Ein Constraint kann sich auf nur ein Partikel oder auf mehrere beziehen.
+%So können unterschiedlichste physikalische Effekte erstellt werden. 
+Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(p_1,p_2) = |p_1-p_2|-d \stackrel{!}{=} 0$, auf elastische Weise miteinander verbunden werden. Ein Distance Constraint verhält sich sehr ähnlich wie eine Feder, an dessen Enden zwei Punktmassen befestigt sind. Der einheitliche PBD-Solver löst das Distance Constraint dann mit einer sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $p_1$ \& $p_2$, so projiziert werden, dass $C(p_1,p_2) = 0$. 
+%Grundsätzlich wird zwischen einem \textit{equality Constraint}, $C=0$, und einem \textit{inequality Constraint}, $C \geq 0$, unterschieden. Ein Kollisions-Constraint ist beispielsweise ein \textit{inequality Constraint}.
+
+Im Vergleich zu kräftebasierten Simulationsmethoden (via Jacobi Iterationen), bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. Die größten Vorteile von PBD entstehen durch die Constraint Projection. Bei diesem Prozess erhält man nämlich direkt eine projizierte Position als Ergebnis, während bei der Jacobi Iteration Beschleunigungen integriert werden. 
+%Weil nur Positionen projiziert werden, wird das Überschießproblem beseitigt (gute Stabilität) und außerdem kann die Gauss-Seidel Iteration wiederholt auf alle Constraints angewandt werden obwohl die Lösung eines Constraints eine nicht lineare Operation ist.
+Weil bei PBD direkt eine Position als Lösung projiziert wird,
+%statt Beschleunigungen zu integrieren 
+wird das Überschießproblem, das bei kraft basierten Methoden auftritt, beseitigt. Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
+Dafür können mit kraft basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
+
+%Frage: Wie kann Gaus Seidel zum Lösen genutzt werden, wenn die meisten Constraints nicht linear sind? -> Gauss Seidel, bzw Constraint Projection, wird mehrmals durchgeführt. Das geht weil hier Positionen projiziert werden. Man braucht nur wenige iterationen, nur so 5-10. Bei HPBD nurnoch ca 2. In UPP wird Projection für paralellisierung optimiert.
+
+\subsubsection{Constraint Projection}
+%arbeitsweise des solvers / constraint projection:
+Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
+
+\begin{equation}
+C(p+\Delta p) \approx C(p) + \nabla_p C(p) \cdot \Delta p = 0
+\label{form_C}
+\end{equation}
+
 
 
 \subsection{Erweiterungen von PBD}
 \subsubsection{HPBD}
+Durch bestimmte Lösungsreihenfolge der Constraints sind weniger SolverIterations notwendig, meist reichen 2 (vorher 5-10).
 
 \subsubsection{Unified Particle Dynamics und NVIDIA Flex}
 zu erwähnen über \cite{UPP} und Flex: 
-
-Partikel sind über constraints miteinander verbunden.
-
-Unified solver gut weil es einfacher zu handeln ist. Nur ein solver muss optimiert werden und vor allem weil dann objekte unterschiedlicher Art (soft, rigid, fluid) miteinander interagieren (collision constraint gillt für alle) können, aut of the box, in Echtzeit.
 
 single particle radius sorgt für effizentere kollisionserkennen (wieso? nochmal nachlesen!)
 
