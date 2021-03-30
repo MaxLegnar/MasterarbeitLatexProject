@@ -2,13 +2,13 @@
 \chapter{NVIDIA FleX und Unreal Engine 4 für Serious Games}
 \label{chap_Flex_Engine}
 
-In diesem Kapitel wird die verwendete Unreal Engine 4 mit FleX-integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
+In Kapitel \ref{chap_Flex_Engine} wird die verwendete Unreal Engine 4 mit FleX-integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
 
 Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serious Games unverzichtbar ist, wird direkt präsentiert, wie die fehlende Funktionalität implementiert wurde.
 
 %nicht ändern, nur erweitern:
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
-In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Unreal Integration. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
+In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Software. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
 \subsubsection{Über Unreal Engine 4 mit Flex integration (evt in Grundlagen kapitel)}
 
@@ -272,7 +272,7 @@ Wobei $\Delta t$ der derzeitige Zeitschritt der Flex-Simulation ist.
 %Um eine Kraft auf ein komplettes Flex-Objekt zu wirken, wird $\Delta \vec{v_i}$ auf all seine Partikel angewandt. 
 %Um die gesamte Kraft, die auf ein Flex-Objekt wirkt, zu berechnen, müssen alle Partikelkräfte, $F_i$ summiert werden.
 
-Mit dieser einfachen Methode können Flex-Objekte überraschend realistisch umher geschoben werden. Wird eine Kraft von $(0 , 0 , 9.81 )$ Newton auf ein Flex-Objekts mit einer Masse von 1 kg angewandt, wirkt es schwerelos (bei $g=(0 , 0 , -9.81 )$). Das zeigt, dass alle Einheiten korrekt berechnet wurden.
+Mit dieser einfachen Methode können Flex-Objekte realistisch umher geschoben werden. Wird eine Kraft von $(0 , 0 , 9.81 )$ Newton auf ein Flex-Objekts mit einer Masse von 1 kg angewandt, wirkt es schwerelos (bei $g=(0 , 0 , -9.81 )$). Das zeigt, dass alle Einheiten korrekt berechnet wurden.
 
 %Die Masse eines Flex-Objekts ergibt sich durch die Summe all seiner $n$ Partikelmassen, beziehungsweise durch $n \cdot m_p$, wenn alle Partikelmassen, $m_p$, gleich groß sind.
 

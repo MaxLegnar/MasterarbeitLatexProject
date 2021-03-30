@@ -181,4 +181,18 @@
   year         = {2021},
 }
 
+@Article{VRHapticSim,
+  author  = {Karan Rangarajan and Heather Davis and Philip Pucher},
+  title   = {Systematic Review of Virtual Haptics in Surgical Simulation: A Valid Educational Tool?},
+  journal = {Journal of surgical education},
+  year    = {2020},
+}
+
+@Article{SimUpdate,
+  author  = {Anderson Maciel and Tansel Halic and Zhonghua Lu and Luciana Nedel and Suvranu De},
+  title   = {Using the PhysX engine for physics-based virtual surgery with force feedback},
+  journal = {The International Journal of Medical Robotics and Computer Assisted Surgery},
+  year    = {2009},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

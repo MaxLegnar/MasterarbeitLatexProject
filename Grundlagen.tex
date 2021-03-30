@@ -23,11 +23,11 @@ Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen 
 \bild{SurSim2}{14cm}{Aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
 
 Eine wichtige Anforderung von solchen Simulationen ist die Echtzeitfähigkeit. In der Regeln wird eine Bildwiederholungsrate von mindestens 30Hz benötigt %\cite{SimUpdate}
-, damit eine Animation realistisch wirkt. %wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
+, damit die Simulation optisch realistisch wirkt. %wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
 Für realistisches Force Feedback benötigt die haptische Hardware sogar eine Aktualisierungsrate von 1kHz \cite{SimUpdate}. 
 
 %Somit können Physik Engines schnell an ihre Grenzen kommen, weil diese nicht nur sehr schnell, sondern auch ausreichen genau und realistisch simulieren müssen. 
-Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulationsgenauigkeit Abstriche gemacht werden \cite{SimUpdate}.
+Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulationsgenauigkeit Abstriche gemacht werden. %\cite{SimUpdate}.
 
 %Um zumindest der erforderlichen Bildwiederholungsrate nachkommen zu können, werden meistens P
 
@@ -74,55 +74,83 @@ Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist 
 \subsection{Position Based Dynamics}
 \label{section_PBD}
 
-Position Based Dynamics (PBD), aus dem Werk \cite{PBD}, ist eine Partikelsystem-basierte Simulationsmethode, die sich vor allem durch eine gute Echtzeitfähigkeit, Stabilität und Vielseitigkeit auszeichnet. Mit Vielseitigkeit ist gemeint, dass mit nur einem Solver (\textit{PBD-Solver}) unterschiedlichste Simulationen ausgeführt werden können. Beispielsweise können Rigid Bodies, Soft Bodies, Flüssigkeiten, Stoffe und weitere Objekte simuliert werden. 
+Position Based Dynamics (PBD) \cite{PBD}, ist eine Partikelsystem-basierte Simulationsmethode, die sich vor allem durch eine gute Echtzeitfähigkeit, Stabilität und Vielseitigkeit auszeichnet. Mit Vielseitigkeit ist gemeint, dass mit nur einem Solver (\textit{PBD-Solver}) unterschiedlichste Simulationsarten ausgeführt werden können. Beispielsweise können Rigid Bodies, Soft Bodies, Flüssigkeiten, Stoffe und weitere Objektarten simuliert werden. 
 
 %vorteile einheitlicher solver
-Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können dann Objekte unterschiedlicher Art (Soft Bodies, Flüssigkeiten, etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
+Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können Objekte unterschiedlicher Art (Soft Bodies, Flüssigkeiten, etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
 
 PBD konnte bereits in vielen Arbeiten erfolgreich für chirurgische Simulationen eingesetzt werden. Beispielsweise in \cite{PBDThread} für chirurgisches Nähen, in \cite{VRLaparoscop} für laparoskopische Operationen, in \cite{PBDCutting} für chirurgisches Schneiden oder in \cite{VRRobSim} für die roboterunterstützte Chirurgie. PBD konnte auch erfolgreich für die realitätsnahe Echtzeitsimulation unterschiedlicher Gewebearten eingesetzt werden. Beispielsweise für die Simulation von Brustgewebe \cite{BreastBiopsy} oder Nierengewebe \cite{PBDKidney}.
 
-\subsubsection{Grundprinzip}
+\subsubsection{Grundprinzip von PBD}
 
 %partikelsystem:
 \ac{PBD} besteht grundlegend aus einem Partikelsystem. Dabei hat jedes Partikel eine Position, $p_i$, eine Geschwindigkeit, $v_i$, eine invertierte Masse, $w_i$ und eine Phasennummer für Kollisionsfilterung. 
 %Partikelsysteme werden in Videospielen häufig eingesetzt, daher wurden Grafikkarten für die parallelisierte Verarbeitung von Partikelsystemen optimiert. 
 
 %Grundprinzip und Eigenschaften:
-Ein Objekt besteht dann aus $N$ Partikeln die über $M$ \textit{Constraints} miteinander verbunden sind. Durch Formulierung unterschiedlicher Constraint-Funktionen, $C_j, j \in [1,...,M] $, können benachbarte Partikel auf unterschiedliche Weise aufeinander reagieren. Ein Constraint kann sich auf nur ein Partikel oder auf mehrere beziehen.
+Ein Objekt besteht dann aus $N$ Partikeln die über $M$ \textit{Constraints} miteinander verbunden sind. Durch Formulierung unterschiedlicher Constraint-Funktionen, $C_j, j \in [1,...,M] $, können $n$ Partikel auf unterschiedliche Weise aufeinander reagieren. $n$ ist die Kardinalität eines Constraints und gibt an, auf wie viele Partikel es sich bezieht.
+%Ein Constraint kann sich auf nur ein Partikel oder auf mehrere beziehen.
 %So können unterschiedlichste physikalische Effekte erstellt werden. 
-Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(p_1,p_2) = |p_1-p_2|-d \stackrel{!}{=} 0$, auf elastische Weise miteinander verbunden werden. Ein Distance Constraint verhält sich sehr ähnlich wie eine Feder, an dessen Enden zwei Punktmassen befestigt sind. Der einheitliche PBD-Solver löst das Distance Constraint dann mit einer sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $p_1$ \& $p_2$, so projiziert werden, dass $C(p_1,p_2) = 0$. 
-%Grundsätzlich wird zwischen einem \textit{equality Constraint}, $C=0$, und einem \textit{inequality Constraint}, $C \geq 0$, unterschieden. Ein Kollisions-Constraint ist beispielsweise ein \textit{inequality Constraint}.
+Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(p_1,p_2) = |p_1-p_2|-d \stackrel{!}{=} 0$, auf elastische Weise miteinander verbunden werden (Kardinalität $n=2$). Ein Distance Constraint verhält sich sehr ähnlich wie eine Feder, an dessen Enden zwei Punktmassen befestigt sind. Mit Distance-Constraints können also Soft Bodys als Masse-Feder Modelle simuliert werden. Der PBD-Solver löst alle Distance Constraint bei der sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $p_1$ \& $p_2$, so projiziert werden, dass das Constraint erfüllt ist, das heißt das $C(p_1,p_2) = 0$. 
 
-Im Vergleich zu kräftebasierten Simulationsmethoden (via Jacobi Iterationen), bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. Die größten Vorteile von PBD entstehen durch die Constraint Projection. Bei diesem Prozess erhält man nämlich direkt eine projizierte Position als Ergebnis, während bei der Jacobi Iteration Beschleunigungen integriert werden. 
-%Weil nur Positionen projiziert werden, wird das Überschießproblem beseitigt (gute Stabilität) und außerdem kann die Gauss-Seidel Iteration wiederholt auf alle Constraints angewandt werden obwohl die Lösung eines Constraints eine nicht lineare Operation ist.
+%Im Vergleich zu kräftebasierten Simulationsmethoden, bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. 
+Die größten Vorteile von PBD entstehen durch die Constraint Projection. 
+%Bei diesem Prozess werden direkt projizierte Position als Ergebnis geliefert, während bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) Beschleunigungen integriert werden. 
 Weil bei PBD direkt eine Position als Lösung projiziert wird,
 %statt Beschleunigungen zu integrieren 
-wird das Überschießproblem, das bei kraft basierten Methoden auftritt, beseitigt. Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
-Dafür können mit kraft basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
+wird das Überschießproblem, das bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) auftritt, beseitigt. 
+%Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
+Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-%Frage: Wie kann Gaus Seidel zum Lösen genutzt werden, wenn die meisten Constraints nicht linear sind? -> Gauss Seidel, bzw Constraint Projection, wird mehrmals durchgeführt. Das geht weil hier Positionen projiziert werden. Man braucht nur wenige iterationen, nur so 5-10. Bei HPBD nurnoch ca 2. In UPP wird Projection für paralellisierung optimiert.
+Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein Density-Constraint definiert. Dieses Constraint projiziert benachbarte Fluid-Partikel so, dass das System eine möglichst konstante Dichte beibehält.
 
-\subsubsection{Constraint Projection}
+%Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
+
+%Grundsätzlich wird zwischen einem \textit{equality Constraint}, $C=0$, und einem \textit{inequality Constraint}, $C \geq 0$, unterschieden. Ein Kollisions-Constraint ist beispielsweise ein \textit{inequality Constraint}.
+
+\subsubsection{Lösungsverfahren von PBD}
 %arbeitsweise des solvers / constraint projection:
-Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
+%Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
+
+Um alle Constraints zu lösen, wird das Gauss-Seidel verfahren auf einen Satz Constraint-Gleichungen, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[p_1^T,...p_n^T]^T$ sei.
+% Bei Gauss-Seidel müssen zuerst gute Startwerte gewählt werden damit der Algorithmuss möglichst schnell convergiert.
+Als Startwerte für die gesuchten $N$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $p_i = x_i + \Delta t \cdot v_i$, ergeben. 
+
+Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun eine Korrektion, $\Delta p$, so dass $C(p+\Delta p)=0$. 
+%Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
+
+Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \cite{PBD} $C(p+\Delta p$ wie folgt linearisiert:
 
 \begin{equation}
 C(p+\Delta p) \approx C(p) + \nabla_p C(p) \cdot \Delta p = 0
 \label{form_C}
 \end{equation}
 
+Dabei soll $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet sein. Das heißt es wird ein Skalar, $\lambda$, gesucht, so das Gleichung \ref{form_lambda} erfüllt wird \cite{PBD}
 
+\begin{equation}
+\Delta p = \lambda \nabla_p C(p)
+\label{form_lambda}
+\end{equation}
 
-\subsection{Erweiterungen von PBD}
-\subsubsection{HPBD}
-Durch bestimmte Lösungsreihenfolge der Constraints sind weniger SolverIterations notwendig, meist reichen 2 (vorher 5-10).
+Durch Kombination von Gleichung \ref{form_C} und \ref{form_lambda} ergibt sich für $\Delta p$:
 
-\subsubsection{Unified Particle Dynamics und NVIDIA Flex}
+\begin{equation}
+\Delta p = - \frac{C(p)}{|\nabla_p C(p)|^2} \nabla_p C(p) 
+\label{form_db}
+\end{equation}
+
+Nachdem alle Constraints gelöst wurden, wird $p$ mit $\Delta p$ aktualisiert, woraufhin die nächste Iteration startet. Nach einer fixen Anzahl von Lösungs-Iterationen wird der Gauss-Seidel Algorithmus abgeschlossen. Die mehrmals projizierten Partikelpositionen werden übernommen und die Partikelgeschwindigkeiten werden mit $\Delta v = \Delta p / \Delta t$ aktualisiert.
+
+Dieser Algorithmus konvergiert in der Regal nach 5 bis 10 Iterationen. Die Konvergierungsgeschwindigkeit konnte später in den Werken \textit{Hierarchical Position Based Dynamics} \cite{Mller2008HierarchicalPB} und \textit{Unified Particle Physics for Real-Time Applications} \cite{UPP} weiter optimiert werden. Mit der PBD-basierten Physik Engine NVIDIA FleX können schon mit 2 Iterationen optisch zufriedenstellende Ergebnisse erzielt werden.Unified Particle Physics for Real-Time Applications
+
+\subsubsection{Unified Particle Dynamics und NVIDIA FleX}
+
+Mit dem Werk \textit{Unified Particle Dynamics} \cite{UPP} lieferte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX, die auf PBD aufbaut.
+
 zu erwähnen über \cite{UPP} und Flex: 
 
 single particle radius sorgt für effizentere kollisionserkennen (wieso? nochmal nachlesen!)
-
-Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
 solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
