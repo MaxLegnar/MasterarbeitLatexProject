@@ -10,17 +10,6 @@ Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von S
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
 In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Software. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
-\subsubsection{Über Unreal Engine 4 mit Flex integration (evt in Grundlagen kapitel)}
-
-Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA Flex 1.2. 
-
-% Funktionalitäten:
-So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA Flex, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygon-Modelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygon-Modelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt werden.
-
-% Doku und Lizenz:
-Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von github bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Source Code nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
-
-
 
 \section{Performance}
 
@@ -41,13 +30,14 @@ Für diese Arbeit und für alle durchgeführten Messungen und Tests stand die Ha
 \clearpage
 
 \begin{table}[]
+\centering
 \caption{Die verwendete Hardware für diese Arbeit.}
 \label{table_hardware}
 \begin{tabular}{l|l}
  \hline
 CPU & Intel Core i7-9700K  \\ \hline
 GPU & NVIDIA GTX 1070 - 8GB GDDR5      \\ \hline
-RAM & 4 x 8GB DDR4            \\ \hline
+RAM & 32GB DDR4            \\ \hline
 \end{tabular}
 \end{table}
 
@@ -79,7 +69,7 @@ Folgenden Simulationsparameter wurden eingesetzt (siehe Abbildung \ref{PerfGTX1S
 
 Für alle Messungen wurde der Simulationsparameter \textit{Sleep Threshold} auf einen negativen Wert gesetzt, um zu verhindern, dass zu langsame Partikel von der Simulation ausgeschlossen werden.
 
-Alle Messungen wurden mithilfe des Befehls \textit{stat flex} ermittelt. In \cite{UE4FlexDoc} unter \url{gameworksdocs.nvidia.com/FleX/1.2/ue4_docs/FLEXUe4_Debug.html} kann nachgeschlagen werden, was die gemessenen und gezeigten Attribute bedeuten.
+%Alle Messungen wurden mithilfe des Befehls \textit{stat flex} ermittelt. In \cite{UE4FlexDoc} unter \url{gameworksdocs.nvidia.com/FleX/1.2/ue4_docs/FLEXUe4_Debug.html} kann nachgeschlagen werden, was die gemessenen und gezeigten Attribute bedeuten.
 
 \subsubsection{Messergebnisse}
 
@@ -92,13 +82,19 @@ In Abbildung \ref{PerfGTX1} sind die Messdaten zu sehen, die sich ergaben.
 Zu den Messdaten sei gesagt, dass \textit{Solve Sync Time} mithilfe der CPU gemessen wurde. \textit{Solve Sync Time} repräsentiert also nicht nur die Zeit, die der Flex-Solver benötigt, sondern zusätzlich die CPU-GPU Synchronisierungszeit. Dennoch ist dies ein gutes Maß für die Performance von NVIDIA Flex. 
 
 Zur gemessenen Performance: 
-Die Messungen zeigen eindeutig, dass NVIDIA Flex besonders gut für Echtzeitanwendungen geeignet ist. Selbst bei 70000 simulierten Partikeln (134 Soft Bodies) benötigt der Flex Solver durchschnittlich nur 1 ms zum Lösen aller Constraints, wobei er maximal 2,5 ms benötigt, was immer noch im akzeptablen Bereich liegt. 
+Die Messungen zeigen eindeutig, dass NVIDIA Flex besonders gut für Echtzeitanwendungen geeignet ist. Selbst bei 70000 simulierten Partikeln (und 134 Soft Bodies) benötigt der Flex Solver durchschnittlich nur 1 ms zum Lösen aller Constraints, wobei er maximal 2,5 ms benötigt, was immer noch im akzeptablen Bereich für eine realistische Optik liegt. 
 
-In Abbildung \ref{PerfGTX1} zeigt die Linie \textit{SumAvg} an, wie lange der gesamte Simulationsprozess im Durchschnitt gedauert hat. Der gesamte Simulationsprozess ergibt sich aus den Zeiten der folgenden Arbeitsschritte, summiert (Abbildung \ref{PerfStats}):
+%In Abbildung \ref{PerfGTX1} zeigt die Linie \textit{SumAvg} an, wie lange der gesamte Simulationsprozess im Durchschnitt gedauert hat. Der gesamte Simulationsprozess ergibt sich aus den Zeiten der folgenden Arbeitsschritte, summiert (Abbildung \ref{PerfStats}):
 
-\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc} -> Das hier evt nur als Anlage???}
+%\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc} -> Das hier evt nur als Anlage???}
 
-Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit 120 \ac{FPS} gerendert werden, bei einer Auflösung von ca. 1080p. So ist noch ausreichend Luft für größere Auflösungen, die vor allem im für VR-Anwendungen benötigt werden. So wie in \cite{FlexD3D} bereits erwähnt, hat die Anzahl der simulierten Partikel einen geringen Einfluss auf die Geschwindigkeit des Solvers.
+Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit 120 \ac{FPS} gerendert werden, bei einer Auflösung von ca. 1080p. 
+%Mit einer Oculus Quest 2 konnte die Szene stets mit 90 FPS bei einer Auflösung von \textbf{XXX} dargestellt werden. 
+So wie in \cite{FlexD3D} bereits erwähnt, 
+%hat die Anzahl der simulierten Partikel einen geringen Einfluss auf die Geschwindigkeit des Solvers.
+skaliert die Simulationsgeschwindigkeit nur schwach mit der Partikelanzahl.
+
+
 
 %Auch wenn die Messungen viel versprechen, wird sich erst am Ende dieser Arbeit zeigen (siehe Kapitel \ref{chap_Szenarien}), ob NVIDIA Flex für Serious Games im chirurgischen Bereich geeignet ist.
 
@@ -109,9 +105,9 @@ Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit
 In der Einleitung von \cite{UE4FlexDoc} wird bereits darauf hingewiesen, dass die Unreal Integration noch nicht weit genug entwickelt ist, um Gameplay-beeinflussende Physikszenarios zu erstellen. In diesem Kapitel wird genauer untersucht, welche   Funktionalitäten  die Unreal Integration bereits bietet und welche noch fehlen. 
 %Hierfür gehen wir nach und nach alle funktionalen Anforderungen aus Kapitel \textbf{XXX} durch und kontrollieren, ob Anforderungen fehlen oder nur teilweise vorhanden sind.
 
-\subsection{Synchronisation mit Flex Simulation}
+%\subsection{Synchronisation mit Flex Simulation}
 
-... kommt evt raus, ist ja nicht so wichtig....
+%... kommt evt raus, ist ja nicht so wichtig....
 
 \subsection{Transformationsmanipulationen}
 
@@ -123,9 +119,9 @@ Die Unreal Engine bietet hierfür den Datentyp \textit{FTransform} und die Bibli
 
 Bei der Unreal Engine mit Flex Integration wurde das Transformations-Framework nur teilweise für Flex-Objekte angepasst. Obwohl alle FlexComponents eine eigene Transformation vom Typ FTransform besitzen, kann diese weder relativ noch absolut gesetzt werden. Die beiden Funktionen \textit{SetWorldTransform()} und \textit{SetRelativeTransform()} haben keine Auswirkung auf FlexComponents.
 
-Diese wichtige Funktionalität muss also noch hinzugefügt werden. Dabei wollen wir das bereits bestehende Transformations-Framework der Unreal Engine nutzen.
+Diese wichtige Funktionalität muss also noch hinzugefügt werden. Dabei wird das bereits bestehende Transformations-Framework der Unreal Engine benutzt.
 
-\subsubsection{\textit{SetWorldTransform()}}
+\subsubsection{\textit{SetWorldTransform}}
 
 Um die Welt-Transformation eines Flex-Objekts zu ändern, müssen die Positionen all seiner Partikel mithilfe einer homogenen Transformationsmatrix, $T_{world}$, transformiert werden. Über die NVIDIA FleX Bibliothek können die lokalen Positionen, $\vec{p}_{local}$, der Partikel eines Flex-Assets 
 %(\textit{float* NvFlexExtInstance::NvFlexExtAsset::particles}) % das hier evt weg machen!!!!
@@ -142,8 +138,8 @@ Soll ein Flex-Objekt  über einen längeren Zeitraum entlang einer Trajektorie b
 
 Weil bewegte Partikel von der Simulation ausgeschlossen werden, erscheinen bewegte Weichkörper starr. Um bewegte Weichkörper weiterhin elastisch erscheinen zu lassen, wird nur eine Teilmenge der Partikel bewegt. Dann erscheint nur ein Teil des bewegten Körpers starr und der Rest bleibt elastisch und folgt den bewegten Partikeln.
 
-\subsubsection{\textit{SetRelativeTransform()}}
-
+\subsubsection{\textit{SetRelativeTransform}}
+\label{subsubsec_reltrans}
 Um ein Partikel relativ zu einer Parent-Szene zu bewegen (\textit{SetRelativeTransform()}), wird zunächst die allgemeine Situation aus Abbildung \ref{Transform1} betrachtet:
 
 % eventuel streichen!
@@ -158,7 +154,7 @@ Gegeben sei die Welt-Transformation einer Parent-Szene, $T_{parent}$ und die gew
 
 Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene Matrix-Vektor-Multiplikationen und sollten daher effizient von heutiger Hardware gelöst werden können. Außerdem kann die Berechnung der Partikelpositionen parallelisiert werden.
 
-\subsection{Attachment}
+\subsection{Befestigung von FleX Objekten}
 
 %Soft joint gibts
 
@@ -166,36 +162,38 @@ Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene
 
 %3D-modelle und ShapeComponents (box capsule sphere) lassen sich an FlexComponents befestigen, aber nicht einzelne partikel
 
-TODO!!!!!!
-
 Für gewöhnlich arbeiten Game Engines mit sogenannten Scene Trees um 3D-Objekte hierarchisch zu organisieren (REFERENZ). Dabei repräsentiert jedes 3D-Objekt einen Knoten im Scene Tree. 3D-Objekte werden aneinander befestigt, so das sich eine Baumstruktur bildet, in der die Kinderobjekte an ihre Elternobjekte befestigt sind. Ändert sich die Transformation eines Elternknotens, bewegen sich all seine Kinderobjekte mit. 
 
-\bild{SceneTree}{10cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
+\bild{SceneTree}{8cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
 
 Die Struktur eines Scene Trees lässt sich zur Laufzeit eines Spiels ändern, indem 3D-Objekte per Funktionsaufruf von ihren Eltern gelöst (\textit{Detach()}) oder an andere 3D-Objekte befestigt (\textit{AttachTo(NewParent)}) werden. Diese beiden Funktionen werden in Computerspielen häufig benötigt, beispielsweise damit der Spieler 3D-Objekte aufheben (\textit{AttachTo(Hand)}) und wieder loslassen (\textit{Detach()}) kann.
 
 \subsubsection{Befestigung von Flex-Partikeln an Szenen}
 
-In der Unreal Integration können einzelne Flex-Partikel an ein SceneComponent befestigt werden. Hierfür stehen allerdings nur Funktionen zur Verfügung, bei denen alle Partikel, die sich innerhalb einer Kugel befinden, befestigt werden. Auf Grundlage dieser Funktion wurden daher weitere Funktionen angelegt, um einzelne Partikel via Partikelindex an SceneComponents befestigen zu können.
+In der Unreal Integration können mehrere Flex-Partikel an eine Szene befestigt werden. Hierfür stehen allerdings nur Funktionen zur Verfügung, bei denen alle Partikel, die sich innerhalb einer Kugel befinden, befestigt werden. Auf Grundlage dieser Funktion wurden daher weitere Funktionen angelegt, um einzelne Partikel via Partikelindex an SceneComponents befestigen zu können.
 
-Des weiteren musste eine Funktion zum Lösen von befestigten Partikel angelegt werden (\textit{DetachAllFlexParticles()}), weil auch solch eine Funktionalität fehlte.
+Um ein Flex-Partikel an eine Szene zu befestigen, muss dessen inverse Masse, $w$, auf 0 gesetzt werden. Dann hat das Partikel eine unendlich große Masse und kann nicht mehr von der FleX Simulation bewegt werden. 
+Gegeben sei außerdem die Position, $\vec{p}_{local}$, die das Partikel relativ zur Szene beibehalten soll. Immer wenn sich die Szene bewegt, wird die Weltposition, $\vec{p}_{new}$, des befestigten Partikels so verändert, dass die relative Position $\vec{p}_{local}$ unverändert bleibt.
+$\vec{p}_{new}$ kann mithilfe von Gleichung \ref{form_reltransf} aus Kapitel \ref{subsubsec_reltrans} berechnet werden.
+
+%Des weiteren musste eine Funktion zum Lösen von befestigten Partikel angelegt werden (\textit{DetachAllFlexParticles()}), weil auch solch eine Funktionalität fehlte.
 
 
 %%% EVT noch genauer beschreiben wie genau das Befestigen funktioniert...
 
-\subsubsection{Befestigung von SceneComponents an Flex-Objekte}
+\subsubsection{Befestigung von Szenen an Szenen}
 
-Funktioniert out of the box ABER: Kollisionseinstellungen des FlexComponents darf nicht auf nocollision iengestellt sein! Besser Kollision erlauben, dafür alle channels auf ignore setzen.
+Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Befestigen von Szenen oder anderen 3D Objekten an ein Flex-Objekt. Allerdings drehen sich Szenen nicht mit Soft Bodies mit. Nur die Position der befestigten Szenen wird angepasst, während die Rotation unverändert bleibt. 
 
-Funktioniert schon ganz gut, wobei 3D-modelle nicht mit soft bodies rotieren...
+Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktioniert.
 
-Fehlte:  Klasse die sich an einzelne partikel anhängen kann...
+Diese Problemstellung könnte interessant für nachfolgende Arbeiten sein.
 
 \subsubsection{Befestigung von Flex-Objekte an Flex-Objekte}
 
-siehe SoftJoint
+Grundsätzlich kann ein Flex-Partikel an ein anderes Partikel befestigt werden, indem die inverse Masse des befestigten Partikels auf 0 gesetzt wird und dessen Position stets auf die Position des anderen Partikels gesetzt wird. Dann wird allerdings keine physik mehr für das befestigte Partikel simuliert. Im Rahmen dieser Arbeit wurde dies allerdings nicht erwünscht. In vielen Fällen sollten zwar zwei Flex-Objekte aneinander befestigt werden, allerdings sollten sich beide physikalisch realistisch verhalten. 
 
-...
+Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekte hergestellt werden. Solche Verbindungen heißen dann \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
 
 \subsection{Kollisionserkennung}
 
@@ -221,13 +219,13 @@ Die separaten Kollisionskörper werden dann so konfiguriert, dass sie keine Phys
 
 An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwischen unterschiedlichen Berührungen unterscheiden zu können. Beispielsweise um zu erkennen ob die Klinge oder der Griff eines Skalpells etwas berührt hat.
 
-Hier evt nochmal ein Bild mit komplexeren Kollisionskörpern für Klinge, Griff, Kanülenspitze, Hauptader usw...
+%Hier evt nochmal ein Bild mit komplexeren Kollisionskörpern für Klinge, Griff, Kanülenspitze, Hauptader usw...
 
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
 \subsection{Interaktion zwischen Flex und PhysX}
 
-
+LESEZEICHEN!!!!
 %Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  
 Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodys, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also sowohl FleX-Simulationen, als auch PhysX-Simulationen ausgeführt werden. Nun stellt sich die Frage ob und wie FleX-Objekte mit PhysX-Objekte interagieren können.

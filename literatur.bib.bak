@@ -195,4 +195,11 @@
   year    = {2009},
 }
 
+@InProceedings{Mller2008HierarchicalPB,
+  author    = {M. M{\"u}ller},
+  booktitle = {VRIPHYS},
+  title     = {Hierarchical Position Based Dynamics},
+  year      = {2008},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

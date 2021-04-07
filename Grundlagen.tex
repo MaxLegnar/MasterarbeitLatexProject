@@ -1,6 +1,7 @@
 \chapter{Grundlagen}
 
 \section{Serious Games in der Medizin}
+\label{sec_SeriousGames}
 %Was sind Serious Games, was gibts da so bis jetzt im medizinischen Bereich?
 
 %was wird da benutzt? meist partikel basiert, technischen stand klären...
@@ -31,25 +32,29 @@ Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulatio
 
 %Um zumindest der erforderlichen Bildwiederholungsrate nachkommen zu können, werden meistens P
 
-\section{Anforderungen}
-\label{sec_Anforderungen}
-Folgende Anforderungen werden an das zu entwickelnde System und dieser Arbeit gestellt: ...
+%\section{Softwareanforderungen}
+%\label{sec_Anforderungen}
+%Folgende Anforderungen werden an das System, das im Rahmen dieser Arbeit entwickelt wird, gestellt:
+%
+%\subsubsection{Modularität}
+%
+%Die Software soll aus Modulen bestehen, die ohne viel Aufwand austauschbar und erweiterbar sind. Durch Implementierung neuer Module kann das System zukünftig erweitert werden. Durch die Modularität soll die Software auch übersichtlicher werden und einfacher zu verstehen sein.
+%
+%Hierfür bietet es sich an, auf das Component-System von der Unreal Engine aufzubauen (siehe \textit{\url{docs.unrealengine.com/en-US/Basics/Components}}). Ein \textit{Actor}-Abkömmling kann mit einem \textit{ActorComponent} ausgestattet werden, um ihm eine neue Fähigkeit zu verleihen.
+%
+%\subsubsection{Performance}
+%Hier wird 90Hz benötigt, das sind xx ms, fürs rendern wird ca xx ms benötigt, bleibt xx ms für simulation...
+%
+%\subsubsection{Simulationsgenauigkeit}
+%Muss nicht so gut sein, wie bereits in Kapitel \ref{sec_SeriousGames} erwähnt.
+%
+%\subsubsection{Werkzeug-Gewebe Interaktion in VR}
+%Intuitives benutzen und Greifen mit Motion Controller, Bewegung via Teleportation, Kollision mit Umgebung.
+%
+%\subsubsection{Nadel-Gewebe}
+%Reibungswiderstand, Nadel bleibt stecken.
 
-\subsubsection{Modularität}
 
-Dadurch einfacher, übersichtlicher, austauschbar, erweiterbar...
-
-\subsubsection{Interaktion}
-...
-
-\subsubsection{Performance}
-Hier wird 90Hz benötigt, das sind xx ms, fürs rendern wird ca xx ms benötigt, bleibt xx ms für simulation...
-
-\subsubsection{Simulationsgenauigkeit}
-Muss nicht so gut sein.
-
-\subsubsection{Funktionale Anforderungen}
-...
 
 \section{Simulationsmethoden und Physik Engines für chirurgische Simulatoren}
 %Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA, SOFA...
@@ -151,27 +156,30 @@ Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem bei dem alle Part
 \label{form_lambda2}
 \end{equation}
 
-\subsubsection{Unified Particle Dynamics und NVIDIA FleX}
+\subsection{Unified Particle Dynamics und NVIDIA FleX}
 
-Mit der Veröffentlichung des Werks \textit{Unified Particle Dynamics} \cite{UPP} lieferte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  FleX ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
-Zuerst lief FleX 1.0 nur auf NVIDIA Grafikkarten, weil die Bibliothek CUDA als Voraussetzung benötigte. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, weswegen nun auch andere Grafikkarten FleX nutzen können (siehe \cite{FlexD3D}).
+Mit der Veröffentlichung des Werks \textit{Unified Particle Dynamics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
+Zuerst lief FleX 1.0 nur auf NVIDIA Grafikkarten, weil die Bibliothek CUDA als Voraussetzung benötigte. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
 
 In vielen Arbeiten in denen chirurgische Simulationen Thema sind, wird FleX verwendet (\cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} ...). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen, auf Basis von gegebenen Polygonmodellen.
 
-Auch in dieser Arbeit werden chirurgischen Simulationen mithilfe von FleX implementiert.
-
+%Auch in dieser Arbeit werden chirurgischen Simulationen mithilfe von FleX implementiert.
+\subsubsection{Lösungsverfahren}
 Die wohl wichtigste Neuerung aus \cite{UPP} ist, dass nicht mehr der sequenziell arbeitende Gauss-Seidel Algorithmus verwendet wird. Stattdessen wird auf Gauss-Jacobi gesetzt um die Constraint-Projektionen besser parallelisieren zu können. Allerdings gibt es einige Fälle, bei denen der Gauss-Seidel Algorithmus nicht konvergiert \cite{UPP}.
 %z.b. wenn 2 partikel über identisches constraint verbunden sind.
-Dieses Problem wird mithilfe eines Prinzips namens \textit{Constraint Averaging} gelöst \cite{UPP}. Dabei werden zuerst alle Constraints parallel verarbeitet und die Korrekturpositionen, $\Delta \textbf{p}_i$, akkumuliert. Nach einer Iteration wird die finale Korrekturposition, $\Delta \widetilde{\textbf{p}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
+Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{successive over-relaxation - SOR}) \cite{UPP}. Hierfür werden zuerst alle Constraints parallel verarbeitet und die Korrekturvektoren, $\Delta \textbf{x}_i$, akkumuliert. Nach einer Iteration werden die finalen Korrekturvektoren, $\Delta \widetilde{\textbf{x}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
 
 \begin{equation}
-\Delta \widetilde{\textbf{p}}_i = \frac{1}{n_i} \Delta \textbf{p}_i
+\begin{split}
+\Delta \widetilde{\textbf{x}}_i = \frac{\omega}{n_i} \Delta \textbf{x}_i \\
+\text{mit }  1 \leq \omega \leq 2
+\end{split}
 \label{form_LocRel}
 \end{equation}
 
--Mit $n_i$ = Anzahl der Constraints, die auf Partikel $i$ wirken.
+-Mit $n_i$ = Anzahl der Constraints, die auf Partikel $i$ wirken. $\omega$ ist ein globaler Parameter mit dem sich die Intensität der sukzessiven Überentspannung justiert lässt.
 
-
+Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten in der Praxis keine optisch wahrnehmbaren Fehler auf \cite{UPP}.
 
 % !!!!!! evt erwähnen: Einheitlicher Radius !!!!!!
 %single particle radius sorgt für effizentere kollisionserkennen (wieso? nochmal nachlesen!)
@@ -181,7 +189,18 @@ Dieses Problem wird mithilfe eines Prinzips namens \textit{Constraint Averaging}
 %solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
 
+\subsubsection{Unreal Engine 4 mit Flex integration}
 
+Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA Flex 1.2. 
+
+% Funktionalitäten:
+So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA Flex, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygon-Modelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygon-Modelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt werden.
+
+% Doku und Lizenz:
+Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von github bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
+
+\subsection{Weitere Simulationsmethoden und Physik Engines}
+... PhysX, SOFA, Masse-Feder-Modelle [8]...
 
 %\section{Verwendete Software}
 %
