@@ -3,15 +3,25 @@
 \chapter{Einleitung}
 \label{chap_Einleitung}
 
+Notizen:
 
+Wichtig: Es ist eine Arbeit, bei der es darum geht, zuerst das 
+
+Potential der position-based dynamics auszuloten und 
+
+(auch sehr wichtig) die Lücken, die da noch sind, zu füllen – das ist ein wichtiger Teil der Arbeit. 
+
+Danach kommt das Anwendungsbeispiel, das so gestrickt ist, dass man paradigmatisch demonstriert, wie das in einer chirurgischen Simulation genutzt werden kann. 
+
+Wichtig: Am Ende soll herauskommen, dass die Möglichkeiten und Grenzen von Flex klar sind und dass die Komponenten, die benötigt werden, um aus dem Potential wirklich etwas Nutzbares zu generieren, auch klar gegliedert und strukturiert genannt sind – das „Handbuch“ würde in den Anhang kommen. Damit ist es möglich, dass Folgeprojekte mit relativ wenig diese Methoden nutzen können, um konkrete Probleme zu lösen – genannt können hier einmal das Projekt Brachysimulator und einmal die Bachelorarbeit zum System on Chip.
 
 \section{Motivation und Problemstellung}
 
 
 % Motivation für Serous Games:
-Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Dieser Ansatz wird zunehmend durch rechtliche und ethische Bedenken hinsichtlich der Patientensicherheit, des Zeitbedarfs und der Kosten für die OP-Zeit behindert \cite{SurgSim}.
+Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen mit Tieren, meist Schweine, war früher eine gängige Praxis (REFFF???). Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken, sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
 
-Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
+Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel geworden um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
 
 %Motivation PBD:
 Die Simulationstechnik \ac{PBD} \cite{PBD} hat sich bereits in vielen Arbeiten als vielversprechende Simulationstechnik für chirurgische Simulatoren erwiesen (siehe Kapitel \ref{section_PBD} für einige Beispiele). 
@@ -62,10 +72,12 @@ Bei der Nadel-Gewebe-Interaktion wird das Partikelmodel des Gewebes nicht verän
 
 %Falls bei präsi gefragt: Wie wird kann force feedback berrechnet werden? Siehe Fig. 7 aus \cite{VRSim20} virtuelles Lyaryngoskop (proxy) drückt Partikel ein (Partikel sehen Proxy-Werkzeug als statische Wand die sich nicht verschieben lässt). Vektoren zu Rest-positionen werden gespannt, Durchschnitt, multiplizieren mit stiffnes-faktor für das Gewebe. Genau so hab ichs am Anfang ja auch gemacht, das war aber zu aufwändig und inperformant.
 
+
+
 \section{Aufbau dieser Arbeit}
 %... mach ich am Ende...
 
-...Mach ich zum Schluss, aber nur wenn es die Betreuer auch haben möchten...
+%...Mach ich zum Schluss, aber nur wenn es die Betreuer auch haben möchten...
 
 
 

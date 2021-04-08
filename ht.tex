@@ -1,4 +1,3 @@
-
 \chapter{NVIDIA FleX und Unreal Engine 4 für Serious Games}
 \label{chap_Flex_Engine}
 
@@ -8,7 +7,8 @@ Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von S
 
 %nicht ändern, nur erweitern:
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
-In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Software. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
+In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer Softwareelemente realisiert, nicht durch Veränderung der zugrundeliegenden Software. Dadurch können neue Versionen der Unreal Integration problemlos verwendet werden, durch einfaches Austauschen. 
+%So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
 
 \section{Performance}
@@ -189,7 +189,7 @@ Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil 
 
 Diese Problemstellung könnte interessant für nachfolgende Arbeiten sein.
 
-\subsubsection{Befestigung von Flex-Objekte an Flex-Objekte}
+\subsubsection{Befestigung von Flex-Partikel an Flex-Partikel}
 
 Grundsätzlich kann ein Flex-Partikel an ein anderes Partikel befestigt werden, indem die inverse Masse des befestigten Partikels auf 0 gesetzt wird und dessen Position stets auf die Position des anderen Partikels gesetzt wird. Dann wird allerdings keine physik mehr für das befestigte Partikel simuliert. Im Rahmen dieser Arbeit wurde dies allerdings nicht erwünscht. In vielen Fällen sollten zwar zwei Flex-Objekte aneinander befestigt werden, allerdings sollten sich beide physikalisch realistisch verhalten. 
 
@@ -223,14 +223,25 @@ An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwi
 
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
-\subsection{Interaktion zwischen Flex und PhysX}
+\subsection{Interaktion zwischen elastischen FleX-Objekte und PhysX-Objekte}
 
-LESEZEICHEN!!!!
 %Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  
-Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodys, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also sowohl FleX-Simulationen, als auch PhysX-Simulationen ausgeführt werden. Nun stellt sich die Frage ob und wie FleX-Objekte mit PhysX-Objekte interagieren können.
+Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodies, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also  FleX-Simulationen und PhysX-Simulationen gleichzeitig ausgeführt werden. Nun stellt sich die Frage, ob und wie elastische  FleX-Objekte mit PhysX-Objekte interagieren können.
 
-TODO...
+Bei der verwendeten Unreal Integration können PhysX Objekte grundsätzlich mit FleX Objekte kollidieren. Allerdings üben Flex Objekte keine Kräfte auf PhysX Objekte aus. FleX Objekte sehen PhysX Objekte als statische Kollisionskörper, die nicht verschoben werden können. Dies führt zu Situationen, wie in Abbildung \ref{PhsXInteraction} links abgebildet: Kollidiert ein PhysX Objekt (weiße Kugel) mit einem Flex Objekt (blaue Kugel), wird das FleX Objekt vom PhysX Objekt ungehindert weg geschoben oder gar überrollt, wie in der Abbildung zu sehen. Weil ein FleX Objekt keine Reaktionskraft auf das PhysX Objekt ausüben kann, bewegt sich das PhysX Objekt ungehindert weiter, als würde überhaupt keine Kollision mit einem anderen Objekt stattfinden.
+
+\bild{PhsXInteraction}{10cm}{Links: Das PhysX Objekt (weiße Kugel) überrollt ungehindert das elastische FleX Objekt (blaue Kugel), weil FleX Objekte keine Kraft auf PhysX Objekte ausüben. Rechts: Die fehlende Reaktionskraft auf das PhysX Objekt wird anhand der Verformung des Flex-Objekts ausgerechnet und angewandt. Nun prallt das PhysX Objekt vom Flex Objekt ab und verursacht nur eine geringe Verformung.}
+
+Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf auf das PhysX Objekt wirkt, berechnet und angewandt werden. 
+%Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
+%Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
+Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf folgender Idee: 
+
+Wenn ein PhysX Objekt mit einem elastischem FleX Objekt kollidiert, verursacht das PhysX Objekt eine Verformung beim FleX Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX Objekt. Für die Flex Partikel des Flex Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
+%Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
+
+Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex Objekts gewichtet. Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. Danke des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX Objekts auf die Simulation aus: Je schwerer ein PhysX Objekt, desto stärker kann es Flex Objekte eindrücken.
 
 \subsection{Kräfte und Momente}
 
