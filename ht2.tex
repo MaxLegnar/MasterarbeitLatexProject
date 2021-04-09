@@ -2,7 +2,7 @@
 \label{chap_Szenarien}
 
 %Welche Use Cases habe ich implementiert und wie? Und wie klappte das?
-In Kapitel \ref{chap_Flex_Engine} wurde die Unreal Engine 4 mit Flex Integration funktional erweitert, damit sie sich besser für die Implementation von chirurgischen Simulatoren eignet. 
+In Kapitel \ref{chap_Flex_Engine} wurde die Unreal Engine 4 mit Flex Integration erweitert, damit sie sich besser für die Implementation von chirurgischen Simulatoren eignet. 
 
 Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulatoren zu testen, werden in diesem Kapitel einige Szenarien implementiert, die für chirurgische Simulatoren interessant sein könnten.
 
@@ -10,12 +10,15 @@ Durch Evaluierung der implementierten Szenarien können die Möglichkeiten und G
 
 %In Diesem Kapitel werden Testszenarien implementiert, die für chirurgische Simulatoren interessant sein könnten. Dabei kann experimentell untersucht werden, ob die erweiterte Unreal Integration für Serious Games im medizinischen Bereich geeignet ist.
 
-\section{Soft Body Interaktion mit simulierten Kräften}
+\section{Gewebe Interaktion mit virtuellen Werkzeugen}
 \label{sec_FSystem}
-%Idee und Umsetzung von “VR-Physics2.0”, wie ich es genannt habe
 
+Das sich simuliertes Gewebe aus einer FleX-Simulation optisch realistisch verhält, wurde bereits in einigen Arbeiten gezeigt (siehe Kapitel \ref{section_PBD}). Für diese Arbeiten wurden vor allem die Werke \cite{PBDKidney} und \cite{BreastBiopsy} als Leitfaden genutzt um realistisches Gewebe als FleX-Objekt zu modellieren und um geeignete Simulationsparameter zu finden.
+
+\subsection{Soft Body Interaktion ohne haptisches Feedback}
 Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
 
+\subsubsection{Problemstellung}
 Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die des Motion Controllers. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
 Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem Sie Flex-Objekte eindrücken oder weg schiebt. Abbildung \ref{VHand1} zeigt wie dies in der virtuellen Welt aussieht. Wie man Sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
 
@@ -32,23 +35,9 @@ HIER EVT NOCH EINE SOFTWAREÜBERSICHT EINFÜGEN!!! so wie in \cite{VRSim20}, da 
 \subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
 Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
 
-In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die Umgebung zulässt.
+In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die virtuelle Umgebung zulässt.
 
 \bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) "drücken" die virtuelle Hand zum Motion Controller. Links: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert die Hand mit der Mauer und drückt mit einer simulierten Kraft dagegen. Rechts: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
-
-%Werkzeuge
-Ersetzt man die virtuelle Hand durch ein anderes Flex-Objekt, wirkt es für den Spieler, als habe er ein Werkzeug, beispielsweise ein Skalpell, in seiner Hand (siehe Abbildung \ref{Scalpel2}). 
-%Ersetzen wir beispielsweise die virtuelle Hand durch ein Skalpell, wirkt es für den Spieler so, als habe er ein Skalpell in seiner Hand. 
-Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der Umgebung und der Spieler kann mit wenig oder viel Kraft schneiden, indem er seinen Motion Controller unterschiedlich bewegt und positioniert. Je größer der Unterschied zwischen Soll- und Ist-Position, desto stärker drückt das Skalpell auf das Gewebe und desto stärker wird es eingedrückt. Ist die Interaktionskraft stark und das modellierte Gewebe weich genug, drückt die Spitze des Skalpells die elastischen Gewebe-Partikel zur Seite und dringt in das Gewebe ein (siehe Abbildung \ref{Scalpel2}).
-
-\bild{Scalpel2}{10cm}{ Die virtuelle Hand kann durch beliebige Werkzeuge ersetzt werden, beispielsweise durch ein Skalpell. Dünne Flex-Objekte können bei genügend Druckkraft in Soft Bodies eindringen. }
-
-%im Ausblick nochmal drauf eingehen
-Über die Verformung des Gewebes oder über die Größe der Druckkraft können entsprechende Ereignisse ausgelöst werden, beispielsweise das Schneiden des Gewebes oder haptisches Feedback.
-
-Mit diesem Framework können beliebige Werkzeuge implementiert werden, die der Spieler in seine Hände nehmen, benutzen und wieder fallenlassen kann. Greift der Spieler mit einer virtuellen Hand nach einem Werkzeug, wird das Flex-Objekt der virtuellen hand mit dem Flex-Objekt des Werkzeugs ersetzt. Dadurch entsteht der Eindruck, der Spieler habe das Werkzeug aufgehoben.
-
-Im Rahmen dieser Arbeit wurde eine Pinzette und eine Nadel implementiert. Mithilfe der Pinzette können Fremdkörper aus Gewebe gezogen und nach Flex-Partikeln gegriffen werden. Eine Nadel ist ein besonders dünnen Flex-Objekt und kann daher gut in Gewebe eindringen und darin stecken bleiben (siehe Kapitel \ref{sec_needle}).
 
 \subsubsection{Regelung des kräftebasierten Interaktions-Systems}
 Das kräftebasierte Interaktions-System kann als Regelsystem betrachtet werden. Dieses Regelsystem drückt mit Kräften und Momenten ($U = (\vec{F} , \vec{M}$) auf die virtuelle Hand, um sie in eine gewünschte Soll-Konfiguration, $W$, zu versetzen. Die Soll-Konfiguration ist die Position und Rotation des Motion Controllers, $W = (\vec{P_s} , \vec{R_s})$. Der Regelfehler, $E$, ergibt sich aus der Differenz zwischen Soll-Konfiguration, $W$, und der derzeitigen Ist-Konfiguration, $X = (\vec{P_i} , \vec{R_i})$ der virtuellen Hand.
@@ -58,17 +47,34 @@ E = W - X
 \label{form_error}
 \end{equation}
 
-Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Positions- und Rotations-Fehler ($E$) reagiert und außerdem proportional zur derzeitigen Geschwindigkeit reagiert ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, so dass die Hand dem Motion Controller sehr schnell folgt und ohne zu schwingen zum Stillstand kommt.
+Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Positions- und Rotations-Fehler ($E$) reagiert und außerdem proportional zur Fehlerveränderung reagiert ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, so dass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
 
-!!! hier evt die parameter angeben die gut geeignet waren !!!
-
-Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$ die er maximalen ausüben darf. $F_{max}$ repräsentiert dann nämlich die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
+Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$ die er maximal ausüben darf. $F_{max}$ repräsentiert dann nämlich die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
 
 !!! hier evt noch bild indem 50kg und 60 kg aufgehoben werden. 60kg bleibt am boden liegen usw... !!!
 
-\subsubsection{Experimentelle Parametrisierung für Gewebe}
+\subsection{Evaluierung}
+%Werkzeuge
+Ersetzt man die virtuelle Hand durch ein anderes Flex-Objekt, wirkt es für den Spieler, als habe er ein Werkzeug, beispielsweise ein Skalpell, in seiner Hand (siehe Abbildung \ref{Scalpel2}). 
+%Ersetzen wir beispielsweise die virtuelle Hand durch ein Skalpell, wirkt es für den Spieler so, als habe er ein Skalpell in seiner Hand. 
+Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der Umgebung und der Spieler kann mit wenig oder viel Kraft schneiden, indem er seinen Motion Controller unterschiedlich bewegt und positioniert. Je größer der Unterschied zwischen Soll- und Ist-Position, desto stärker drückt das Skalpell auf das Gewebe und desto stärker wird es eingedrückt. Ist die Interaktionskraft stark und das modellierte Gewebe weich genug, drückt die Spitze des Skalpells die elastischen Gewebe-Partikel zur Seite und dringt in das Gewebe ein (siehe Abbildung \ref{Scalpel2}).
 
-Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werden kann, mittels Gewichte die auf Gewebe gelegt werden.
+\bild{Scalpel2}{10cm}{ Die virtuelle Hand kann durch beliebige Werkzeuge ersetzt werden, beispielsweise durch ein Skalpell. Dünne Flex-Objekte können bei genügend Druckkraft in Soft Bodies eindringen. }
+
+% schneiden über verf gewebe:
+Über die Verformung des Gewebes oder über die Größe der Druckkraft können entsprechende Ereignisse ausgelöst werden, beispielsweise das Schneiden des Gewebes.
+
+%Werkzeuge aufheben.
+Mit diesem Framework können beliebige Werkzeuge implementiert werden, die der Spieler in seine Hände nehmen, benutzen und wieder fallenlassen kann. Greift der Spieler mit einer virtuellen Hand nach einem Werkzeug, wird das Flex-Objekt der virtuellen hand mit dem Flex-Objekt des Werkzeugs ersetzt. Dadurch entsteht der Eindruck, der Spieler habe das Werkzeug aufgehoben.
+
+%was für Werkzeuge implementiert wurden
+Im Rahmen dieser Arbeit wurde eine Pinzette und eine Nadel implementiert. Mithilfe der Pinzette können Fremdkörper aus Gewebe gezogen und nach Flex-Partikeln gegriffen werden. Eine Nadel ist ein besonders dünnen Flex-Objekt und kann daher gut in Gewebe eindringen und darin stecken bleiben (siehe Kapitel \ref{sec_needle}).
+
+BILD!!!!!!!!!!
+
+%Fehelndes force feedback und schlusswort
+Natürlich ist es unbestreitbar, dass das fehlende haptische Feedback einen besonders negativen Einfluss auf den Realismus der Simulation hat. Dennoch konnte mit den gegebenen Mitteln zumindest optischer Realismus erreicht werden.
+
 
 \section{Nadel-Gewebe Interaktion}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec_needle}
@@ -76,15 +82,16 @@ Hier evt nochmal tipps rein wie gewebe-weichheit experimentell eingestellt werde
 %Wie umgesetzt, welche Tricks angewandt? Constraints? Geeignete Simulationsparameter?
 
 %In dieser Arbeit wurde auch untersucht ob mit Flex und UE4 Nadel-Gewebe Interaktionen realisiert werden können. %Grundsätzlich gelingt dies, allerdings kann es viel Zeit in Anspruch nehmen, die korrekten Simulationsparameter zu finden. 
-In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt um in VR Nadeln in ein Gewebe hinein zu stecken. 
+In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt um mithilfe von Motion Controllern Nadeln in Gewebe zu stecken. 
 
-Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten getan werden muss (so wie in \cite{PBDCutting}, beispielsweise).
+Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten gemacht wird (so wie in \cite{PBDCutting}, beispielsweise).
 
 Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren Cluster basierten \textit{Shape Matching Constraints} realisiert wird, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
 
-Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in denen bereits gute Simulationsparameter für unterschiedliche Gewebearten ermittelt wurden.
+%Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in denen bereits gute Simulationsparameter für unterschiedliche Gewebearten ermittelt wurden.
 
-\subsubsection{Simulationsparameter und Einstellungen: }    
+\subsection{Methode}
+\subsubsection{Simulationsparameter}    
 
 In \cite{PBDKidney} und \cite{BreastBiopsy} wurden bereits sehr gute Simulationseinstellungen gefunden um unterschiedliche Gewebearten realitätsnahe zu simulieren. Die in diesen Arbeiten empfohlenen Simulationseinstellungen wurden daher zum Großteil übernommen.
 
@@ -131,19 +138,22 @@ Alternativ kann die Nadel auch an das Gewebe befestigt werden (wie in Kapitel \t
 
 %\begin{itemize}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Modellierung des Gewebes:}
+\subsubsection{Modellierung des Gewebes}
 Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. Die folgenden Punkte erwiesen sich bei der Modellierung als wichtig:
 
     \begin{itemize}
     
-      \item Partikelabstand, $d$: \\ Die Gewebe-Partikel sollten sich nicht berühren ($d>2r$) sonst können instabile Zustände entstehen, bei denen einzelne Partikel keine Ruheposition (=lokales Minimum im Kräftefeld) mehr finden und dauerhaft umher springen und zittern. Gleichzeitig sollten die Gewebe-Partikel nah genug beisammen sein, damit Nadel-Partikel nicht durch Lücken fallen können, also $d<4r$. 
+      \item Partikelabstand, $d$: \\ 
+      Die Gewebe-Partikel sollten sich nicht berühren ($d>2r$) sonst können instabile Zustände entstehen, bei denen einzelne Partikel keine Ruheposition (=lokales Minimum im Kräftefeld) mehr finden und dauerhaft umher springen und zittern. Gleichzeitig sollten die Gewebe-Partikel nah genug beisammen sein, damit Nadel-Partikel nicht durch Lücken fallen können, also $d<4r$. 
       %Ein Partikelabstand zwischen 2r und 3r erwies sich dabei als optimal.
       
-      \item Irreguläre Anordnung der Partikel: \\ Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu sich Entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiederstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
+      \item Irreguläre Anordnung der Partikel: \\ 
+      Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu sich Entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiederstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
       
       \bild{Tissue1}{8cm}{Links: Partikelanordnung als reguläres 3D Gitter. Rechts: Chaotische Verteilung der Partikel, wobei die Partikeldichte weitestgehend homogen verteilt ist.}
       
-      \item Keine Eigenkollision im Gewebe: \\ Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstanden häufiger instabile Zustände bei denen Partikel keine Ruheposition fanden.
+      \item Keine Eigenkollision im Gewebe: \\ 
+      Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstanden häufiger instabile Zustände bei denen Partikel keine Ruheposition fanden.
       
     \end{itemize}
     
@@ -151,7 +161,7 @@ Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. D
 
 
 
-\subsubsection{Erzieltes Verhalten}
+\subsection{Evaluierung}
 %Mithilfe des gegebenen Frameworks konnte nach längerem Experimentieren das folgende Verhalten erreicht werden:
 
 Dank des  kräftebasierten Interaktions-Systems (aus Kapitel \ref{sec_FSystem}) kann die Nadel mit dem Gewebe kollidieren und mit einer simulierten Kraft dagegen drücken. 
@@ -168,9 +178,12 @@ Befindet sich die Nadel im Gewebe, sorgt die simulierte Partikel-Reibung und Par
 \bild{Needle4}{10cm}{Oben: Verformung des Gewebes bei axialer Bewegung der Nadel. Unten links: Abrutschen der Nadel bei ungünstigem Stechwinkel. Unten rechts: Mehrere Nadeln wurden in unterschiedlichen Tiefen und Winkeln in das Gewebe gesteckt.}
 
 %Steckenbleiben der Nadel:
-Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadel-Partikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadel-Partikel einen kurzen Moment von den Kraftfeldern bewegt bis sie ein lokales Minimum finden und dort zur Ruhe kommen.
+Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadel-Partikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadel-Partikel einen kurzen Moment von den Kraftfeldern bewegt bis sie ein lokales Minimum finden und dort zur Ruhe kommen. 
 
-\section{Weitere Chirurgische Szenarien und Evaluierung}
+%Negative Beeinflussungen des Realismusses und Lösung
+Die kurze Bewegung der Nadel können in manchen Fällen negativ auf den Realismus der Simulation auswirken. Außerdem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Der Reibungswiederstand der Nadel konnte jedoch überraschend realistisch vermittelt werden, zumal sich der Grad des Reibungswiederstands gut justieren lässt. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
+
+\section{Weitere Chirurgische Szenarien}
 
 ... Was konnte wie gut mit gegebenen Werkzeugen implementiert werden?... Was waren Probleme? Was waren Grenzen?
 Erwähnen: Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.

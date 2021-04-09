@@ -155,6 +155,7 @@ Gegeben sei die Welt-Transformation einer Parent-Szene, $T_{parent}$ und die gew
 Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene Matrix-Vektor-Multiplikationen und sollten daher effizient von heutiger Hardware gelöst werden können. Außerdem kann die Berechnung der Partikelpositionen parallelisiert werden.
 
 \subsection{Befestigung von FleX Objekten}
+\label{subsec_attach}
 
 %Soft joint gibts
 
@@ -223,7 +224,7 @@ An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwi
 
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
-\subsection{Interaktion zwischen elastischen FleX-Objekte und PhysX-Objekte}
+\subsection{Interaktion zwischen elastischer FleX-Objekte und PhysX-Objekte}
 
 %Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  
@@ -241,7 +242,8 @@ Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechn
 Wenn ein PhysX Objekt mit einem elastischem FleX Objekt kollidiert, verursacht das PhysX Objekt eine Verformung beim FleX Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX Objekt. Für die Flex Partikel des Flex Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
 %Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
 
-Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex Objekts gewichtet. Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. Danke des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX Objekts auf die Simulation aus: Je schwerer ein PhysX Objekt, desto stärker kann es Flex Objekte eindrücken.
+Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex Objekts gewichtet.
+Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. Danke des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX Objekts auf die Simulation aus: Je schwerer ein PhysX Objekt, desto stärker kann es Flex Objekte eindrücken.
 
 \subsection{Kräfte und Momente}
 

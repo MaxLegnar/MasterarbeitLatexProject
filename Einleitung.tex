@@ -3,23 +3,11 @@
 \chapter{Einleitung}
 \label{chap_Einleitung}
 
-Notizen:
-
-Wichtig: Es ist eine Arbeit, bei der es darum geht, zuerst das 
-
-Potential der position-based dynamics auszuloten und 
-
-(auch sehr wichtig) die Lücken, die da noch sind, zu füllen – das ist ein wichtiger Teil der Arbeit. 
-
-Danach kommt das Anwendungsbeispiel, das so gestrickt ist, dass man paradigmatisch demonstriert, wie das in einer chirurgischen Simulation genutzt werden kann. 
-
-Wichtig: Am Ende soll herauskommen, dass die Möglichkeiten und Grenzen von Flex klar sind und dass die Komponenten, die benötigt werden, um aus dem Potential wirklich etwas Nutzbares zu generieren, auch klar gegliedert und strukturiert genannt sind – das „Handbuch“ würde in den Anhang kommen. Damit ist es möglich, dass Folgeprojekte mit relativ wenig diese Methoden nutzen können, um konkrete Probleme zu lösen – genannt können hier einmal das Projekt Brachysimulator und einmal die Bachelorarbeit zum System on Chip.
-
-\section{Motivation und Problemstellung}
+\section{Motivation und Problemstellung} % und grober Aufbau dieser Arbeit?
 
 
 % Motivation für Serous Games:
-Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen mit Tieren, meist Schweine, war früher eine gängige Praxis (REFFF???). Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken, sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
+Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen mit Tieren, meist Schweine, war früher eine gängige Praxis. Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken, sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
 
 Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel geworden um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
 
@@ -27,7 +15,12 @@ Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel geworden um Pers
 Die Simulationstechnik \ac{PBD} \cite{PBD} hat sich bereits in vielen Arbeiten als vielversprechende Simulationstechnik für chirurgische Simulatoren erwiesen (siehe Kapitel \ref{section_PBD} für einige Beispiele). 
 
 %Motivation PBD und Überleitung zu Problemstellung 1:
-Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die fast alle restlichen Elemente implementiert, die für Serious Games im chirurgischem Bereich benötigt werden. Dabei werden einige zusätzliche Softwareelemente methodisch entwickelt und implementiert um die vorhandene Game- und Physik-Engine um zusätzliche Funktionalitäten zu erweitern, die für chirurgische Simulatoren nützlich sein könnten (Kapitel \ref{chap_Flex_Engine}).
+Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die weitere Elemente implementiert, die für Serious Games nützlich sind. Im ersten Teil dieser Arbeit (Kapitel \ref{chap_Flex_Engine}) wird zunächst geklärt, wie gut die vorhandene Game- und Physik-Engine für die Entwicklung von chirurgischen Simulatoren geeignet ist und was die Möglichkeiten und Grenzen von NVIDIA FleX sind. Dabei stellt sich heraus, dass noch einige wichtige Funktionalitäten fehlen. Alle fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert um ein Software-Framework zu erhalten, das gut für die Entwicklung von Serious Games geeignet ist. Das im Rahmen dieser Arbeit entstehende Software-Framework, sowie die gewonnenen Erkenntnisse, sollen zukünftigen Arbeiten als nützliches Werkzeug zu dienen.
+%Im ersten Teil dieser Arbeit wird untersucht, welche weiteren Softwareelemente noch fehlen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist. Die fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert.
+%um die vorhandene Game- und Physik-Engine um zusätzliche Funktionalitäten zu erweitern, die für chirurgische Simulatoren nützlich sein könnten (Kapitel \ref{chap_Flex_Engine}).
+%Im ersten Teil dieser Arbeit wird untersucht, um welche weiteren Softwareelemente die vorhandene Game- und Physik-Engine erweitert werden müssen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist.
+
+Im zweiten Teil dieser Arbeit (Kapitel \ref{chap_Szenarien}) werden einfache chirurgische Szenarien implementiert, um zu testen wie gut das Software-Framework für den vorgesehenen Einsatzzweck geeignet ist. 
 
 % Motivation VR Serous Games:
 \ac{VR} spielt für Serous Games auch eine wichtige Rolle. 
@@ -74,7 +67,7 @@ Bei der Nadel-Gewebe-Interaktion wird das Partikelmodel des Gewebes nicht verän
 
 
 
-\section{Aufbau dieser Arbeit}
+%\section{Aufbau dieser Arbeit}
 %... mach ich am Ende...
 
 %...Mach ich zum Schluss, aber nur wenn es die Betreuer auch haben möchten...
