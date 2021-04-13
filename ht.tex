@@ -17,11 +17,11 @@ In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer S
 %\subsubsection{NVIDIA FleX}
 NVIDIA Flex zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
 
-So wirkt sich die Partikelanzahl weniger stark auf die Performance aus, wie der Partikelradius oder die Anzahl und komplexität der verwendeten Constraints \cite{FlexD3D}. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
+So wirkt sich laut \cite{FlexD3D} die Partikelanzahl weniger stark auf die Performance aus, wie der Partikelradius oder die Anzahl und komplexität der verwendeten Constraints . Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
 
 %Die Constraints \textbf{X, X und X} sind beispielsweise deutlich rechenaufwändiger, als ein einfaches \textbf{X-Constraint} (siehe \cite{FlexD3D}).% und wirken sich daher stärker auf die Rechenzeit aus.
 
-Zunächst wollen wir untersuchen, ob die Performance von Flex auch zusammen in einer komplexen Game Engine zufriedenstellend ist.
+Zunächst wollen wir untersuchen, ob die Performance von FleX auch zusammen in einer komplexen Game Engine zufriedenstellend ist.
 
 \subsubsection{Test Hardware}
 
@@ -31,7 +31,7 @@ Für diese Arbeit und für alle durchgeführten Messungen und Tests stand die Ha
 
 \begin{table}[]
 \centering
-\caption{Die verwendete Hardware für diese Arbeit.}
+\caption{Die verwendete Hardware.}
 \label{table_hardware}
 \begin{tabular}{l|l}
  \hline
@@ -53,6 +53,51 @@ Die verwendete Grafikkarte gehört zur vorletzten Generation der NVIDIA Grafikka
 %\toprule
 %\begin{tabular}[c]{@{}l@{}}Anzahl der\\ Wahrnehmungsvektoren\end{tabular} & Transportmethode                                                               & \begin{tabular}[c]{@{}l@{}}absoluter \\ Verlust\end{tabular} & \begin{tabular}[c]{@{}l@{}}prozentualer\\ Verlust\end{tabular} \\ \midrule
 
+\subsubsection{Simulationen mit unterschiedlichen Objektarten}
+
+Um einen ersten Eindruck zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird des FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density Constraints), sowie Kollisions Constraints und Friction Constraints.
+
+\bild{WaterInteraction}{10cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Werkzeuge (Skalpelle) werden von der Flüssigkeit weggespült und Körper, die eine geringere Dichte als die Flüssigkeit haben, schwimmen.}
+
+Die Simulationsparameter werden außerdem so gewählt, dass die Simulation möglichst akkurat ausgeführt wird, wodurch der FleX-Solver ebenfalls stärker belastet wird. Die gewählten Simulationsparameter wurden so wie in \cite{BreastBiopsy} gewählt. Diese Parametrisierung hat sich nämlich auch in \cite{PBDKidney} und \cite{VRSim20} bewährt um Gewebe akkurat zu simulieren.
+
+Die Simulationsparameter und Messergebnisse sind in Tabelle \ref{table_mixed_sim} abgebildet.
+
+\begin{table}[]
+\centering
+\caption{Simulationsparameter und Messergebnisse der simulierten Szene.}
+\label{table_mixed_sim}
+\begin{tabular}{l|l}
+ \hline
+Partikelradius & 1 cm  \\ \hline
+Simulation Substeps & 3      \\ \hline
+Substep Iterations & 9            \\ \hline
+Anzahl Partikel & 32021            \\ \hline
+Davon Fluid Partikel & 16384	\\ \hline
+Anzahl Cluster & 1214		\\ \hline
+Anzahl Federn & 15360 		\\ \hline
+\textbf{Solve Sync Time (CPU) & \textbf{0,35 ms}
+\end{tabular}
+\end{table}
+
+Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis ein Simulationsschritt auf der GPU abgearbeitet wurde. Das heißt das der FleX Solver vermutlich noch schneller gearbeitet hat, als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
+
+%\begin{table}[]
+%\centering
+%\caption{Neue Objektarten wurden Schrittweise hinzugefügt}
+%\label{table_mixed_res}
+%\begin{tabular}{l|rrrr|l}
+%\textbf{Hinzugefügt} & \multicolumn{1}{l}{\textbf{Partikelanzahl}} & \multicolumn{1}{l}{\textbf{Shape Constraints}} & \multicolumn{1}{l}{\textbf{Fluid Partikel}} & \multicolumn{1}{l|}{\textbf{Distance Constraints}} & \textbf{Solve Sync Time} \\ \hline
+%Nur Soft Bodies      & 12548                                       & 1209                                           & 0                                           & 0                                                  & 0.16                     \\
+%+ Flüssigkeit        & 28932                                       & 1209                                           & 16384                                       & 0                                                  & 0.17                     \\
+%+ Stoff              & 31494                                       & 1209                                           & 16384                                       & 15360                                              & 0.31                     \\
+%+ Rigid Bodies       & 32021                                       & 1214                                           & 16381                                       & 15360                                              & 0.35                    
+%\end{tabular}
+%\end{table}
+
+
+
+
 \subsubsection{Test Szenario}
 
 Für die Anwendungsfälle dieser Arbeit sind vor allem Soft Bodies interessant. Daher wird nun eine Szene simuliert, in der sich ausschließlich Soft Bodies befinden (siehe Abbildung \ref{PerfGTX1Scene}). 
@@ -65,7 +110,7 @@ Die simulierten Körper kollidierten und verformten sich dabei stets augenschein
 
 Folgenden Simulationsparameter wurden eingesetzt (siehe Abbildung \ref{PerfGTX1Set}):
 
-\bild{PerfGTX1Set}{10cm}{Die verwendeten Simulationsparamer für die erste Testreihe.}
+\bild{PerfGTX1Set}{10cm}{Die verwendeten Simulationsparamer für dies Testreihe.}
 
 Für alle Messungen wurde der Simulationsparameter \textit{Sleep Threshold} auf einen negativen Wert gesetzt, um zu verhindern, dass zu langsame Partikel von der Simulation ausgeschlossen werden.
 
@@ -237,7 +282,7 @@ Bei der verwendeten Unreal Integration können PhysX Objekte grundsätzlich mit 
 Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf auf das PhysX Objekt wirkt, berechnet und angewandt werden. 
 %Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
 %Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
-Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf folgender Idee: 
+Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf der folgenden Idee: 
 
 Wenn ein PhysX Objekt mit einem elastischem FleX Objekt kollidiert, verursacht das PhysX Objekt eine Verformung beim FleX Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX Objekt. Für die Flex Partikel des Flex Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
 %Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
