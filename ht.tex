@@ -11,17 +11,17 @@ In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer S
 %So soll die Qualitätsanforderung \textit{Modularität} eingehalten werden (siehe Kapitel \textbf{XXX}).
 
 
-\section{Performance}
-
+\section{Performance von NVIDIA FleX}
+\label{sec_performance}
 
 %\subsubsection{NVIDIA FleX}
 NVIDIA FleX zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
 
-So wirkt sich laut \cite{FlexD3D} die Partikelanzahl weniger stark auf die Performance aus, wie die Anzahl und Komplexität der verwendeten Constraints oder die verwendeten Simulationsparameter. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
+Laut \cite{FlexD3D} wirkt sich die Partikelanzahl weniger stark auf die Performance aus, wie die Anzahl und Komplexität der verwendeten Constraints oder die verwendeten Simulationsparameter. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
 
 %Die Constraints \textbf{X, X und X} sind beispielsweise deutlich rechenaufwändiger, als ein einfaches \textbf{X-Constraint} (siehe \cite{FlexD3D}).% und wirken sich daher stärker auf die Rechenzeit aus.
 
-Zunächst wollen wir untersuchen, ob die Performance von FleX auch zusammen in einer komplexen Game Engine zufriedenstellend ist.
+Im Rahmen dieser Arbeit wurde die Performance von NVIDIA FleX in Verbindung mit Unreal Engine 4 ausführlich untersucht. In diesem Kapitel (\ref{sec_performance}) werden die Einflussgrößen präsentiert, die den größten Einfluss auf die Performance hatten.
 
 \subsubsection{Test Hardware}
 
@@ -53,9 +53,9 @@ Die verwendete Grafikkarte gehört zur vorletzten Generation der NVIDIA Grafikka
 %\toprule
 %\begin{tabular}[c]{@{}l@{}}Anzahl der\\ Wahrnehmungsvektoren\end{tabular} & Transportmethode                                                               & \begin{tabular}[c]{@{}l@{}}absoluter \\ Verlust\end{tabular} & \begin{tabular}[c]{@{}l@{}}prozentualer\\ Verlust\end{tabular} \\ \midrule
 
-\subsubsection{Simulationen mit unterschiedlichen Objektarten}
+\subsubsection{Gemischte Simulationen}
 
-Um einen ersten Eindruck zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird des FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density Constraints), sowie Kollisions Constraints und Friction Constraints.
+Um einen ersten Überblick von der Performance zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird des FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density Constraints), sowie Kollisions Constraints und Friction Constraints.
 
 %\bild{WaterInteraction}{10cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Werkzeuge (Skalpelle) werden von der Flüssigkeit weggespült und Körper, die eine geringere Dichte als die Flüssigkeit haben, schwimmen.}
 
@@ -63,7 +63,7 @@ Um einen ersten Eindruck zu bekommen, wird zunächst eine Szene simuliert, in de
 
 Die Simulationsparameter werden außerdem so gewählt, dass die Simulation möglichst akkurat ausgeführt wird, wodurch der FleX-Solver ebenfalls stärker belastet wird. Die gewählten Simulationsparameter wurden so wie in \cite{BreastBiopsy} gewählt. Diese Parametrisierung hat sich nämlich auch in \cite{PBDKidney} und \cite{VRSim20} bewährt um Gewebe akkurat zu simulieren.
 
-Die Simulationsparameter und Messergebnisse sind in Tabelle \ref{table_mixed_sim} abgebildet.
+Die verwendeten Simulationsparameter. sowie alle Messergebnisse sind in Tabelle \ref{table_mixed_sim} zu sehen.
 
 \begin{table}[]
 \centering
@@ -78,14 +78,16 @@ Anzahl Partikel & 32021            \\ \hline
 Davon Fluid Partikel & 16384	\\ \hline
 Anzahl Cluster & 1214		\\ \hline
 Anzahl Federn & 15360 		\\ \hline
-Self Collision & Nur bei Cloth Assets aktiviert 		\\ \hline
+Self Collision & aktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für 2562 Partikel		\\ \hline
 \textbf{Solve Sync Time (CPU)} & \textbf{0,35 ms}
 \end{tabular}
 \end{table}
 
-Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis ein Simulationsschritt auf der GPU abgearbeitet wurde. Das heißt das der FleX Solver wahrscheinlich noch schneller gearbeitet hat, als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
+Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis die FleX Simulation für einen Frame von der GPU abgearbeitet wurde. Das heißt dass der FleX Solver wahrscheinlich noch schneller gearbeitet hat, als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
 
-Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genügend Zeit um die Szene mit 60-120 \ac{FPS} bei 1080p zu rendern, solange einfache Rendertechniken und mittelmäßig komplexe Shader eingesetzt werden. Vor allem das Rendern der Fluid Simulation kann besonders rechenintensiv werden. Wird die Flüssigkeit mit aufwändigen Wasser Shadern gerendert, so wie in Abbildung \ref{WaterShaderPerformance} rechts, Kann dies zu deutlich weniger \ac{FPS} führen. Es ist also ratsam, besonders effiziente Rendertechniken für simulierte Flüssigkeiten einzusetzen.
+Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genügend Zeit um die Szene mit 60-120 \ac{FPS} bei 1080p zu rendern, solange einfache Rendertechniken und mittelmäßig komplexe Shader eingesetzt werden. 
+
+Was in dieser Arbeit besonders auffiel, ist dass das Rendern von simulierten Flüssigkeiten besonders rechenintensiv werden kann. Wird die Flüssigkeit mit aufwändigen Wasser Shadern gerendert, so wie in Abbildung \ref{WaterShaderPerformance} rechts, Kann dies zu deutlich weniger \ac{FPS} führen. Es ist also ratsam, besonders effiziente Rendertechniken für simulierte Flüssigkeiten einzusetzen.
 
 Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern interessant ist, werden die nächsten Tests nurnoch mit Soft Bodies simuliert, die aus Shape-Constraints bestehen.
 
@@ -104,10 +106,26 @@ Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern in
 
 \subsubsection{Simulationsparametrisierung und Hardwaregrenzen}
 
+Für alle Messungen, die in diesem Kapitel präsentiert werden, wurden die Einstellungen aus Tabelle \ref{table_soft_param} verwendet.
+
+\begin{table}[]
+\centering
+\caption{Verwendete Parameter für diesen Versuch}
+\label{table_soft_param}
+\begin{tabular}{l|l}
+ \hline
+Partikelradius & 1 cm  \\ \hline
+Simulation Substeps & variierend (2-3)      \\ \hline
+Substep Iterations & variierend (3-9)            \\ \hline
+Simulierte Objektarten &  nur Soft Bodies mit Shape Constraints\\ \hline
+Self Collision & deaktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für 2562 Partikel		\\ \hline
+\end{tabular}
+\end{table}
+
 TODO: Auf Substeps und Substep iterations eingehen!!!
 
 In Abbildung \ref{figure3} ist zu sehen, wie schnell unterschiedlich viele Soft Bodies simuliert werden konnten, bei unterschiedlichen Simulationsparametern. %Für alle Simulationen wurde ein Partikelradius von 1 cm verwendet. 
-Mit den Simulationsparametern von der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden, wobei sich damit keine akkuraten Gewebeverformungen simulieren lassen. Wie man sieht, steigt die Blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$). Selbst wenn über 100 Tausend Partikel (26 Soft Bodies, 10478 Shape Cluster) simuliert werden, benötigt der FleX-Solver nur 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 fps gerendert werden.
+Mit den Simulationsparametern von der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden, wobei sich damit keine akkuraten Gewebeverformungen simulieren lassen. Wie man sieht, steigt die Blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$). Selbst wenn über 100 Tausend Partikel (26 Soft Bodies, 10478 Shape Cluster) simuliert werden, benötigt der FleX-Solver nur 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 FPS gerendert werden.
 
 \bild{figure3}{10cm}{Die blaue Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einfachen (kleinen) Simulationsparametern. Die rote Kurve zeigt die die Simulationsgeschwindigkeit von FleX bei einer akkurateren Simulation mit größeren Simulationsparametern.}
 
@@ -126,18 +144,49 @@ Das plötzliche Ansteigen der Simulationszeiten bei der akkurateren Simulation w
 %Als nächstes wurde eine Szene mit konstanter Partikelanzahl simuliert, während einzelne Simulationsparameter stufenweise angehoben wurden.
 %figure6
 
-\subsubsection{Partikelanzahl pro FleX Objekt}
-Im Rahmen dieser Arbeit viel eine Besonderheit auf, die In
+\subsubsection{Partikelanzahl pro Cluster}
+Für alle Messungen, die in diesem Kapitel präsentiert werden, wurden die Einstellungen aus Tabelle \ref{table_soft_assets} verwendet.
 
-\bild{figure1}{10cm}{...}
+%Im Rahmen dieser Arbeit viel auf, dass sich FleX Objekte, die aus besonders vielen Partikeln bestehen, besonders negativ auf die Simulationsperformance auswirken. Es ist also grundsätzlich ratsam, 
+
+Zeige: Viele kleine Cluster vs wenig große Cluster -> Viele kleine Cluster ist deutlich performanter als wenige große Cluster. WIESO? -> FleX löst Constraints parallelisiert. Die Lösung eines einzelnen Constraints ist eine sequenzielle Operation. Je größer ein Cluster, desto mehr Partikel beinhaltet. Je mehr Partikel in einem Cluster, desto rechenintensiver ist die Lösung des Shape Constraints!
+
+\begin{table}[]
+\centering
+\caption{Verwendete Parameter für diesen Versuch}
+\label{table_soft_assets}
+\begin{tabular}{l|l}
+ \hline
+Partikelradius & 1 cm  \\ \hline
+Simulation Substeps & 3     \\ \hline
+Substep Iterations & 9            \\ \hline
+Simulierte Objektarten &  nur Soft Bodies mit Shape Constraints\\ \hline
+Self Collision & deaktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für 2562 Partikel		\\ \hline
+\end{tabular}
+\end{table}
+
+%\bild{figure1}{10cm}{...}
+
+
+
 
 \subsubsection{Self Collision und Partikelradius}
 
+Fazit: Wenig Partikelüberschneidung bei Self Collision. Wichtig zu erwähnen: Führt auch zu instabilen, zitternden Zuständen!
 
-
-%\bild{RadiusOctupus}{14cm}{Je größer der Partikelradius, desto mehr Selbstkollisionen kommen in einem einzelnen Asset vor.}
+\bild{RadiusOctupus}{14cm}{Je größer der Partikelradius, desto mehr Selbstkollisionen kommen in einem einzelnen Asset vor.}
 
 \bild{figure5}{10cm}{...}
+
+\subsubsection{Zusammenfassung}
+
+- Hardwaregrenzen
+
+- viele kleine cluster
+
+- viele kleinere assets
+
+- Bei Self Collision: Wenig Partikelüberschneidung, sonst egal.
 
 
 %%%%%%%%%%%%%%%% ALT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,6 +241,7 @@ Im Rahmen dieser Arbeit viel eine Besonderheit auf, die In
 
 %%%%%%%%%%%%%%%% ALT ENDE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clearpage
 \section{Funktionalitäten}
 In der Einleitung von \cite{UE4FlexDoc} wird bereits darauf hingewiesen, dass die Unreal Integration noch nicht weit genug entwickelt ist, um Gameplay-beeinflussende Physikszenarios zu erstellen. In diesem Kapitel wird genauer untersucht, welche   Funktionalitäten  die Unreal Integration bereits bietet und welche noch fehlen. 
 %Hierfür gehen wir nach und nach alle funktionalen Anforderungen aus Kapitel \textbf{XXX} durch und kontrollieren, ob Anforderungen fehlen oder nur teilweise vorhanden sind.
