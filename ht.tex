@@ -15,9 +15,9 @@ In dieser Arbeit wurden fehlende Funktionalitäten nur durch hinzufügen neuer S
 
 
 %\subsubsection{NVIDIA FleX}
-NVIDIA Flex zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
+NVIDIA FleX zeichnet sich laut diversen Quellen (\cite{FlexD3D}, \cite{UPP}, HIER NOCH MEHR REIN!) durch eine besonders gute Performance aus, wobei in \cite{FlexD3D} genauer darauf eingegangen wird, welchen Einfluss unterschiedliche Größen auf die Geschwindigkeit des Flex-Solvers haben. 
 
-So wirkt sich laut \cite{FlexD3D} die Partikelanzahl weniger stark auf die Performance aus, wie der Partikelradius oder die Anzahl und komplexität der verwendeten Constraints . Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
+So wirkt sich laut \cite{FlexD3D} die Partikelanzahl weniger stark auf die Performance aus, wie die Anzahl und Komplexität der verwendeten Constraints oder die verwendeten Simulationsparameter. Befinden sich beispielsweise nur Soft Bodies in einer Szene, muss der Solver deutlich weniger unterschiedliche Constraints lösen, als in einer Szene, in der sich Soft Bodies, Flüssigkeiten und Stoffe befindet.
 
 %Die Constraints \textbf{X, X und X} sind beispielsweise deutlich rechenaufwändiger, als ein einfaches \textbf{X-Constraint} (siehe \cite{FlexD3D}).% und wirken sich daher stärker auf die Rechenzeit aus.
 
@@ -27,7 +27,7 @@ Zunächst wollen wir untersuchen, ob die Performance von FleX auch zusammen in e
 
 Für diese Arbeit und für alle durchgeführten Messungen und Tests stand die Hardware aus Tabelle \ref{table_hardware} zur Verfügung.
 
-\clearpage
+%\clearpage
 
 \begin{table}[]
 \centering
@@ -57,7 +57,9 @@ Die verwendete Grafikkarte gehört zur vorletzten Generation der NVIDIA Grafikka
 
 Um einen ersten Eindruck zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird des FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density Constraints), sowie Kollisions Constraints und Friction Constraints.
 
-\bild{WaterInteraction}{10cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Werkzeuge (Skalpelle) werden von der Flüssigkeit weggespült und Körper, die eine geringere Dichte als die Flüssigkeit haben, schwimmen.}
+%\bild{WaterInteraction}{10cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Werkzeuge (Skalpelle) werden von der Flüssigkeit weggespült und Körper, die eine geringere Dichte als die Flüssigkeit haben, schwimmen.}
+
+\bild{WaterShaderPerformance}{14cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Wird ein aufwändiger Shader für die Fluid-Partikel verwendet, kommt die GPU schnell an ihre Grenzen und die \ac{FPS} werden deutlich verringert.}
 
 Die Simulationsparameter werden außerdem so gewählt, dass die Simulation möglichst akkurat ausgeführt wird, wodurch der FleX-Solver ebenfalls stärker belastet wird. Die gewählten Simulationsparameter wurden so wie in \cite{BreastBiopsy} gewählt. Diese Parametrisierung hat sich nämlich auch in \cite{PBDKidney} und \cite{VRSim20} bewährt um Gewebe akkurat zu simulieren.
 
@@ -76,11 +78,15 @@ Anzahl Partikel & 32021            \\ \hline
 Davon Fluid Partikel & 16384	\\ \hline
 Anzahl Cluster & 1214		\\ \hline
 Anzahl Federn & 15360 		\\ \hline
-\textbf{Solve Sync Time (CPU) & \textbf{0,35 ms}
+\textbf{Solve Sync Time (CPU)} & \textbf{0,35 ms}
 \end{tabular}
 \end{table}
 
-Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis ein Simulationsschritt auf der GPU abgearbeitet wurde. Das heißt das der FleX Solver vermutlich noch schneller gearbeitet hat, als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
+Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis ein Simulationsschritt auf der GPU abgearbeitet wurde. Das heißt das der FleX Solver wahrscheinlich noch schneller gearbeitet hat, als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
+
+Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genügend Zeit um die Szene mit 60-120\ac{FPS} bei 1080p zu rendern, solange einfache Rendertechniken und mittelmäßig komplexe Shader eingesetzt werden. Vor allem das Rendern der Fluid Simulation kann besonders rechenintensiv werden. Wird die Flüssigkeit mit aufwändigen Wasser Shadern gerendert, so wie in Abbildung \ref{WaterShaderPerformance} rechts, Kann dies zu deutlich weniger \ac{FPS} führen. Es ist also ratsam, besonders effiziente Rendertechniken für simulierte Flüssigkeiten einzusetzen.
+
+Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern interessant ist, werden die nächsten Tests nurnoch mit Soft Bodies ausgeführt, die aus mehreren Shape-Constraints bestehen.
 
 %\begin{table}[]
 %\centering
@@ -95,7 +101,29 @@ Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis e
 %\end{tabular}
 %\end{table}
 
+\subsubsection{Soft Body Simulationen: Simulationsparametrisierung und Hardwaregrenzen}
 
+In Abbildung \ref{figure3} ist zu sehen, wie schnell unterschiedlich viele Soft Bodies simuliert werden konnten, bei unterschiedlichen Simulationsparametern. %Für alle Simulationen wurde ein Partikelradius von 1 cm verwendet. 
+Mit den Simulationsparametern von der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden. Wie man sieht, steigt die Blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$) und selbst bei der Simulation von über 100 Tausend Partikeln (26 Soft Bodies, 10478 Shape Cluster) benötigte der Solver 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 fps gerendert werden.
+
+figure3 mit unterschiedlichen x achsen!
+
+Wird die Simulation allerdings akkurater ausgeführt, mit den Parametern der roten Kurve, wird die Simulation ab einer bestimmten Partikelanzahl deutlich langsamer. Im Diagramm \ref{figure3} erkennt man sehr deutlich, wie die rote Kurve ab einer Partikalanzahl von etwa 60 Tausend nach oben schießt. Davor läuft die Simulation nahezu genauso schnell wie zuvor, bei geringeren Simulationsparametern.
+%, mit einer Steigung von ca. 0,28.
+Abbildung \ref{figure4} zeigt welche Auswirkung die steigende Simulationszeiten auf die Renderfrequenz hatten. Hierzu sei gesagt, dass in dieser Szene mittelmäßig komplexe Shader und Grafikeinstellungen eingesetzt wurden.
+
+figure4
+
+Das plötzliche Ansteigen der Simulationszeiten bei der akkurateren Simulation weist auf eine Hardwaregrenze hin, bei der nicht mehr genügend Hardwareressourcen zur Verfügung stehen um weiterhin effizient arbeiten zu können. Der Grafikspeicher der Grafikkarte wurde allerdings niemals voll ausgenutzt (maximal 4 von 8 GB wurden belegt). Die Grenze von 60 Tausend Partikeln konnte im Anwendungsteil dieser Arbeit nie überschritten werden. Im finalen chirurgischen Simulator mussten lediglich 12000 Partikel simuliert werden (siehe Kapitel XXX). Dadurch konnten problemlos zusätzliche Simulationen ausgeführt und komplexere Rendertechniken eingesetzt werden, ohne negativen Einfluss auf die FPS.
+
+
+
+% ------ HIER EVT FIGURE 6 präsentieren, sprengt aber evt den Rahmen!!! -----------------------
+
+%Als nächstes wurde eine Szene mit konstanter Partikelanzahl simuliert, während einzelne Simulationsparameter stufenweise angehoben wurden.
+%figure6
+
+\subsubsection{Einflussgröße Partikelanzahl pro FleX Objekt}
 
 
 \subsubsection{Test Szenario}
