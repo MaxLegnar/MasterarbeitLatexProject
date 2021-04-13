@@ -86,7 +86,7 @@ Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis e
 
 Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genügend Zeit um die Szene mit 60-120\ac{FPS} bei 1080p zu rendern, solange einfache Rendertechniken und mittelmäßig komplexe Shader eingesetzt werden. Vor allem das Rendern der Fluid Simulation kann besonders rechenintensiv werden. Wird die Flüssigkeit mit aufwändigen Wasser Shadern gerendert, so wie in Abbildung \ref{WaterShaderPerformance} rechts, Kann dies zu deutlich weniger \ac{FPS} führen. Es ist also ratsam, besonders effiziente Rendertechniken für simulierte Flüssigkeiten einzusetzen.
 
-Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern interessant ist, werden die nächsten Tests nurnoch mit Soft Bodies ausgeführt, die aus mehreren Shape-Constraints bestehen.
+Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern interessant ist, werden die nächsten Tests nurnoch mit Soft Bodies simuliert, die aus Shape-Constraints bestehen.
 
 %\begin{table}[]
 %\centering
