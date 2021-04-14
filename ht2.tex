@@ -119,7 +119,7 @@ In \cite{PBDKidney} und \cite{BreastBiopsy} wurden bereits sehr gute Simulations
 \subsubsection{Modellierung der Nadel}
 Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel als Flex-Objekt modelliert, so wie in Abbildung \ref{Needle3} zu sehen. Hierbei wurde darauf geachtet, dass sich die Partikel der Nadel berühren und das Partikelmodel möglichst dünn, beziehungsweise Nadelförmig ist.
 
-\bild{Needle3}{9cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewbe-Modell eingeführt.}
+\bild{Needle3}{9cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewebe-Modell eingeführt.}
 
 Eine Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt wurde. In günstigen Situationen bleibt die Nadel dann im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen. 
 Ob die Nadel im Gewebe stecken bleibt hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
@@ -183,10 +183,10 @@ Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im G
 %Negative Beeinflussungen des Realismusses und Lösung
 Die kurze Bewegung der Nadel können in manchen Fällen negativ auf den Realismus der Simulation auswirken. Außerdem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Der Reibungswiederstand der Nadel konnte jedoch überraschend realistisch vermittelt werden, zumal sich der Grad des Reibungswiederstands gut justieren lässt. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
 
-\section{Weitere Chirurgische Szenarien}
-
-... Was konnte wie gut mit gegebenen Werkzeugen implementiert werden?... Was waren Probleme? Was waren Grenzen?
-Erwähnen: Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.
+%\section{Weitere Chirurgische Szenarien}
+%
+%... Was konnte wie gut mit gegebenen Werkzeugen implementiert werden?... Was waren Probleme? Was waren Grenzen?
+%Erwähnen: Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.
 
 
 

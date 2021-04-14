@@ -454,7 +454,7 @@ Eine Funktionalität, die einige Game Engines anbieten, ist die Möglichkeit per
 %Diese Funktionalität steht bei Game Engines als Funktion in der Form \textit{AddForce(FVector* ForceVector)} zur Verfügung, wie auch bei der Unreal Engine 4 (REEEEF). 
 
 Diese Funktionalität wird meist genutzt um kräftebasierte Effekte oder Systeme zu programmieren. Beispielsweise können Kräfte auf Körper, die sich innerhalb einer Explosion befinden, angewandt werden, damit sie von der Explosion weg geschleudert werden. In REEEEEFFFF wird diese Funktionalität genutzt, um Auftriebskräfte auf schwimmende Objekte wirken zu lassen. 
-Außerdem können mit dieser Funktionalität realistische Regelsysteme implementiert werden, die mit Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität (siehe Kapitel \ref{sec_FSystem}).
+Außerdem können mit dieser Funktionalität realistische Regelsysteme implementiert werden, die mit Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität ohne haptisches Feedback (siehe Kapitel \ref{sec_FSystem}).
 
 Bei der verwendeten Unreal Engine mit Flex Integration gibt es nicht die Möglichkeit, Kräfte auf einzelne Flex-Objekte oder Flex-Partikel wirken zu lassen.
 
@@ -492,14 +492,14 @@ Mit dieser einfachen Methode können Flex-Objekte realistisch umher geschoben we
 
 \subsubsection{Momente}
 
-Wirkt ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden. Wie bei der Kraft auch, zerlegen wir $M$ in $n$ gleichgroße Partikelmomente, $M_i=M/n$ und betrachten nun kleinere Momente, die auf Punktmassen wirken.
+Wirkt während eines Simulationsschritts ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden. Wie bei der Kraft auch, zerlegen wir $M$ in $n$ gleichgroße Partikelmomente, $M_i=M/n$ und betrachten nun kleinere Momente, die auf Punktmassen wirken.
 
 %Zunächst wird die Winkelgeschwindigkeit, $\Delta \omega$, berechnet. 
 Die Berechnung von $\Delta \omega_i$ erfolgt wie zuvor, nur im rotatorischem Sinne (Gleichung \ref{form_omega}):
 
 \begin{equation}
 \begin{split}
-M_i = m_i   \dot{\omega} = m_i \dfrac{\Delta \omega_i}{\Delta t} \\
+M_i = m_i   \dot{\omega}_i = m_i \dfrac{\Delta \omega_i}{\Delta t} \\
 \Rightarrow  \Delta \omega_i = \dfrac{M_i}{m_i} \Delta t
 \end{split}
 \label{form_omega}
