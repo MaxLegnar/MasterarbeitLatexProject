@@ -4,6 +4,18 @@
 \section{Zusammenfassung}
 Nochmal im Überblick: Was sind Möglichkeiten und Grenzen von FleX und Game Engine? Was musste hinzugefügt werden?
 
+Übersichtliche Guidline für gute Performance :
+
+    \begin{itemize}
+    
+      \item Hardwaregrenzen
+      
+      \item viele kleine cluster (scatter methode bei shape constraints: cluster paralell, pro cluster werden partikel sequenziel (atomitcly) verarbeitet)
+      
+      \item Bei Self Collision: Wenig Partikelüberschneidung, damit weniger collision constraints verarbeitet/angewandt werden müssen.
+      
+    \end{itemize}
+
 \section{Fazit und Ausblick}
 
 -> Effiziente Wasser bzw Blut shader für Fluid Partikel!

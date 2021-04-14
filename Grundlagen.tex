@@ -139,7 +139,7 @@ Dabei soll $\Delta \textbf{p}$ entlang des Gradienten $\nabla C_p$ ausgerichtet 
 \label{form_lambda}
 \end{equation}
 
-Durch Kombination von Gleichung \ref{form_C} und \ref{form_lambda} ergibt sich für $\Delta \textbf{p}$ \cite{PBD}:
+$\lambda$ wird \textit{constraint error} genannt und ist ein Maß für die Schrittgröße, um die ein Partikel verschoben wird. Durch Kombination von Gleichung \ref{form_C} und \ref{form_lambda} ergibt sich für $\Delta \textbf{p}$ \cite{PBD}:
 
 \begin{equation}
 \Delta \textbf{p} = - \frac{C(\textbf{p})}{|\nabla_p C(\textbf{p})|^2} \nabla_p C(\textbf{p}) 
@@ -189,6 +189,7 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
 %solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
+% -> evt erwähnen: Einheitlicher Partikelradius -> Nachbarsuche funktioniert so am besten mit dem 3d grid aus gdc17 talk
 
 \subsubsection{Unreal Engine 4 mit Flex integration}
 
@@ -199,6 +200,16 @@ So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in 
 
 % Doku und Lizenz:
 Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von github bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
+
+\subsubsection{Soft Body Simulationen mit \textit{clustered shape matching}}
+
+auch region-based shape matching constraints genannt
+
+Erklären wie das funktioniert,
+
+wichtig zu erwähnen (aus \cite{PBDKidney}-Conclusion):
+The model’s realised stiffness does not depend only on the defined stiffness parameter, as it is dependent also on the time step, the number of solver iterations and the adopted number of clusters and shape-matching constraints. As a result, stiffness must be set
+in the context of these chosen values.
 
 \subsection{Weitere Simulationsmethoden und Physik Engines}
 ... PhysX, SOFA, Masse-Feder-Modelle [8]...
