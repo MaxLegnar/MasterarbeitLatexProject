@@ -2,7 +2,8 @@
 \chapter{Zusammenfassung und Schlusswort}
 
 \section{Zusammenfassung}
-Nochmal im Überblick: Was sind Möglichkeiten und Grenzen von FleX und Game Engine? Was musste hinzugefügt werden?
+
+In diesem Kapitel wollen wir noch einmal die wichtigsten Erkenntnisse auflisten, die im Verlauf dieser Arbeit gewonnen werden konnten:
 
 Übersichtliche Guidline für gute Performance :
 
@@ -15,25 +16,58 @@ Nochmal im Überblick: Was sind Möglichkeiten und Grenzen von FleX und Game Eng
       \item Bei Self Collision: Wenig Partikelüberschneidung, damit weniger collision constraints verarbeitet/angewandt werden müssen.
       
     \end{itemize}
+    
 
 \section{Fazit und Ausblick}
+Die für diese Arbeit gesetzten Ziele konnten größtenteils erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
 
--> PBD ist toll, weil Partikel wie Punktmassen lässt sich system leicht erweitern (AddForce) und es ist ersteunlich was für komplexe gesamtsysteme auf Grundlage eines solchen einfachen Partikelsystems simuliert werden können.
+% FleX Performance und Simulationsverhalten:
+Das Kombinieren von NVIDIA FleX mit einer Game Engine erwies sich als überaus nützlich um ohne großen Aufwand effiziente und vielfältige Anwendungen für Serious Games zu entwickeln. 
+Ohne die vielen nützlichen Funktionen der Unreal Engine 4 hätten niemals so viele Ergebnisse in solch einer kurzen Zeit erzielt werden können. 
+Es konnten die wichtigsten Faktoren identifiziert werden, die den größten Einfluss auf die Simulationsperformance von FleX haben. Mithilfe des angeeigneten theoretischen Wissens über die verwendete Software und PBD konnte stets gut nachvollzogen werden, wieso sich die Simulationen in bestimmten Situationen unterschiedlich verhält. So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen.
+
+% Framework:
+Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnell erweitert werden, beispielsweise durch Manipulation einzelner Partikel. Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist.
+Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen weitere wissenschaftliche Problemstellungen zu lösen. Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird Sie bereits jetzt für weitere wissenschaftliche Projekte vom XYZ Institut eingesetzt. 
+
+%Demoanwendung und haptisches Feedback:
+Außerdem entstand im Rahmen dieser Arbeit eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung XXX). 
+
+-> hier Bild rein, was mit Framework noch alles tolles gebaut werden konnte....Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel. Kurz in Bildbeschreibung infos über Performance
+
+Im Rahmen dieser Arbeit konnte die Demoanwendung allerdings nicht im großen Umfang von medizinischen Fachpersonen evaluiert werden, weswegen der Realitätsgrad der Demoanwendung noch nicht bewertet werden konnte. 
+Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realismus der Demoanwendung hat. Dadurch können die motorischen Fähigkeiten nicht effizient trainiert werden. 
+%Nur Abläufe und das visuelle Gedächtnis können trainiert werden. 
+
+Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden. %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
+Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von Jeder Person, die eine handelsübliches VR-Anlage besitzt, verwendet werden kann. Außerdem können für den Endnutzer Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+
+
+LESEZEICHEN
+
+
+%\section{Ausblick}
+
+-> Automatisierung des UNreal Editors
 
 -> Effiziente Wasser bzw Blut shader für Fluid Partikel werden benötigt
 
--> hier Bild rein, was mit Framework noch alles tolles gebaut werden konnte....Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.
+-> haptische Hardware
 
-...Zwar sind solche Simulatoren unbestreitbar weniger realistisch, dafür sinken die nötigen Kosten weil keine haptische Hardware benötigt wird. Zumal heutige VR-Geräte für immer mehr Privatpersonen erschwinglich sind. Das in dieser Arbeit verwendete VR-Gerät, die Oculus Quest 2, kostete beispielsweise 300 Euro...
+-> Partikelmanipulation läuft noch auf CPU!
+
+-> Nadel manuel an Gewebe befestigen
 
 ... weil FleX inzwischen auch mit DX funktioniert, könnten Simulatoren auch als stand alone variante portiert werden. Dann wird NUR  noch Oculus Quest 2 und kein pc mehr benötigt... allerdings bräuchte man dann ue4.22 mindestens...
-
 
 aus kapitel attachement:
 Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Befestigen von Szenen oder anderen 3D Objekten an ein Flex-Objekt. Allerdings drehen sich Szenen nicht mit Soft Bodies mit. Nur die Position der befestigten Szenen wird angepasst, während die Rotation unverändert bleibt. 
 Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktioniert.
 
 Diese Problemstellung könnte interessant für nachfolgende Arbeiten sein.
+
+\section{Danksagung}
+Danke an Betreuer, Family, Freunde, schön dass alles trotz Pandemie gut geklappt, Danke an Josh, Danke an Uni HD, hab Studium sehr genossen, alle Dozenten waren leidenschaftliche Wissenschaftler...
 
 % ----------------------------------- ALT --------------------------------------------
 
