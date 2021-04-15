@@ -31,8 +31,8 @@ Für diese Arbeit und für alle durchgeführten Messungen und Tests stand die Ha
 
 \begin{table}[hbt!]
 \centering
-\label{table_hardware}
 \caption{Die verwendete Hardware.}
+\label{table_hardware}
 \begin{tabular}{l|l}
  \hline
 CPU & Intel Core i7-9700K  \\ \hline
@@ -179,27 +179,28 @@ Eine erste intuititive Vermutung wäre nun, dass Asset B performanter simuliert 
 \centering
 \caption{Messergebnisse des Cluster Versuchs. Assets mit mehr und dafür kleineren Clustern performen deutlich besser.}
 \label{table_clusters}
-\begin{tabular}{l|cc}
-                   & \textbf{Asset A} & \textbf{Asset B} \\ \hline
-Partikelradius     & 1                & 1                \\
-Simulation Substeps     & 3            & 3            \\
-Substep Iterations     & 9            & 9            \\
-Self Collision     & deaktiviert            & deaktiviert            \\
-Partikelanzahl     & 23815            & 23815            \\
-Clusterradius      & 6                & 20               \\
-Clusteranzahl      & 133              & 18               \\
-Partikel / Cluster & 179              & 1323             \\
-Solve Sync Time    & 0,24 ms          & 16,83 ms         \\
-FPS                & 120              & 46              
-
+\begin{tabular}{lcc}
+                                         & \textbf{Asset A}      & \textbf{Asset B}      \\ \hline
+\multicolumn{1}{l|}{Partikelradius}      & 1                     & 1                     \\
+\multicolumn{1}{l|}{Simulation Substeps} & 3                     & 3                     \\
+\multicolumn{1}{l|}{Substep Iterations}  & 9 					 & 9 				     \\
+\multicolumn{1}{l|}{Partikelanzahl}      & 23815                 & 23815                 \\
+\multicolumn{1}{l|}{Clusterradius}       & 6                     & 20                    \\
+\multicolumn{1}{l|}{Clusteranzahl}       & 133                   & 18                    \\
+\multicolumn{1}{l|}{Partikel / Cluster}  & 179                   & 1323                  \\ \hline
+\multicolumn{1}{l|}{Solve Sync Time}     & 0,24 ms               & 16,83 ms              \\
+\multicolumn{1}{l|}{FPS}                 & 120                   & 46   
 \end{tabular}
 \end{table}
 
 %Aus diesen Messergebnissen lässt sich eine wichtiger Grundsatz ableiten: Je mehr Shape Constraints ein 
 
-Die GPU kommt also offenbar bei der Verarbeitung von wenigen großen Clustern schnell an ihre Grenzen. Das hat damit zu tun, wie NVIDIA FleX die Partikel und Constraints verarbeitet. 
+Die GPU kommt also offenbar bei der Verarbeitung von wenigen großen Clustern schnell an ihre Grenzen.
+%Das hat damit zu tun, wie NVIDIA FleX die Partikel und Constraints verarbeitet. 
 
-Wie bereits in Kapitel \ref{section_PBD} erklärt, wird jedes Partikel von mehreren Constraints verschoben, wobei ein Constraint mehrere Partikel beeinflussen kann (Kardinalität eines Constraints). In \cite{UPP} wird zwischen zwei grundlegenden Verarbeitungsansätzen unterschieden: Partikel orientiert und Constraint orientiert. 
+Hierfür gibt es zwei Ursachen: Zum Einen ist die Verarbeitung der Shape Constraints laut \cite{FlexD3D} aufwändig, weil hierbei die Momentenmatrizen der Cluster polar zerlegt werden müssen. Das ist besonders rechenintensiv.
+
+Zum Anderen verarbeitet NVIDIA FleX Shape Constraints nach der sogenannten Constraint otientierten Methode. Um die Simulation zu verarbeiten, wird in \cite{UPP} zwischen zwei unterschiedlichen Verarbeitungsansätzen unterschieden: Partikel orientiert und Constraint orientiert. 
 
 Beim Partikel orientierten Ansatz werden alle Partikel parallel verarbeitet und für jedes Partikel werden die Constraints, die das Partikel beeinflussen, sequenziell verarbeitet. 
 
@@ -360,17 +361,11 @@ Gleichung \ref{form_worldtransf} und \ref{form_reltransf} sind einfache homogene
 \subsection{Befestigung von FleX Objekten}
 \label{subsec_attach}
 
-%Soft joint gibts
-
-%RadialHardAttach-objekt
-
-%3D-modelle und ShapeComponents (box capsule sphere) lassen sich an FlexComponents befestigen, aber nicht einzelne partikel
-
-Für gewöhnlich arbeiten Game Engines mit sogenannten Scene Trees um 3D-Objekte hierarchisch zu organisieren (REFERENZ). Dabei repräsentiert jedes 3D-Objekt einen Knoten im Scene Tree. 3D-Objekte werden aneinander befestigt, so das sich eine Baumstruktur bildet, in der die Kinderobjekte an ihre Elternobjekte befestigt sind. Ändert sich die Transformation eines Elternknotens, bewegen sich all seine Kinderobjekte mit. 
-
-\bild{SceneTree}{8cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
-
-Die Struktur eines Scene Trees lässt sich zur Laufzeit eines Spiels ändern, indem 3D-Objekte per Funktionsaufruf von ihren Eltern gelöst (\textit{Detach()}) oder an andere 3D-Objekte befestigt (\textit{AttachTo(NewParent)}) werden. Diese beiden Funktionen werden in Computerspielen häufig benötigt, beispielsweise damit der Spieler 3D-Objekte aufheben (\textit{AttachTo(Hand)}) und wieder loslassen (\textit{Detach()}) kann.
+%Für gewöhnlich arbeiten Game Engines mit sogenannten Scene Trees um 3D-Objekte hierarchisch zu organisieren (REFERENZ). Dabei repräsentiert jedes 3D-Objekt einen Knoten im Scene Tree. 3D-Objekte werden aneinander befestigt, so das sich eine Baumstruktur bildet, in der die Kinderobjekte an ihre Elternobjekte befestigt sind. Ändert sich die Transformation eines Elternknotens, bewegen sich all seine Kinderobjekte mit. 
+%
+%\bild{SceneTree}{8cm}{Alle Szenen und 3D-Objekte werden in einem Szene Tree organisiert}
+%
+%Die Struktur eines Scene Trees lässt sich zur Laufzeit eines Spiels ändern, indem 3D-Objekte per Funktionsaufruf von ihren Eltern gelöst (\textit{Detach()}) oder an andere 3D-Objekte befestigt (\textit{AttachTo(NewParent)}) werden. Diese beiden Funktionen werden in Computerspielen häufig benötigt, beispielsweise damit der Spieler 3D-Objekte aufheben (\textit{AttachTo(Hand)}) und wieder loslassen (\textit{Detach()}) kann.
 
 \subsubsection{Befestigung von Flex-Partikeln an Szenen}
 
@@ -389,15 +384,15 @@ $\vec{p}_{new}$ kann mithilfe von Gleichung \ref{form_reltransf} aus Kapitel \re
 
 Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Befestigen von Szenen oder anderen 3D Objekten an ein Flex-Objekt. Allerdings drehen sich Szenen nicht mit Soft Bodies mit. Nur die Position der befestigten Szenen wird angepasst, während die Rotation unverändert bleibt. 
 
-Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktioniert.
+%Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktionierte.
 
-Diese Problemstellung könnte interessant für nachfolgende Arbeiten sein.
+Diese Problemstellung wurde in dieser Arbeit aus Zeitgründen nicht weiter verfolgt. Daher könnte diese Problemstellung für nachfolgende Arbeiten interessant sein.
 
 \subsubsection{Befestigung von Flex-Partikel an Flex-Partikel}
 
 Grundsätzlich kann ein Flex-Partikel an ein anderes Partikel befestigt werden, indem die inverse Masse des befestigten Partikels auf 0 gesetzt wird und dessen Position stets auf die Position des anderen Partikels gesetzt wird. Dann wird allerdings keine physik mehr für das befestigte Partikel simuliert. Im Rahmen dieser Arbeit wurde dies allerdings nicht erwünscht. In vielen Fällen sollten zwar zwei Flex-Objekte aneinander befestigt werden, allerdings sollten sich beide physikalisch realistisch verhalten. 
 
-Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekte hergestellt werden. Solche Verbindungen heißen dann \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
+Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekte hergestellt werden. Solche Verbindungen heißen \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
 
 \subsection{Kollisionserkennung}
 
@@ -427,7 +422,7 @@ An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwi
 
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
-\subsection{Interaktion zwischen elastischer FleX-Objekte und PhysX-Objekte}
+\subsection{Interaktion zwischen FleX-Objekte und PhysX-Objekte}
 
 %Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
  

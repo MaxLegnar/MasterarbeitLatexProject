@@ -37,7 +37,7 @@
 @Misc{FlexD3D,
   howpublished = {\url{gdcvault.com/play/1024344/}},
   note         = {aufgerufen: 15:00, 5 März 2021},
-  title        = {D3D Async Compute for Physics: Bullets, Bandages, and Blood},
+  title        = {GDC2017: D3D Async Compute for Physics: Bullets, Bandages, and Blood},
   year         = {2017},
 }
 
@@ -200,6 +200,26 @@
   booktitle = {VRIPHYS},
   title     = {Hierarchical Position Based Dynamics},
   year      = {2008},
+}
+
+@Article{Shape,
+  author     = {M\"{u}ller, Matthias and Heidelberger, Bruno and Teschner, Matthias and Gross, Markus},
+  journal    = {ACM Trans. Graph.},
+  title      = {Meshless Deformations Based on Shape Matching},
+  year       = {2005},
+  issn       = {0730-0301},
+  month      = jul,
+  number     = {3},
+  pages      = {471–478},
+  volume     = {24},
+  abstract   = {We present a new approach for simulating deformable objects. The underlying model is geometrically motivated. It handles pointbased objects and does not need connectivity information. The approach does not require any pre-processing, is simple to compute, and provides unconditionally stable dynamic simulations.The main idea of our deformable model is to replace energies by geometric constraints and forces by distances of current positions to goal positions. These goal positions are determined via a generalized shape matching of an undeformed rest state with the current deformed state of the point cloud. Since points are always drawn towards well-defined locations, the overshooting problem of explicit integration schemes is eliminated. The versatility of the approach in terms of object representations that can be handled, the efficiency in terms of memory and computational complexity, and the unconditional stability of the dynamic simulation make the approach particularly interesting for games.},
+  address    = {New York, NY, USA},
+  doi        = {10.1145/1073204.1073216},
+  issue_date = {July 2005},
+  keywords   = {shape matching, deformable modeling, real-time simulation, geometric deformation},
+  numpages   = {8},
+  publisher  = {Association for Computing Machinery},
+  url        = {https://doi.org/10.1145/1073204.1073216},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

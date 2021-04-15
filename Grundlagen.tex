@@ -108,9 +108,9 @@ wird das Überschießproblem, das bei Integrator basierten Methoden (z.B. impliz
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein (Constant-)Density-Constraint definiert um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert benachbarte Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
+Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \textit{Density-Constraint} definiert um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
 
-%Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
+%Weitere Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
 %Grundsätzlich wird zwischen einem \textit{equality Constraint}, $C=0$, und einem \textit{inequality Constraint}, $C \geq 0$, unterschieden. Ein Kollisions-Constraint ist beispielsweise ein \textit{inequality Constraint}.
 
@@ -164,7 +164,15 @@ Zuerst lief FleX 1.0 nur auf NVIDIA Grafikkarten, weil die Bibliothek CUDA als V
 
 In vielen Arbeiten in denen chirurgische Simulationen Thema sind, wird FleX verwendet (\cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} ...). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen, auf Basis von gegebenen Polygonmodellen.
 
-%Auch in dieser Arbeit werden chirurgischen Simulationen mithilfe von FleX implementiert.
+% BVH: Bounding Volume Hierarchy in FlexD3D seite 57!
+Des weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um die Partikel-Polygonmodell Kollisionserkennung zu beschleunigen \cite{FlexD3D}. Außerdem wird die Partikelnachbar-Suche und Kollisionserkennung mithilfe von räumlichen Datenstrukturen beschleunigt. Weil hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene den selben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Kollisionserkenung.
+
+% über partikelnachbarsuche:
+% 3d gitter 0 3d textur, 3d texturen können von gpus gut verarbeitet werden
+% Zellen haben index. Anzahl partikel pro zelle wird in zelle gespeichert. Das wird dann sortiert
+% This does two things, first particles that are close to each other physically will be relatively close in memory.
+% Second we can find the neighbors of a particle by determining its cell number and looking up the particles in that cell in the list we generated, we can also look at particles in neighboring cells.
+
 \subsubsection{Lösungsverfahren}
 Die wohl wichtigste Neuerung aus \cite{UPP} ist, dass nicht mehr der sequenziell arbeitende Gauss-Seidel Algorithmus verwendet wird. Stattdessen wird auf Gauss-Jacobi gesetzt um die Constraint-Projektionen besser parallelisieren zu können. Allerdings gibt es einige Fälle, bei denen der Gauss-Seidel Algorithmus nicht konvergiert \cite{UPP}.
 %z.b. wenn 2 partikel über identisches constraint verbunden sind.
@@ -183,314 +191,35 @@ Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{s
 Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten in der Praxis keine optisch wahrnehmbaren Fehler auf \cite{UPP}.
 
 % !!!!!! evt erwähnen: Einheitlicher Radius !!!!!!
-%single particle radius sorgt für effizentere kollisionserkennen (wieso? nochmal nachlesen!)
+%single particle radius sorgt für effizentere kollisionserkennen, weil das 3D Grid auf die größe der Partikel angepasst wird.
 
 % !!!!!! evt erwähen: Als Optimization problem und Vergleich zu euler: !!!!!!
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
 %solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
-% -> evt erwähnen: Einheitlicher Partikelradius -> Nachbarsuche funktioniert so am besten mit dem 3d grid aus gdc17 talk
+\subsubsection{Soft Body Simulationen mit NVDIA FleX und \textit{Clustered Shape Matching}}
+%auch region-based shape matching constraints genannt:
+
+Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
+
+Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} visualisiert. 
+
+% polare Zersetzung der Kovarianzmatrix der deformierten Form
+\bild{ShapeMatching}{6cm}{Abbildung aus \cite{FlexD3D}. Das Grundprinzip des Shape Matchings. }
+
+Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbildung \ref{ShapeMatching}: \textit{Rest Configuration}). Diese zusammengehörende Partikelgruppe ist dann ein sogenanntes \textit{Cluster}. Die Partikel eines Clusters können nicht miteinander kollidieren. 
+Die Partikel des Clusters werden zunächst normal simuliert, als währen sie nicht miteinander verbunden.
+Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
+
+Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein Steifheitsparameter zugeordnet. Größere Soft Bodies können mithilfe von mehreren Clustern modelliert werden. Die Partikel von überlappenden Clustern nehmen interpolierte Position ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
 
 \subsubsection{Unreal Engine 4 mit Flex integration}
 
-Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA Flex 1.2. 
+Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA FleX. 
 
 % Funktionalitäten:
-So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA Flex, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygon-Modelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygon-Modelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt werden.
+So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA FleX, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygonmodelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygonmodelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt und visualisiert werden.
 
 % Doku und Lizenz:
-Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von github bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
+Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von GitHub bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
 
-\subsubsection{Soft Body Simulationen mit \textit{clustered shape matching}}
-
-auch region-based shape matching constraints genannt
-
-Erklären wie das funktioniert,
-
-wichtig zu erwähnen (aus \cite{PBDKidney}-Conclusion):
-The model’s realised stiffness does not depend only on the defined stiffness parameter, as it is dependent also on the time step, the number of solver iterations and the adopted number of clusters and shape-matching constraints. As a result, stiffness must be set
-in the context of these chosen values.
-
-%\subsection{Weitere Simulationsmethoden und Physik Engines}
-%... PhysX, SOFA, Masse-Feder-Modelle [8]...
-
-%\section{Verwendete Software}
-%
-%In diesem Kapitel werden alle Softwareelemente, die im Rahmen dieser Arbeit genutzt wurden, vorgestellt.
-%
-%\subsection{NVIDIA Flex}
-%Das waren die verwendeten Software Werkzeuge. Während es zuvor über flex-theorie ging, wird hier kurz auf software-architektur von flex eingegangen (worauf achten, wie benutzen, Kompabilitäten, lizenz?...)
-%
-%\subsection{Unreal Engine 4 mit NVIDIA FleX-Integration}
-%un joa... par worte über ue4.19 mit flex integration
-
-%\section{Virtual Reality}
-%
-%Geräte werden immer günstiger usw ... finden wir vielleicht noch ein paper wo ein haptisches Gerät an einen Motion Controller befestigt wird? Klappt sowas gut?
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%% aus bachelor %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\subsection{Grundverhaltensregeln}
-%
-%Die Grundlage des Boid-Modells von Reynolds bilden drei einfache Verhaltensregeln, die jedes Boid befolgt \cite{Reynolds99steeringbehaviors}. Allein mit diesen Grundregeln können erste Bewegungen erzeugt werden, welche an Tierschwärme erinnern. 
-%
-%Jedes Boid besitzt dabei einen Wahrnehmungsbereich. Der Wahrnehmungsbereich ist ein kreis- oder kugelförmiger Bereich, in dessen Zentrum das zugehörige Individuum sitzt.
-%
-%\bild{BoidWahrnehmung}{5cm}{Ein möglicher Wahrnehmungsbereich eines Boids aus \cite{Reynolds99steeringbehaviors}. Hier besitzt jedes Individuum einen toten Winkel im Wahrnehmungsbereich.}
-%
-%Das Verhalten eines Boids wird durch die Zustände seiner benachbarten Schwarmmitglieder, die sich innerhalb seines Wahrnehmungsbereichs befinden, beeinflusst. Boids, die sich außerhalb des Wahrnehmungsbereichs befinden, werden nicht berücksichtigt.  Abbildung \ref{BoidWahrnehmung} zeigt einen solchen Wahrnehmungsbereich.
-%
-%
-%\subsubsection{Kohäsion \textit{(Cohasion)}}
-%Ein Boid hat stets das Bedürfnis, dicht in seiner Gruppe zu bleiben um vor Jägern geschützt zu sein. Dieses Verhalten wird mit der Grundregel \textit{Kohäsion} realisiert. In Abbildung \ref{Kohaesion} wird dieses Verhalten illustriert.
-%
-%\bild{Kohaesion}{7cm}{Das Grundverhaltensgesetz Kohäsion: Ein Individuum (grün) wird vom Schwerpunkt der Nachbarschaft angezogen \cite{Reynolds99steeringbehaviors}.} 
-%
-%Hierfür wird der relative Schwerpunkt aller benachbarten Boids ermittelt, um so einen Bewegungsvektor zu spannen der beschreibt, in welche Richtung sich das Individuum hingezogen  \glqq fühlt\grqq{}. Je weiter die Nachbarn entfernt desto größer wird der Vektor und auch die korrigierende Bewegungsgeschwindigkeit. Ein Individuum bewegt sich umso schneller zu seiner Gruppe hin, je größer die Gefahr ist, den Anschluss zum Schwarm zu verlieren.
-%
-%\subsubsection{Separation}
-%
-%Die Separation ist dazu da, um Kollisionen unter den Individuen zu vermeiden. Ein Individuum separiert sich, indem zuerst alle Nachbarn ermittelt werden, die sich innerhalb einer kritischen Zone befinden. Diese Nachbarn gelten dann als \glqq{}zu nah\grqq{}. In Abbildung \ref{Separation} wurden zum Beispiel drei Nachbarn gefunden, die dem grünen Boid zu nahe sind:
-%
-%\bild{Separation}{7cm}{Ein Boid separiert sich von seiner Nachbarschaft in dem ein abstoßender Vektor generiert wird, der von den Nachbarn weg zeigt \cite{Reynolds99steeringbehaviors}.}
-%
-%Danach wird für jeden dieser drei Nachbarn, ein Vektor gespannt, der von Ihnen weg und zum grünen Boid hin zeigt. Diese Vektoren werden anschließend normiert. Je kleiner der Abstand zu einem Nachbarn, desto größer sollte der abstoßende Vektor sein. Dies kann erreicht werden, indem jeder abstoßende Vektor umgekehrt proportional zum Abstand gewichtet wird.
-%
-%
-%\subsubsection{Ausrichtung \textit{(Alignment)}}
-%
-%Die letzte Grundverhaltensregel von Reynold sorgt dafür, dass sich eine Gruppe aus Boids, als eine Einheit, in eine Richtung fortbewegt. Die Individuen einer Gruppe müssen dafür ihre Bewegungsrichtungen aneinander angleichen. Neben der Angleichung der Bewegungsrichtung kann auch zusätzlich eine Geschwindigkeitsangleichung erfolgen \cite{Reynolds99steeringbehaviors}.
-%
-%Um eine Ausrichtung zu erzeugen, sucht ein Individuum zuerst all seine Nachbarn. Dann wird der durchschnittliche Geschwindigkeitsvektor der Nachbarn ermittelt. Dieser Vektor beschreibt die derzeit angestrebte Richtung und Geschwindigkeit der Gruppe. Jedes Individuum berücksichtigt den Geschwindigkeitsvektor der Gruppe und versucht sich diesem anzupassen.
-%
-%\bild{Ausrichtung}{7cm}{Ein Boid richtet sich nach seinen Nachbarn aus \cite{Reynolds99steeringbehaviors}.} 
-%
-%Der finale Bewegungsvektor eines Individuums ist dann die Differenz zwischen Geschwindigkeitsvektor der Gruppe und des eigenen Bewegungsvektors. 
-%
-%
-%
-%\subsection{Zusatzvorschriften}
-%\label{subsec_Zusatzvorschriften}
-%
-%Meist werden neben den drei Grundverhaltensregeln noch weitere Zusatzvorschriften implementiert um dem Schwarm noch mehr Fähigkeiten zu verleihen. Zu diesen Zusatzvorschriften zählen beispielsweise \glqq Hindernis vermeiden\grqq{}, \glqq Pfad folgen\grqq{} oder \glqq Flussfeld folgen\grqq{} \cite{Reynolds99steeringbehaviors}. 
-%
-%Das Verhalten der Boids lässt sich aber auch mit beliebigen, selbst entwickelten Zusatzvorschriften erweitern. So wurde beispielsweise in \cite{Oliver14Tschesche} dafür gesorgt, dass sich alle Individuen zu einem zentralen Punkt hingezogen fühlen, damit der Schwarm nicht \glqq davon fliegt\grqq{}.
-%
-%Im Rahmen dieser Arbeit wurden die folgenden Zusatzverhaltensregeln umgesetzt:
-%
-%\subsubsection{Position folgen}
-%Es kann ein Punkt im Raum definiert und umher bewegt werden. Der Schwarm wird von diesem Punkt angezogen. Sobald dieser Punkt erscheint, vernachlässigen die Individuen die drei Grundverhaltensregeln ein wenig um den Punkt anzufliegen. Der anziehende Punkt könnte beispielsweise Futter repräsentieren und wird \textit{Kohäsionspunkt} genannt.
-%
-%
-%\subsubsection{Position meiden}
-%Mit dieser Verhaltensregel kann ein menschlicher Spieler den virtuellen Schwarm \glqq jagen\grqq{}. Im Gegensatz zur Verhaltensregel \textit{Position folgen} wird hier ein Abstoßender Punkt im Raum definiert. Die Boids meiden diesen Ort und bewegen sich von ihm weg. Dieser Punkt wird \textit{Separationspunkt} genannt.
-%
-%
-%\subsection{Kombinierung von Verhaltensregeln}
-%
-%Jede eingesetzte Verhaltensregel generiert einen Vektor, der beschreibt, in welche Richtung sich das betrachtete Individuum bewegen möchte. Diese Vektoren werden auch als \textit{Steuersignale} oder \textit{Steuervektoren} bezeichnet \cite{Ulm01Maschke}.  Jede Verhaltensregel, $i$, generiert  für jedes Individuum ein Einzelsteuersignal, $\vec{v_i}$. Aus $N$ Verhaltensregeln entstehen also $N$ Einzelsteuersignale. Alle Einzelsteuervektoren, $\vec{v_i}$, werden am Ende zu einem finalen Bewegungsvektor, $\vec{V}$, zusammengefasst (siehe Gleichung \ref{V}). Die finalen Steuervektoren, $\vec{V}$, bewegen schlussendlich die Individuen. 
-%
-%$\vec{V} = f(\vec{v_i})$ kann auch wie die finale Entscheidung, in welche Richtung es gehen soll, verstanden werden, während $\vec{v_i}$ das Nachdenken repräsentiert. Jedes $\vec{v_i}$ schätzt während des  \glqq Überlegungs-Prozesses\grqq{} eine bestimmte Situation ein. Beispielsweise wie hoch die Gefahr einer Kollision
-%ist (Separation) oder ob die Gefahr besteht, den Anschluss zum Schwarm zu verlieren (Kohäsion). Je größer ein Steuervektor, $\vec{v_i}$, desto dringlicher ist der Handlungsbedarf.
-%
-%Bei der Berechnung des finalen Bewegungsvektors, $\vec{V}$, wird mit Prioritätsgewichten, $w_i$, gearbeitet, um einstellen zu können, wie stark die jeweiligen Verhaltensregeln, $i$, ausgeprägt sein sollen. $\vec{V}$ wird dann durch Bildung des gewichteten Mittelwerts aus allen Steuersignalen gebildet:
-%
-%\begin{equation}
-%\vec{V} = \dfrac{1}{N} \cdot \sum_{i=1}^N(w_i \cdot \vec{v_i})
-%\label{V}
-%\end{equation}
-%
-%So entsteht ein finaler Steuervektor, $\vec{V}$, der für die Bewegung eines einzelnen \mbox{Boids}  verantwortlich ist. Formel \ref{V} kann auch anders gestaltet werden. Wichtig ist dabei nur, dass die Einzelsteuersignale mithilfe von Gewichtungen parametrisiert und miteinander kombiniert  werden. Es kann auch lediglich die gewichtete Summe aus $\vec{v_i}$ gebildet werden. Reynolds schlägt außerdem vor, die Steuervektoren, $\vec{v_i}$, zu normieren. Diese Variante kann für eine einfachere Kontrolle des Schwarms sorgen und die Parametrisierungsarbeit erleichtern \cite{Reynolds99steeringbehaviors}.
-%
-%Mit dieser Methodik kann ein Boid im übertragendem Sinne auch mehrere Entscheidungen zugleich treffen, weil die finale Entscheidung, $V$, immer von allen Verhaltensregeln, $i$, abhängig ist. Dafür wird der algorithmische Aufwand für das Treffen von Entscheidungen minimiert. Statt auf einen bedinungsabhängigen, stark verzweigten Algorithmus zu setzen, wird hier eine Entscheidung mithilfe einer einfachen Formel gefällt. Für den Entscheidungsprozess werden keine Programmschleifen oder Abzweigungen benötigt, nur Formel \ref{V}. Daher ist diese Methode gut für Grafikkarten geeignet, weil diese am besten als reine Rechenwerke genutzt werden sollten (siehe Kapitel \ref{subsec_CDMR}).
-%
-%\subsection{Bewegung der Boids}
-%
-%Die Bewegung eines Boids, das sich an einer Position $P$ befindet, kann beispielsweise nach Formel \ref{move} erfolgen \cite{Ulm01Maschke}. 
-%
-%\begin{equation}
-%P(t+dt) = P(t) + \vec{V(t)} \cdot dt
-%\label{move}
-%\end{equation}
-%
-%Gleichung \ref{move} lässt sich allerdings nicht ohne weiteres von Shadern umsetzen. Das liegt vor allem an der Funktionsweise von Shadern. Ausführliche Erläuterungen über diese Problematik folgen in Kapitel \ref{section_BewDerBoids}. In Kapitel \ref{section_BewDerBoids} wird auch eine alternative Methode für die Bewegung der Boids konzipiert.
-%
-%
-%
-%
-%
-%
-%
-%
-%%=====================UE4===============================UE4=================
-%\section{Die Unreal Engine 4}
-%\label{section_ue4}
-%Für die Umsetzung dieser Arbeit wurde die Unreal Engine 4 von Epic Games verwendet. 
-%Sie bietet viele Hilfestellungen in Form von fertigen Framesworks, Softwarebibliotheken und 3D-Editoren. 
-%
-%Die Unreal Engine 4 leistet zudem Hilfe bei der plattformübergreifenden Entwicklung. Sie unterstützt einige Betriebssysteme, wie Linux, Windows, IOS oder Android sowie alle aktuellen Videospielkonsolen von Microsoft, Sony und Nintendo.
-%
-%Mithilfe der \ac{UE4} können auch sogenannte Compute-Shader-Pipelines erstellt werden. So können Simulationsberechnungen auf die Grafikkarte verlagert werden, um von ihrer parallelisierten Rechenleistung zu profitieren. In Kapitel \ref{subsec_CDMR} wird diese Thematik näher erläutert.
-%
-%
-%
-%\section{Shader-Entwicklung mit Unreal Engine 4}
-%\label{sec_UE4UndShader}
-%
-%Ein Shader-Programm ist meistens dafür vorgesehen die Oberfläche eines 3D-Modells wie ein Material aussehen zu lassen. Daher wird ein Shader häufig als  \glqq Material\grqq{} bezeichnet. Ein Material ist ein Shader-Programm, das dafür vorgesehen ist, 3D-Modelle in unterschiedlichster Weise zu zeichnen \cite{Max17Legnar}.
-%
-%\bild{MaterialShader}{7cm}{Ein Shader, oder auch Material genannt, wird auf ein 3D-Modell angewandt, damit dessen gezeichnete Oberfläche an einen Felsen erinnert \cite{Max17Legnar}.}
-%
-%Shader-Programme werden in der Unreal Engine 4 mithilfe des sogenannten Material Editors erstellt. Dieser besteht aus einer rein grafischen Programmierumgebung, welche auf das Verbinden unterschiedlicher \glqq Material-Knoten\grqq{}  basiert \cite{UE4MatNodes}.
-%
-%Ein mit der Unreal Engine erstellter Shader wird von der Engine automatisch in \ac{HLSL} übersetzt. \ac{HLSL} ist die Shader-Sprache der Grafikkartenschnittstelle DirectX. Der übersetzte HLSL-Programmcode kann dem Programmierer bei Bedarf auch angezeigt werden. Ein in der Unreal Engine integrierter HLSL Cross Compiler sorgt für eine erweiterte Kompatilität eines Shaders \cite{CrossCompiler}. Er  optimiert generierten \ac{HLSL}-Programmcode  und übersetzt ihn in GLSL-Programmcode (\ac{GLSL}). GLSL ist die Shader-Sprache von OpenGL und Vulkan. Diese Grafikkartenschnittstellen unterstützen unter anderem das Betriebssystem Linux und Sonys Playstation 4, was DirectX nicht tut. Somit muss der Programmierer nur einen Shader programmieren. Dieser kann dann von besonders vielen unterschiedlichen Plattformen ausgeführt werden.
-%
-%Im Material-Editor der UE4 können auch neue Material-Knoten per \ac{HLSL} erstellt werden \cite{CustomNode}. Diese Knoten werden als \textit{Custom Nodes} bezeichnet und halten dem Programmierer weitere Möglichkeiten offen. Es können nämlich nicht alle Funktionalitäten, die HLSL bietet, mit den zur Verfügung gestellten Material-Knoten umgesetzt werden. Daher wurden die Custom Nodes eingeführt, um alle Möglichkeiten offen zu halten. Nichts desto trotz rät Epic Games von der Verwendung der Custom Nodes ab. Nicht nur weil diese unsicherer sind, sondern auch weil ihr beinhalteter HLSL-Programmcode nicht weiter von der Unreal Engine optimiert werden kann \cite{CustomNode}.
-%
-%Mithilfe eines Custom Nodes können beispielsweise fortgeschrittene Renderverfahren implementiert werden, so wie Ryan Brucks in \cite{Ryan18Brucks} zeigt.
-%
-%
-%
-%\subsection{Umgang mit Texturen in der Shader-Programmierung}
-%\label{subsec_BilFiltUV}
-%
-%\subsubsection{UV-Koordinaten}
-%
-%Wesentlicher Bestandteil der Shader-Programmierung ist die Verarbeitung von Texturen. Häufig muss dabei auf ein bestimmtes Pixel, das sich in einer Textur befindet, zugegriffen werden. Der Zugriff auf ein Pixel erfolgt über eine Positionsangabe. Die Positionen der Pixel werden von sogenannten UV-Koordinaten beschrieben.
-%
-%\bild{UV1}{6cm}{Eine Textur kann man sich wie ein Gitter-Netz aus Zellen vorstellen. Jede Zelle besitzt einen Farbvektor, der sich genau in ihrem Zentrum befindet \cite{BilTexFilt}.}
-%
-%In Abbildung \ref{UV1} ist eine Textur, $T$, mit einer Auflösung von $R=4$ mal $R=4$ Pixeln abgebildet. Eine Textur kann man sich wie ein Gitternetz vorstellen, wobei jedes Quadrat dieses Netzes häufig als \textit{Zelle} oder \textit{Texel} bezeichnet wird. Jede dieser Zellen besitzt einen Farbwert, der in Abbildung \ref{UV1} als farblicher Punkt dargestellt wird. 
-%
-%Farbwerte werden mit 3D-Vektoren, in Form von $(R \quad G \quad B)$, beschrieben. Die Komponenten eines Farbvektors beschreiben den Rotanteil, $R$, Grünanteil, $G$ und Blauanteil, $B$, der Farbe. Jede Komponente hat meist einen Wert zwischen 0 und 255, wobei 255 ein voller Farbanteil ist. Es gibt allerdings auch einige andere Farbformate.
-%
-%Der Ursprung des \textit{UV}-Koordinatensystems liegt immer in der oberen linken Ecke der Textur. An dieser Stelle befindet sich die Position $UV=(0 \quad 0)$. Unabhängig von der Auflösung, $R$, der Textur, wird die untere rechte Ecke immer mit $UV=(1 \quad 1)$ beschrieben. Dementsprechend ist beispielsweise das Zentrum der Textur immer bei $UV=(0,5 \quad 0,5)$.
-%
-%Das UV-Koordinatensystem einer Textur reicht also immer von 0 nach 1 und es ist linear. Jede Zelle einer quadratischen Textur besitzt immer eine Breite und Höhe von $1/R$. Die Größe $1/R$ wird häufig auch als \textit{Texel-Size} bezeichnet. An dieser Größe kann man sich gut orientieren um gezielt durch eine Textur zu navigieren. 
-%
-%Hierzu ein Beispiel: Mit dem Wissen, dass jede Zelle $1/R$ hoch und breit ist, kann man schlussfolgern, dass sich der Mittelpunkt der oberen linken Zelle, von $T$, genau bei $UV = \begin{pmatrix} \dfrac{1}{R} \cdot \dfrac{1}{2} \quad \dfrac{1}{R} \cdot \dfrac{1}{2}  \end{pmatrix}$ befindet (Siehe Abbildung \ref{UV1}).
-%
-%
-%\subsubsection{Bilineare Filterung}
-%
-%Mit dem UV-Koordinatensystem kann ohne weiteres auf einen Ort, der genau zwischen vier benachbarten Pixeln liegt, zugegriffen werden. Dabei stellt sich die Frage, was für ein Wert in diesem Fall ausgelesen werden würde. Die Antwort auf diese Frage verbirgt sich hinter der bilinearen Filterung \cite{BilTexFilt}. 
-%
-%Jeder ausgelesene Farbwert wird von der Unreal Engine 4 automatisch bilinear gefiltert.
-%Ein bilinear gefilterter Farbwert ist prinzipiell nichts anderes als ein gewichteter Mittelwert von 4 benachbarten Pixeln. Hierzu ein Rechenbeispiel:
-%
-%Angenommen es soll auf Position $\vec{x}=(0,5  \quad 0,5)$ von $T$ zugegriffen werden. Dieser Ort liegt exakt in der Mitte von 4 benachbarten Pixeln (Siehe Abbildung \ref{UV1}). Der Auslesepunkt hat also zu allen 4 Pixeln die selbe Entfernung. Deswegen wird der gleichmäßig gewichtete Mittelwert aus den Farbwerten der 4 Pixel ausgelesen. Der bilinear gefilterte Wert ist dann:
-%
-%\begin{equation}
-%T(\vec{x}) = 
-%  0,25 \cdot \begin{pmatrix} 255 \\ 0 \\ 0 \end{pmatrix}
-%+ 0,25 \cdot \begin{pmatrix} 0 \\ 255 \\ 0 \end{pmatrix} 
-%+ 0,25 \cdot \begin{pmatrix} 0 \\ 0 \\ 255 \end{pmatrix}
-%+ 0,25 \cdot \begin{pmatrix} 255 \\ 255 \\ 255 \end{pmatrix}
-%\label{Form_LinFilterMitte}
-%\end{equation}
-%
-%%\begin{equation}
-%%\vec{e}_1=\left(\begin{array}{c} 1 \\ 0 \end{array}\right) \qquad
-%%\vec{e}_1=\left(\begin{array}{c} 1 \\ 0 \end{array}\right)
-%%\label{Formel}
-%%\end{equation}
-%
-%Formel \ref{Form_LinFilterMitte} bildet eine gewichtete Summe aus allen Farbvektoren. Dabei ist die Summe aller Gewichte immer 1. In diesem Fall wurden alle Farbwerte gleich stark gewichtet, weil $x$ zu allen 4 Pixeln dieselbe Entfernung hatte. Wenn $x$ beispielsweise etwas näher bei der roten Zelle wäre, würde dieser Farbwert stärker gewichtet werden, als die anderen 3 Farbwerte. Wenn $x$ genau auf den Mittelunkt einer Zelle zeigt, wird Ihr Farbwert mit 1 und alle anderen Farbwerte mit 0 gewichtet. Das heißt: Ist der exakte Farbwert eines Pixels gefragt, muss genau auf dessen Mittelpunkt zugegriffen werden. Genau auf den Mittelpunkt einer Zelle zuzugreifen ist allerdings nicht immer möglich, weil eine digital arbeitende Maschine (die GPU) keine unendlich genauen Zahlen darstellen kann.
-%
-%Die in Abbildung \ref{UV1} dargestellte Textur sieht, nachdem sie vollständig bilinear gefiltert wurde, wie folgt aus:
-%
-%\bild{gefilterteTextur}{4cm}{Eine vollständig bilinear gefilterte Textur \cite{BilTexFilt}.}
-%
-%Wie man in Abbildung \ref{gefilterteTextur} sieht, ergibt sich somit eine gewisse Unschärfe.
-%
-%\section{Echtzeitsimulationen mit Content-Driven Multipass Rendering}
-%\label{subsec_CDMR}
-%
-%\subsection{Content-Driven Multipass Rendering}
-%
-%\ac{CDMR} ist eine Technik, mit der rechenintensive Simulationen von herkömlichen Shadern ausgeführt werden können. Im Zusammenhang mit der Unreal Engine 4, wurde \ac{CDMR} erstmals auf der \textit{Game Development Converence 2017}, von Ryan Brucks vorgestellt  und erklärt \cite{GDC2017}. 
-%
-%Bei \ac{CDMR} werden Shader nicht genutzt um 3D-Modelle darzustellen. Stattdessen werden sie als reine Rechenwerke eingesetzt, die nichts anderes tun, als Texturen miteinander zu verrechnen. Ein Shader, der nur zum Lösen von Rechenaufgaben da ist, wird auch als \textit{Compute-Shader} bezeichnet und nicht als \textit{Material}. Ein Compute-Shader sollte im Idealfall die GPU als reines Rechenwerk nutzen und dementsprechend nichts anderes tun, als eine große Rechenaufgabe zu lösen. Herkömmliche Programmschleifen oder Verzweigungen sollten im Programmcode eines Shaders vermieden werden \cite{CustomNode}.
-%
-%Abbildung \ref{CDMRexplain2} zeigt über welche Objekte eine Zusammenarbeit zwischen \ac{CPU} und GPU zustande kommt. Alle im Schaubild grün eingefärbten Daten und Programme befinden sich im Speicher der GPU und werden von ihr verarbeitet. Die blau markierte Raute repräsentiert hingegen eine Klasse, die von der CPU ausgeführt wird. Der Begriff \textit{Blueprint} kommt aus der Unreal Engine-Programmierung und ist eine auf C++ aufbauende Programmiersprache.
-%\clearpage
-%
-%\bild{CDMRexplain2}{12cm}{Dem Programmierer werden von der Unreal Engine einige Objekte zur Verfügung gestellt, mit dessen Hilfe interaktive Shader-Effekte realisiert werden können. Dieser Graph zeigt schematisch, wie die CPU über diese Objekte mit der GPU zusammenarbeiten kann.}
-%
-%
-%Wie in Abbildung \ref{CDMRexplain2} visualisiert, kann ein Shader ein oder mehrere Texturen einlesen. Ein Shader verrechnet eingelesene Texturen in irgendeiner Form, sobald dieser von der CPU ein Ausführungssignal bekommt. Die durch die Verrechnung entstehenden Ergebnisse werden dann in eine Ergebnis-Textur geschrieben. 
-%
-%Neben Texturen kann ein Shader auch Vektor- oder Skalar-Parameter einlesen. Mit ihnen lassen sich die vom Shader durchgeführten Berechnungen entsprechend anpassen.
-%
-%Die \ac{CPU} kann einen Compute-Shader steuern, indem sie ihn mit den in Abbildung \ref{CDMRexplain2} gezeigten Mitteln beeinflusst. Alle Einflussmöglichkeiten werden von blauen Feilen repräsentiert. Eine Blueprint-Klasse kann genau bestimmen, wann ein Compute-Shader ausgeführt werden soll. Wird ein Shader aufgerufen, führt er seine Berechnungen durch und schreibt seine Ergebnisse in seine zugeteilte Ergebnis-Textur. Um eine Echtzeitsimulation für Videospiele zu realisieren, sollte ein Compute-Shader mindestens 30 mal pro Sekunde ausgeführt werden können, damit für den Betrachter flüssige Bewegungen zustande kommen. Dabei muss natürlich berücksichtigt werden, dass in einem Computerspiel noch einige weitere Shader und Unterprogramme Ressourcen und Rechenzeiten in Anspruch nehmen.
-%
-%Des weiteren hat die CPU die Möglichkeit beliebige Texturen, die ein Shader nutzt, mit anderen Texturen auszutauschen. Auch die Werte der Shader-Parameter können jederzeit verändert werden. All dies kann zur Laufzeit der Anwendung geschehen. So können interaktive Shader-Effekte realisiert werden.
-%
-%Alle in Abbildung \ref{CDMRexplain2} dargestellten Zusammenhänge stellen alle nötigen Voraussetzung für \ac{CDMR} dar. Mit diesen Möglichkeiten können nämlich sogenannte Shader-Pipelines erstellt werden, was die Grundlage von \ac{CDMR} ist.  Hierzu ein Beispiel aus \cite{Max17Legnar}:
-%
-%
-%\bild{ShaderPipelineBsp}{14cm}{Eine Shader-Pipeline aus \cite{Max17Legnar} als Beispiel. Mehrere Shader können in einer Pipeline-Struktur zusammenarbeiten, indem sie ihre Ergebnisse über Texturen miteinander teilen.}
-%
-%
-%Die in Abbildung \ref{ShaderPipelineBsp} dargestellte Shader-Pipeline entstand in \cite{Max17Legnar} um eine interaktive Wasseroberfläche zu simulieren. Alle darin zu sehenden Rechtecke repräsentieren Texturen und jeder Kreis ist ein Shader. Die Shader sind nummeriert, um zu markieren in welcher Reihenfolge die jeweiligen Shader ausgeführt werden. Abbildung \ref{ShaderPipelineBsp} soll nur das grundlegende Prinzip einer Shader-Pipeline veranschaulichen. Ein Shader beginnt mit seiner Arbeit und verrechnet Texturen miteinander um seine Rechenergebnisse in eine Ergebnistextur zu speichern. Danach kann ein weiterer Shader diese Ergebnistextur einlesen und so das Ergebnis weiterverarbeiten. Mit diesem Grundprinzip kann eine Verarbeitungskette aus mehreren hintereinander geschalteten Shadern gebildet werden. Solch eine Kette wird in dieser Arbeit als Shader-Pipeline bezeichnet und beschreibt das Grundprinzip von \ac{CDMR} auf einfache Weise.
-%
-%Eine  Shader-Pipeline lässt sich besonders flexibel von der CPU steuern. Mithilfe einer Blueprint-Klasse kann zur Laufzeit der Simulation, die Reihenfolge, in der die Shader ausgeführt werden, verändert werden. Genauso können auch jeder Zeit zusätzliche Shader zur Shader-Pipeline hinzu geschaltet werden. 
-%
-%\ac{CDMR} bringt allerdings auch Einschränkungen mit sich. Ein Shader kann niemals dieselbe Textur beschreiben, die er gerade ausliest. Daher muss in einigen Fällen mit zwischenkopierten Texturen gearbeitet werden. Zwar profitiert die Shader-Pipeline von der starken Rechenleistung der GPU, dafür kann sie aber nur Texturen verarbeiten. Das Endergebnis der Pipeline liegt immer in Texturform vor. 
-%
-%Um ein effizientes System zu erhalten, sollte die Ergebnis-Textur einer Shader-Pipeline nicht den Grafikkartenspeicher verlassen. Das Ergebnis der Pipeline sollte am besten bei der GPU bleiben und direkt in irgendeiner Form gezeichnet werden. Wie die Darstellung einer Ergebnis-Textur erfolgen kann, wird im nächstem Kapitel erläutert.
-%
-%\subsection{Scatter oder Gather}
-%\label{subsec_ScatterVSGather}
-%
-%Die sogenannte \textit{Scatter VS Gather}-Problematik wurde von Ryan Brucks in  \cite{GDC2017}, im Zusammenhang mit \ac{CDMR} thematisiert.
-%
-%Bei dieser Problematik geht es vor allem darum, zu verstehen, wie eine Grafikkarte arbeitet, wenn sie Shader ausführt:
-%
-%Wenn ein Shader eine Textur verarbeitet, kann man sich vorstellen, dass dabei aus jedem Pixel der verarbeiteten Textur ein Thread entsteht. Alle Threads werden dabei von der GPU parallel ausgeführt. Jedes Pixel, hier auch meist als Zelle bezeichnet, ist also ein eigenständiger Thread. 
-%
-%Aus diesem Grund wird in dieser Arbeit häufig mit Begriffen wie  \glqq Pixel-Thread\grqq{} oder  \glqq Zellen-Thread\grqq{} gearbeitet.
-%
-%Natürlich entsteht in der Praxis nicht immer aus jedem Pixel ein eigenständiger Thread, weil nicht immer genügend Hardware-Ressourcen zur Verfügung stehen. Dennoch kann man sich vereinfacht vorstellen, alle Pixel einer Textur arbeiten gleichzeitig und jedes Pixel habe dabei seinen  \glqq eigenen Kopf\grqq{}. 
-%
-%Jeder Pixel-Thread führt Berechnungen durch um dann sein Rechenergebnis zurückzugeben, indem er seine eigene Farbe ändert. Der Farbwert eines Pixels repräsentiert also das Rechenergebnis eines Threads. Dabei gilt die Regel, dass ein Pixel-Thread sein Rechenergebnis immer nur \glqq in sich selbst\grqq{} hinein schreiben kann. Ein Pixel-Thread kann immer nur seinen eigenen Zustand (bzw. Farbwert) ändern. 
-%
-%Also gibt es bei der Shader-Programmierung die folgende Einschränkung:
-%Ein Pixel-Thread kann niemals benachbarte Pixel beschreiben. 
-%
-%Diese Einschränkung ist allerdings auch notwendig. Wenn alle Pixel-Threads aus einer Textur, Werte in benachbarte Pixel schreiben würden, könnte eine Situation entstehen, in der mehrere Pixel versuchen in dasselbe Pixel zu schreiben. Hinzu kommt, dass alle Pixel-Threads gleichzeitig arbeiten. So würde ein unlösbarer Konflikt entstehen.
-%
-%Wegen der Funktionsweise von Shadern sollten Compute-Shader-Algorithmen stets mithilfe von sogenannten Gather-Methoden umgesetzt werden. Ein klassischer zellulärer Automat ist ein gutes Beispiel eines Systems, das nach der Gather-Methode arbeitet. Eine Zelle, die ihren eigen Zustand in Abhängigkeit von ihren eigenen und den Zuständen ihrer Nachbarschaft ändert, arbeitet mit einer Gather-Methode. Genau dieses Verhalten kann von Shader-Programmen nachgeahmt werden. Abbildung \ref{ScatterVSGather} veranschaulicht dieses Prinzip.
-%
-%\bild{ScatterVSGather}{13cm}{Der Unterschied zwischen der Scatter- und Gather-Methode. Bei der Scatter-Methode beeinflusst eine Zelle die Zustände von anderen Zellen. Bei der Gather-Methode liest eine Zelle andere Zellen aus, um in Abhängigkeit von diesen Informationen ihren eigenen Zustand zu überschreiben. Shader arbeiten eher nach der Gather-Methode. \cite{GDC2017}}
-%
-%Was jedoch nicht von Shadern nachgeahmt werden kann, ist die sogenannte Scatter-Methode. Bei  dieser Methode ändert eine Zelle die Zustände benachbarter Zellen. Diese Methode sollte vermieden werden, weil ein Shader nicht nach diesem Prinzip arbeitet.
-%
-%Die \textit{Scatter oder Gather}-Problematik ist bei der Konzipierung eines Compute-Shaders stets zu berücksichtigen. Manch eine Lösungsmethode, die einem zuerst in den Sinn kommt, lässt sich im Nachhinein als Scatter-Methode identifizieren. In solchen Fällen muss umgedacht werden, um die gegebene Problemstellung mithilfe einer Gather-Methode zu lösen. Nur Gather-Methoden lassen sich problemlos und effizient von Shadern umsetzen.
-%
-%
-%
-%
-%
-%
-%\section{Texture-Based Volume Rendering}
-%\label{subsec_VolumetricRayMarching}
-%
-%Weil die Simulation mit Content-Driven Multipass Rendering durchgeführt wird, wird der Schwarm in Texturform vorliegen. Dabei stellt sich die Frage wie der simulierte Schwarm dargestellt werden könnte. Eine empfohlene Möglichkeit ist \textit{Texture-Based Volume Rendering} \cite{GPUGems1} \cite{Drebin:1988:VR}. 
-%
-%Mit dieser Technik kann eine 3D-Textur verwendet werden um dreidimensionale Objekte zu zeichnen. Der in dieser Arbeit simulierte Schwarm könnte mithilfe von \textit{Texture-Based Volume Rendering} gezeichnet werden.
-%
-%Diese Render-Technik wird auch \textit{Volumetric Ray Marching} genannt, weil das Funktionsprinzip darauf basiert, Strahlen durch eine 3D-Textur hindurch \glqq marschieren\grqq{} zu lassen, um ein Bild zu zeichnen. Dieses Prinzip wird in Abbildung \ref{VolRendering} dargestellt \cite{Ryan18Brucks}.
-%
-%
-%\bild{VolRendering}{11cm}{Das Ray Marching-Verfahren in der Draufsicht. Mehrer Strahlen  \glqq marschieren\grqq{} durch eine 3D-Textur, wobei die Schrittgröße der Strahlen konstant ist. Die 3D-Textur beschreibt ein Objekt mithilfe von Skalaren. Jeder Wert repräsentiert die Dichte des Objekts an einer Stelle im Raum \cite{Ryan18Brucks}.}
-%
-%Die von Strahlen durchwanderte 3D-Textur repräsentiert dabei einen Körper, der an unterschiedlichen Stellen unterschiedlich dicht ist. Je größer ein Skalar-Wert in der 3D-Textur, desto dichter ist das gezeichnete Objekt an dieser Stelle und desto mehr Licht wird an dieser Stelle absorbiert. In der Spieleprogrammierung werden mit dieser Technik häufig Wolken- oder Rauch-Effekte gezeichnet.
-%
-%\bild{Smokeball}{7cm}{Mit dem volumetrischen Renderer von Ryan Brucks können unter anderem dreidimensionale Wolken gezeichnet werden \cite{Ryan18Brucks}.}
-%
-%Ryan Brucks hat bereits einen volumetrischen \textit{Ray Marcher} mithilfe der unreal Engine 4 implementiert. Dieser Renderer ist frei verfügbar, außerdem wird in \cite{Ryan18Brucks} ausführlich erklärt, wie dieser funktioniert.
-%
-%
