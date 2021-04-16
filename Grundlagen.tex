@@ -59,8 +59,6 @@ Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulatio
 \section{Simulationsmethoden und Physik Engines für chirurgische Simulatoren}
 %Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA, SOFA...
 
-\subsubsection{Physik Engines für chirurgische Simulatoren}
-
 Wie bereits erwähnt werden für chirurgische Physik Simulationen vor allem schnelle Rechenergebnisse benötigt, während die Simulationsgenauigkeit geringere Priorität hat. Es reicht aus wenn die Simulation rein optisch einen realistischen Eindruck vermittelt.
 
 %... inzwischen werden immer häufiger auch Soft Bodies unterstützt?
@@ -157,9 +155,9 @@ Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem bei dem alle Part
 \label{form_lambda2}
 \end{equation}
 
-\subsection{Unified Particle Dynamics und NVIDIA FleX}
+\subsection{Unified Particle Physics und NVIDIA FleX}
 
-Mit der Veröffentlichung des Werks \textit{Unified Particle Dynamics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
+Mit der Veröffentlichung des Werks \textit{Unified Particle Physics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
 Zuerst lief FleX 1.0 nur auf NVIDIA Grafikkarten, weil die Bibliothek CUDA als Voraussetzung benötigte. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
 
 In vielen Arbeiten in denen chirurgische Simulationen Thema sind, wird FleX verwendet (\cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} ...). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen, auf Basis von gegebenen Polygonmodellen.
@@ -176,7 +174,7 @@ Des weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstech
 \subsubsection{Lösungsverfahren}
 Die wohl wichtigste Neuerung aus \cite{UPP} ist, dass nicht mehr der sequenziell arbeitende Gauss-Seidel Algorithmus verwendet wird. Stattdessen wird auf Gauss-Jacobi gesetzt um die Constraint-Projektionen besser parallelisieren zu können. Allerdings gibt es einige Fälle, bei denen der Gauss-Seidel Algorithmus nicht konvergiert \cite{UPP}.
 %z.b. wenn 2 partikel über identisches constraint verbunden sind.
-Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{successive over-relaxation - SOR}) \cite{UPP}. Hierfür werden zuerst alle Constraints parallel verarbeitet und die Korrekturvektoren, $\Delta \textbf{x}_i$, akkumuliert. Nach einer Iteration werden die finalen Korrekturvektoren, $\Delta \widetilde{\textbf{x}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
+Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{successive over-relaxation - SOR}) \cite{UPP}. Hierfür werden zuerst alle Constraints verarbeitet und die Korrekturvektoren, $\Delta \textbf{x}_i$, akkumuliert. Nach einer Iteration werden die finalen Korrekturvektoren, $\Delta \widetilde{\textbf{x}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
 
 \begin{equation}
 \begin{split}
@@ -188,10 +186,7 @@ Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{s
 
 -Mit $n_i$ = Anzahl der Constraints, die auf Partikel $i$ wirken. $\omega$ ist ein globaler Parameter mit dem sich die Intensität der sukzessiven Überentspannung justiert lässt.
 
-Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten in der Praxis keine optisch wahrnehmbaren Fehler auf \cite{UPP}.
-
-% !!!!!! evt erwähnen: Einheitlicher Radius !!!!!!
-%single particle radius sorgt für effizentere kollisionserkennen, weil das 3D Grid auf die größe der Partikel angepasst wird.
+Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten laut \cite{UPP} keine optisch wahrnehmbaren Fehler auf, was in dieser Arbeit bestätigt werden konnte.
 
 % !!!!!! evt erwähen: Als Optimization problem und Vergleich zu euler: !!!!!!
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
@@ -200,9 +195,9 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 \subsubsection{Soft Body Simulationen mit NVDIA FleX und \textit{Clustered Shape Matching}}
 %auch region-based shape matching constraints genannt:
 
-Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
+Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
 
-Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} visualisiert. 
+Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} vereinfacht visualisiert. 
 
 % polare Zersetzung der Kovarianzmatrix der deformierten Form
 \bild{ShapeMatching}{6cm}{Abbildung aus \cite{FlexD3D}. Das Grundprinzip des Shape Matchings. }
@@ -212,6 +207,8 @@ Die Partikel des Clusters werden zunächst normal simuliert, als währen sie nic
 Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 
 Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein Steifheitsparameter zugeordnet. Größere Soft Bodies können mithilfe von mehreren Clustern modelliert werden. Die Partikel von überlappenden Clustern nehmen interpolierte Position ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
+
+Die Steifheit eines Soft Bodies hängt nicht nur vom Steifheitsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
 
 \subsubsection{Unreal Engine 4 mit Flex integration}
 

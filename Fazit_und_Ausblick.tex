@@ -1,37 +1,31 @@
 % Die Arbeit besteht aus Kapiteln (chapter)
-\chapter{Zusammenfassung und Schlusswort}
+\chapter{Zusammenfassung, Fazit und Ausblick}
 
-\section{Zusammenfassung}
+%\section{Fazit und Ausblick}
+Die für diese Arbeit gesetzten Ziele konnten zum Großteil erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
 
-In diesem Kapitel wollen wir noch einmal die wichtigsten Erkenntnisse auflisten, die im Verlauf dieser Arbeit gewonnen werden konnten:
-
-Übersichtliche Guidline für gute Performance :
-
-    \begin{itemize}
-    
-      \item Hardwaregrenzen
-      
-      \item viele kleine cluster (scatter methode bei shape constraints: cluster paralell, pro cluster werden partikel sequenziel (atomitcly) verarbeitet)
-      
-      \item Bei Self Collision: Wenig Partikelüberschneidung, damit weniger collision constraints verarbeitet/angewandt werden müssen.
-      
-    \end{itemize}
-    
-
-\section{Fazit und Ausblick}
-Die für diese Arbeit gesetzten Ziele konnten größtenteils erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
-
-% FleX Performance und Simulationsverhalten:
+% FleX, UE4 Performance und Simulationsverhalten:
 Das Kombinieren von NVIDIA FleX mit einer Game Engine erwies sich als überaus nützlich um ohne großen Aufwand effiziente und vielfältige Anwendungen für Serious Games zu entwickeln. 
 Ohne die vielen nützlichen Funktionen der Unreal Engine 4 hätten niemals so viele Ergebnisse in solch einer kurzen Zeit erzielt werden können. 
 Es konnten die wichtigsten Faktoren identifiziert werden, die den größten Einfluss auf die Simulationsperformance von FleX haben. Mithilfe des angeeigneten theoretischen Wissens über die verwendete Software und PBD konnte stets gut nachvollzogen werden, wieso sich die Simulationen in bestimmten Situationen unterschiedlich verhält. So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen.
 
-% Framework:
-Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnell erweitert werden, beispielsweise durch Manipulation einzelner Partikel. Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist.
-Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen weitere wissenschaftliche Problemstellungen zu lösen. Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird Sie bereits jetzt für weitere wissenschaftliche Projekte vom XYZ Institut eingesetzt. 
+%Für zukünftige Projekte könnte noch getestet werden, ob sich FleX-Simulationen auf Standalone VR Anlagen portieren und effizient ausführen lassen. Es wäre interessant zu klären, ob moderne Hardware, wie die Oculus Quest 2 stark genug sind um FleX Simulationen auszuführen.
+
+%Automatisierung
+Ein weiteres Potential für zukünftige Arbeiten könnten die Automatisierungswerkzeuge der Unreal Engine bieten. Mithilfe von Python, Blueprint Scripting und C++ kann der Unreal Editor automatisiert werden. So könnten beispielsweise unterschiedliche FleX-Partikelmodelle automatisiert generiert und simuliert werden um in kurzer Zeit eine große Datenmenge zu generieren, aus der weitere Erkenntnisse gewonnen werden können.
+
+% Partikelmainpulation auf gpu:
+Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnell erweitert werden, beispielsweise durch Manipulation einzelner Partikel. Wobei die Manipulation der Partikel derzeit noch von der CPU berechnet wird. Zukünftig wäre es besser die Partikelmanipulationen auf die Grafikkarte zu bringen, gerade wenn größere Mengen verarbeitet werden sollen. 
+
+%Framework, 
+Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die schnelle Entwicklung von Serious Games im medizinischen Bereich geeignet ist. 
+Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen weitere wissenschaftliche Problemstellungen zu lösen. Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird Sie bereits jetzt für weitere wissenschaftliche Projekte vom IWR (Interdisziplinäres Zentrum für wissens. Rechnen) der Universität Heidelberg eingesetzt. 
+
+%Attachment ausblick:
+Dennoch konnten wegen Zeitmangels nicht alle gewünschten Funktionalitäten implementiert werden. Daher könnte das Framework zukünftig weiter ausgebaut werden. In Kapitel \ref{subsec_attach} wurde beispielsweise bereits erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mit drehen. Dies wäre eine interessante Problemstellung für weiterführende Arbeiten.
 
 %Demoanwendung und haptisches Feedback:
-Außerdem entstand im Rahmen dieser Arbeit eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung XXX). 
+Im Rahmen dieser Arbeit entstand eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung XXX). 
 
 -> hier Bild rein, was mit Framework noch alles tolles gebaut werden konnte....Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel. Kurz in Bildbeschreibung infos über Performance
 
@@ -40,60 +34,32 @@ Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen 
 %Nur Abläufe und das visuelle Gedächtnis können trainiert werden. 
 
 Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden. %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
-Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von Jeder Person, die eine handelsübliches VR-Anlage besitzt, verwendet werden kann. Außerdem können für den Endnutzer Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von Jeder Person, die eine handelsübliches VR-Anlage besitzt, verwendet werden kann. Dadurch können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+
+%Nadel-Gewebe und nadel manuel befestigen:
+Die Nadel-Gewebe-Interaktion konnte überraschend gut umgesetzt werden, vor allem weil die simulierten Reibungs- und Klemmkräfte auf die Nadel besonders realistisch erschien. Auch hier konnte allerdings noch keine professionelle Evaluation von Fachpersonen durchgeführt werden.
+Aus dem Gewebe herausfallende Nadeln könnten zukünftig mithilfe von manuellen Partikelbefestigungen (Nadel an Gewebe) vermieden werden.
 
 
-LESEZEICHEN
+%Ausblick:
 
+%-> Automatisierung des Unreal Editors
 
-%\section{Ausblick}
+%-> Effiziente Wasser bzw Blut shader für Fluid Partikel werden benötigt
 
--> Automatisierung des UNreal Editors
+%-> haptische Hardware
 
--> Effiziente Wasser bzw Blut shader für Fluid Partikel werden benötigt
+%-> Partikelmanipulation läuft noch auf CPU!
 
--> haptische Hardware
+%-> Nadel manuel an Gewebe befestigen
 
--> Partikelmanipulation läuft noch auf CPU!
+%... weil FleX inzwischen auch mit DX funktioniert, könnten Simulatoren auch als stand alone variante portiert werden. Dann wird NUR  noch Oculus Quest 2 und kein pc mehr benötigt... allerdings bräuchte man dann ue4.22 mindestens...
 
--> Nadel manuel an Gewebe befestigen
+%-> attachment rotation
 
-... weil FleX inzwischen auch mit DX funktioniert, könnten Simulatoren auch als stand alone variante portiert werden. Dann wird NUR  noch Oculus Quest 2 und kein pc mehr benötigt... allerdings bräuchte man dann ue4.22 mindestens...
+\chapter*{Danksagung}
+Zuerst möchte ich mich herzlich bei allen Dozenten der Universität Heidelberg, an deren Vorlesungen ich teilnehmen durfte, bedanken. Alle Dozenten waren mir eine große Hilfe und lehrten stets mit Leidenschaft und Hingabe, wodurch nicht nur mein Verständnis, sondern auch meine Motivation wuchs.
 
-aus kapitel attachement:
-Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Befestigen von Szenen oder anderen 3D Objekten an ein Flex-Objekt. Allerdings drehen sich Szenen nicht mit Soft Bodies mit. Nur die Position der befestigten Szenen wird angepasst, während die Rotation unverändert bleibt. 
-Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktioniert.
+Ein ganz besonderes Dankeschön geht an meinen Betreuer Herrn Prof. Dr. Hesser, der mich nicht nur hervorragend bei dieser Arbeit unterstützte, sondern mir auch viel über Computergrafik, Echtzeitsimulationen und Game-Development beibrachte, was sich zu meinen größten Leidenschaften entwickelt hat.
 
-Diese Problemstellung könnte interessant für nachfolgende Arbeiten sein.
-
-\section{Danksagung}
-Danke an Betreuer, Family, Freunde, schön dass alles trotz Pandemie gut geklappt, Danke an Josh, Danke an Uni HD, hab Studium sehr genossen, alle Dozenten waren leidenschaftliche Wissenschaftler...
-
-% ----------------------------------- ALT --------------------------------------------
-
-%%\section{Fazit}
-%
-%Im Rahmen dieser Arbeit konnten fast alle gesetzten Ziele erreicht werden. Anhand des konzipierten Simulationsmodells konnte ein Prototyp implementiert werden, der fast alle Anforderungen aus Kapitel \ref{sec_Anforderungen} erfüllt. 
-%
-%Der im Prototyp simulierte Schwarm kann durch Einsatz einfacher Zusatzverhaltensregeln von einem menschlichen Spieler gejagt oder verfolgt werden. Das bestehende System lässt sich zukünftig mit neuen Verhaltensregeln erweitern. Beispielsweise könnte ein Spieler ein Flussfeld zeichnen, um virtuelle \glqq Autobahnen\grqq{} für die Boids zu generieren. Gerät ein Individuum auf solch eine Bahn, folgt es dem Flussfeld, so wie Autos einer Autobahn folgen.
-%
-%Die Bewegungen des Schwarms können bei entsprechender Parametrisierung realistisch und lebendig gestaltet werden. Ohne mit zufällig generierten Steuervektoren arbeiten zu müssen, bewegen sich manche Schwärme scheinbar in zufällige Richtungen, als ob die virtuellen Lebewesen ein eigenes Ziel verfolgen würden.
-%
-%Die Performance des implementierten Prototyps erwies sich, entgegen aller Erwartungen, als überraschend gut. Die Messungen aus Kapitel \ref{sec_performance} lassen vermuten, dass sich das konzipierte Simulationsmodell durchaus in der Praxis anwenden lässt. Künftige Videospiele könnten von diesen interaktiven Schwarm-Wesen profitieren, zumal sich die entwickelte Simulation von herkömmlichen Shadern ausgeführt werden kann. Shader-Programme, die mithilfe der Unreal Engine 4 implementiert wurden, lassen sich ohne große Umstände auf einige Plattformen portieren. Von allen handelsüblichen Konsolen, bis hin zu Smartphones. Smartphone-Besitzer mithilfe des Touchscreens mit dem Schwarm interagieren zu lassen, ist durchaus umsetzbar. 
-%
-%Der erstellte Prototyp konnte aus zeitlichen Gründen nur als zweidimensionale Schwarmsimulation implementiert werden. Die Idee, den virtuellen Schwarm als dreidimensionale Leuchtpunkt-Wolke, mittels volumetrischer Render-Methodik, darzustellen, wird aber weiterhin mit großem Interesse verfolgt. Zu diesem Zeitpunkt ist jedoch noch nicht bekannt, wann die Unreal Engine 4 dreidimensionale Textur-Formate unterstützen wird.
-%
-%
-%
-%%\section{Ausblick}
-%
-%Trotz allem ist das bestehende System durchaus verbesserungswürdig. Besonders negativ aufgefallen ist der in Kapitel \ref{sec_LoseBoids} angesprochene Verlust von Boids. Diese Problematik konnte aus Zeitgründen nicht weiter untersucht werden, weswegen noch keine konkrete Erklärung für das Verschwinden von Individuen existiert.
-%
-%Außerdem könnte die Darstellung des Schwarms weiter verbessert werden. Die Schwarm-Textur wirkt zum Teil noch recht körnig und unregelmäßig. Es entstehen auch hin und wieder harte Kannten und Ecken.
-%
-%Eine weitere interessante Erweiterung wäre, die Wahrnehmungsvektoren der Boids wie folgt einzusetzen:  Wie in der Robotik üblich, könnten die Wahrnehmungssensoren nur an die Vorderseite eines Boids befestigt werden. Dann würde jedes Individuum nur den Bereich wahrnehmen können, der in dessen Bewegungsrichtung liegt. Das könnte den Realismus der Simulation steigern, weil dann die Bewegungsrichtung eines Boids auch seine \glqq Blickrichtung\grqq{} wäre.
-%
-%Denkt man über die Funktionsweise des konzipierten Modells genauer nach, lässt sich eine interessante Feststellung machen. In diesem Simulationsmodell entsteht keine Separation oder Kohäsion weil benachbarte Boids einen zu geringen oder zu großen Abstand zueinander haben. In diesem System handeln die Individuen dann wenn in einer benachbarten Zelle eine bestimmte Menge Boids enthalten ist. Hier ist also nicht die Entfernung, sondern vielmehr die Menge ausschlaggebend. Nichts desto trotz können auch in diesem System besonders realistisch wirkende Sachwarmbewegungen entstehen.
-%
-%Zum Schluss lässt sich sagen, dass sich das geniale Prinzip von Schwärmen erwiesen hat: Obwohl jede Zelle des Zellensystems nur wenige einfache Fähigkeiten beherrscht, entstand am Ende ein Gesamtsystem, das sich viel komplexer als seine einzelnen Bausteine verhalten kann. Jedes Boid kann nur wenige Bewegungsrichtungen einschlagen und besitzt sehr eingeschränkte Wahrnehmungsfähigkeiten. Aber dennoch kann sich eine große Gruppe aus Boids scheinbar in alle möglichen Richtungen bewegen und dabei einzigartige Formationen bilden.
-%
+Danke für die vielen Inspirierenden Gespräche und Hilfestellungen von Josia Muench, Sara Nonji Azad, Marvin Kinz und Julian Gröger. Abschließend danke ich meinen Freunden und Verwandten, die mich während meines Studiums immer bedingungslos unterstützt haben.
