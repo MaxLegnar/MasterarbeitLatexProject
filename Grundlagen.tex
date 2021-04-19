@@ -8,24 +8,24 @@
 
 %Übersicht: \cite{SurgSim}
 
-Unter Serous Games versteht man Videospiele die nicht der reinen Unterhaltung dienen, sondern primär zum Lernen und Trainieren eingesetzt werden (REF???).
+Unter Serous Games versteht man Videospiele, die nicht der reinen Unterhaltung dienen, sondern primär zum Lernen und Trainieren eingesetzt werden.
 
 Vor allem in der Chirurgie werden immer häufiger Serious Games in Form von chirurgischen Simulationen eingesetzt, um Personal auf bestimmte Operationen vorzubereiten und auszubilden. Dabei geht es nicht nur darum, Operationsabläufe zu verinnerlichen. Auch die motorischen Fähigkeiten und das motorische Gedächtnis des Spielers wird dabei trainiert. So kann die Sicherheit der Patienten und die Ausbildungszeit verbessert werden \cite{SimRole}.
 
 %par Simulatoren als Beispiel:
 In \cite{VRSim20} wird beispielsweise ein VR-Simulator für die neonatale endotracheale Intubation entwickelt, weil niedrige Intubationserfolgsraten darauf hinweisen, dass das derzeitige Trainingsprogramm nicht ausreicht, um positive Erfolgsraten zu erzielen (siehe Abbildung \ref{VRSim20}).
 
-\bild{VRSim20}{14cm}{Aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Lyaryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Lyaryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnehmen kann.}
+\bild{VRSim20}{14cm}{Eine Bildercollage aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Laryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Laryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnehmen kann.}
 
-Aus diversen Studien geht hervor, dass VR-Simulatoren mit haptischem Feedback besonders gute Lernefeckte erzielen \cite{VRHapticSim}.
+Aus diversen Studien geht hervor, dass VR-Simulatoren mit haptischem Feedback besonders gute Lerneffekte erzielen \cite{VRHapticSim}.
 
-Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen entstanden die sich auf dieses Gebiet spezialisiert haben. Beispielsweise stellt die Firma \textit{VRmagic} \cite{VRmagic} Simulatoren für die intraokulare Chirurgie her. In Abbildung \ref{SurSim2} ist der Simulator \textit{Eyesi Surgical} von VRmagic zu sehen. Wie man in der Abbildung rechts sieht, werden hierfür virtuelle Werkzeuge und ein virtuelles Auge fotorealistisch gerendert.
+Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen entstanden, die sich auf dieses Gebiet spezialisiert haben. Beispielsweise stellt die Firma \textit{VRmagic} \cite{VRmagic} Simulatoren für die intraokulare Chirurgie her. In Abbildung \ref{SurSim2} ist der Simulator \textit{Eyesi Surgical} von VRmagic zu sehen. Wie man in der Abbildung rechts sieht, werden hierfür virtuelle Werkzeuge und ein virtuelles Auge fotorealistisch gerendert.
 
-\bild{SurSim2}{14cm}{Aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
+\bild{SurSim2}{14cm}{Bilder aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
 
-Eine wichtige Anforderung von solchen Simulationen ist die Echtzeitfähigkeit. In der Regeln wird eine Bildwiederholungsrate von mindestens 30Hz benötigt %\cite{SimUpdate}
-, damit die Simulation optisch realistisch wirkt. %wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
-Für realistisches Force Feedback benötigt die haptische Hardware sogar eine Aktualisierungsrate von 1kHz \cite{SimUpdate}. 
+Eine wichtige Anforderung von solchen Simulatoren ist neben dem fotorealistischem Rendern auch die Echtzeitfähigkeit. In der Regeln wird eine Bildwiederholungsrate von mindestens 30 Hz benötigt \cite{SimUpdate}, damit die Simulation optisch realistisch wirkt. 
+%wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
+Für realistisches Force Feedback benötigt die haptische Hardware sogar eine Aktualisierungsrate von 1 kHz \cite{SimUpdate}. 
 
 %Somit können Physik Engines schnell an ihre Grenzen kommen, weil diese nicht nur sehr schnell, sondern auch ausreichen genau und realistisch simulieren müssen. 
 Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulationsgenauigkeit Abstriche gemacht werden. %\cite{SimUpdate}.
@@ -59,20 +59,20 @@ Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulatio
 \section{Simulationsmethoden und Physik Engines für chirurgische Simulatoren}
 %Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA, SOFA...
 
-Wie bereits erwähnt werden für chirurgische Physik Simulationen vor allem schnelle Rechenergebnisse benötigt, während die Simulationsgenauigkeit geringere Priorität hat. Es reicht aus wenn die Simulation rein optisch einen realistischen Eindruck vermittelt.
+Wie bereits erwähnt, werden für chirurgische Physik Simulationen vor allem schnelle Rechenergebnisse benötigt, während die Simulationsgenauigkeit geringere Priorität hat. Es ist ausreichend, wenn die Simulation rein optisch einen realistischen Eindruck vermittelt.
 
 %... inzwischen werden immer häufiger auch Soft Bodies unterstützt?
 
 Deswegen können Physik Engines, die für Videospiele konzipiert wurden, für chirurgische Simulatoren eingesetzt werden. Solche Physik Engines sind bereits auf eine gute Echtzeitfähigkeit ausgelegt und konnten beispielsweise in \cite{SimUpdate} erfolgreich für chirurgische Simulationen eingesetzt werden. 
-Im Computerspielebereich werden häufig die Physik Engines NVIDIA PhysX oder Havok eingesetzt. 
+%Im Computerspielebereich werden häufig die Physik Engines NVIDIA PhysX oder Havok eingesetzt. 
 %Solche Physik Engines reichen allein aber nicht für chirurgische Simulatoren aus, weil sie in der Regel nur traditionelle Rigid Body Simulationen unterstützen. Für chirurgische Simulatoren werden neben Rigid Body- auch Soft Body- Simulationen benötigt, beispielsweise für elastisches Gewebe. 
 
-Physik Engines führen ihre Simulationen in der Regel auf der Grafikkarte oder SIMD-Recheneinheiten aus um die Berechnungen zu parallelisieren. Dadurch kann die Simulation um ein vielfaches beschleunigt werden.
+Physik Engines führen ihre Simulationen in der Regel auf der Grafikkarte oder SIMD-Recheneinheiten aus, um die Berechnungen zu parallelisieren. So kann die Simulation um ein vielfaches beschleunigt werden.
 
-Geläufige Physik Engines, vor allem NVIDIA PhysX, sind bereits in den meisten Game Engines integriert, beispielsweise in der Game Engine Unreal Engine 4. 
+Geläufige Physik Engines, vor allem NVIDIA PhysX, sind bereits in den meisten Game Engines integriert, beispielsweise in der Unreal Engine 4 \cite{ue4physics}. 
 %Weil Game Engines auch weitere wichtige Elemente implementieren, die für chirurgische Simulatoren benötigt werden, bietet es sich an Game Engines zu verwenden
 
-Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren interessant um Körperflüssigkeiten zu simulieren.
+Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit auch die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren interessant, um Körperflüssigkeiten zu simulieren.
 
 \subsection{Position Based Dynamics}
 \label{section_PBD}
@@ -80,7 +80,7 @@ Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist 
 Position Based Dynamics (PBD) \cite{PBD}, ist eine Partikelsystem-basierte Simulationsmethode, die sich vor allem durch eine gute Echtzeitfähigkeit, Stabilität und Vielseitigkeit auszeichnet. Mit Vielseitigkeit ist gemeint, dass mit nur einem Solver (\textit{PBD-Solver}) unterschiedlichste Simulationsarten ausgeführt werden können. Beispielsweise können Rigid Bodies, Soft Bodies, Flüssigkeiten, Stoffe und weitere Objektarten simuliert werden. 
 
 %vorteile einheitlicher solver
-Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können Elemente unterschiedlicher Art (Soft Bodies, Flüssigkeiten, etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
+Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können Elemente unterschiedlicher Art (Soft Bodies, Flüssigkeiten etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
 
 PBD konnte bereits in vielen Arbeiten erfolgreich für chirurgische Simulationen eingesetzt werden. Beispielsweise in \cite{PBDThread} für chirurgisches Nähen, in \cite{VRLaparoscop} für laparoskopische Operationen, in \cite{PBDCutting} für chirurgisches Schneiden oder in \cite{VRRobSim} für die roboterunterstützte Chirurgie. 
 PBD konnte auch erfolgreich für die realitätsnahe Echtzeitsimulation unterschiedlicher Gewebearten eingesetzt werden. Beispielsweise für die Simulation von Brustgewebe \cite{BreastBiopsy} oder Nierengewebe \cite{PBDKidney}.
@@ -92,21 +92,25 @@ PBD konnte auch erfolgreich für die realitätsnahe Echtzeitsimulation unterschi
 %Partikelsysteme werden in Videospielen häufig eingesetzt, daher wurden Grafikkarten für die parallelisierte Verarbeitung von Partikelsystemen optimiert. 
 
 %Grundprinzip und Eigenschaften:
-Ein Objekt besteht dann aus $N$ Partikeln die über $M$ \textit{Constraints} miteinander verbunden sind. Durch Formulierung unterschiedlicher Constraint-Funktionen, $C_j, j \in [1,...,M] $, können $n$ Partikel auf unterschiedliche Weise aufeinander reagieren. $n$ ist die Kardinalität eines Constraints und gibt an, auf wie viele Partikel es sich bezieht.
+Ein Objekt besteht dann aus $N$ Partikeln, die über $M$ \textit{Constraints} miteinander verbunden sind. Durch Formulierung unterschiedlicher Constraint-Funktionen, $C_j, j \in [1,...,M] $, können $n$ Partikel auf unterschiedliche Weise aufeinander reagieren. $n$ ist die Kardinalität eines Constraints und gibt an, auf wie viele Partikel es sich bezieht.
 %Ein Constraint kann sich auf nur ein Partikel oder auf mehrere beziehen.
 %So können unterschiedlichste physikalische Effekte erstellt werden. 
-Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(\textbf{p}_1,\textbf{p}_2) = |\textbf{p}_1-\textbf{p}_2|-d \stackrel{!}{=} 0$, auf elastische Weise miteinander verbunden werden (Kardinalität $n=2$). Ein Distance Constraint verhält sich sehr ähnlich wie eine Feder, an dessen Enden zwei Punktmassen befestigt sind. Mit Distance-Constraints können also Soft Bodys als Masse-Feder Modelle simuliert werden. Der PBD-Solver löst alle Distance Constraint bei der sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $\textbf{p}_1$ \& $\textbf{p}_2$, so projiziert werden, dass das Constraint erfüllt ist, das heißt das $C(\textbf{p}_1,\textbf{p}_2) = 0$. 
+Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(\textbf{p}_1,\textbf{p}_2) = |\textbf{p}_1-\textbf{p}_2|-d \stackrel{!}{=} 0$, auf elastische Weise miteinander verbunden werden. Ein Distance-Constraint verhält sich sehr ähnlich wie eine Feder, an dessen Enden zwei Punktmassen befestigt sind. 
+%Mit Distance-Constraints können also Masse-Feder Modelle simuliert werden. 
+Der PBD-Solver löst alle Distance-Constraints bei der sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $\textbf{p}_1$ \& $\textbf{p}_2$, so projiziert werden, dass das Constraint erfüllt ist, das heißt das $C(\textbf{p}_1,\textbf{p}_2) \approx 0$. 
 
 %Im Vergleich zu kräftebasierten Simulationsmethoden, bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. 
-Die größten Vorteile von PBD entstehen durch die Constraint Projection. 
+Ein Vorteil von PBD entstehen durch die Constraint Projektion. 
 %Bei diesem Prozess werden direkt projizierte Position als Ergebnis geliefert, während bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) Beschleunigungen integriert werden. 
-Weil bei PBD direkt eine Position als Lösung projiziert wird,
+Weil hierbei direkt eine Position als Lösung projiziert wird,
 %statt Beschleunigungen zu integrieren 
-wird das Überschießproblem, das bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) auftritt, beseitigt. 
+wird das Überschießproblem, das bei Integrator basierten Methoden 
+%(z. B. implizit oder explizit Euler) 
+auftritt, beseitigt. 
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \textit{Density-Constraint} definiert um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
+Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \textit{Density-Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
 
 %Weitere Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
@@ -116,21 +120,21 @@ Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effek
 %arbeitsweise des solvers / constraint projection:
 %Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
 
-Um alle Constraints zu lösen, wird das Gauss-Seidel verfahren auf einen Satz Constraint-Gleichungen, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
+Um alle Constraints zu lösen, wird das Gauss-Seidel verfahren auf einen Satz Constraints, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
 % Bei Gauss-Seidel müssen zuerst gute Startwerte gewählt werden damit der Algorithmuss möglichst schnell convergiert.
 Als Startwerte für die gesuchten $N$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $\textbf{p}_i = \textbf{x}_i + \Delta t \cdot \textbf{v}_i$, ergeben. 
 
 Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun eine Korrektion, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
 %Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
 
-Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \cite{PBD} $C(\textbf{p}+\Delta \textbf{p}$ wie folgt linearisiert:
+Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \cite{PBD} $C(\textbf{p}+\Delta \textbf{p})$ wie folgt linearisiert:
 
 \begin{equation}
 C(\textbf{p}+\Delta \textbf{p}) \approx C(\textbf{p}) + \nabla_p C(\textbf{p}) \cdot \Delta \textbf{p} = 0
 \label{form_C}
 \end{equation}
 
-Dabei soll $\Delta \textbf{p}$ entlang des Gradienten $\nabla C_p$ ausgerichtet sein. Das heißt es wird ein Skalar, $\lambda$, gesucht, so das Gleichung \ref{form_lambda} erfüllt wird \cite{PBD}
+Dabei soll $\Delta \textbf{p}$ entlang des Gradienten $\nabla C_p$ ausgerichtet sein. Das heißt, es wird ein Skalar, $\lambda$, gesucht, so das Gleichung \ref{form_lambda} erfüllt wird \cite{PBD}:
 
 \begin{equation}
 \Delta \textbf{p} = \lambda \nabla_p C(\textbf{p})
@@ -144,11 +148,11 @@ $\lambda$ wird \textit{constraint error} genannt und ist ein Maß für die Schri
 \label{form_db}
 \end{equation}
 
-Nachdem alle Constraints gelöst wurden, wird $\textbf{p}$ mit $\Delta \textbf{p}$ aktualisiert, woraufhin die nächste Iteration startet. Nach einer fixen Anzahl von Lösungs-Iterationen wird der Gauss-Seidel Algorithmus abgeschlossen. Die mehrmals projizierten Partikelpositionen werden übernommen und die Partikelgeschwindigkeiten werden mit $\Delta \textbf{v} = \Delta \textbf{p} / \Delta t$ aktualisiert.
+Nachdem alle Constraints gelöst wurden, wird $\textbf{p}$ mit $\Delta \textbf{p}$ aktualisiert, woraufhin die nächste Iteration startet. Nach einer fixen Anzahl von Lösungsiterationen wird der Gauss-Seidel Algorithmus abgeschlossen. Die mehrmals projizierten Partikelpositionen werden übernommen und die Partikelgeschwindigkeiten werden mit $\Delta \textbf{v} = \Delta \textbf{p} / \Delta t$ aktualisiert.
 
-Dieser Algorithmus konvergiert in der Regal nach 5 bis 10 Iterationen. Die Konvergierungsgeschwindigkeit konnte später in den Werken \textit{Hierarchical Position Based Dynamics} \cite{Mller2008HierarchicalPB} und \textit{Unified Particle Physics for Real-Time Applications} \cite{UPP} weiter optimiert werden. Mit der PBD-basierten Physik Engine NVIDIA FleX können schon mit 2 Iterationen optisch zufriedenstellende Ergebnisse erzielt werden.Unified Particle Physics for Real-Time Applications
+Dieser Algorithmus konvergiert in der Regal nach 5 bis 10 Iterationen. Die Konvergierungsgeschwindigkeit konnte später in den Werken \textit{Hierarchical Position Based Dynamics} \cite{Mller2008HierarchicalPB} und \textit{Unified Particle Physics for Real-Time Applications} \cite{UPP} weiter optimiert werden. Mit der PBD-basierten Physik Engine NVIDIA FleX können schon mit 2 Iterationen optisch zufriedenstellende Ergebnisse erzielt werden.
 
-Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem bei dem alle Partikel die selbe Massen haben. Ist dies nicht der Fall, wird Gleichung \ref{form_lambda} durch Gleichung \ref{form_lambda2} ersetzt, damit die Trägheit (bzw. der Schwung) eines Partikels erhalten bleibt \cite{PBD}.
+Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem, bei dem alle Partikel dieselbe Massen haben. Ist dies nicht der Fall, wird Gleichung \ref{form_lambda} durch Gleichung \ref{form_lambda2} ersetzt, damit die Trägheit (bzw. der Schwung) eines Partikels erhalten bleibt \cite{PBD}.
 
 \begin{equation}
 \Delta \textbf{p}_i = \lambda w_i \nabla_{p_i} C(\textbf{p})
@@ -158,12 +162,12 @@ Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem bei dem alle Part
 \subsection{Unified Particle Physics und NVIDIA FleX}
 
 Mit der Veröffentlichung des Werks \textit{Unified Particle Physics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
-Zuerst lief FleX 1.0 nur auf NVIDIA Grafikkarten, weil die Bibliothek CUDA als Voraussetzung benötigte. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
+Zuerst lief FleX nur auf NVIDIA Grafikkarten, weil CUDA als Voraussetzung benötigt wurde. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
 
-In vielen Arbeiten in denen chirurgische Simulationen Thema sind, wird FleX verwendet (\cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} ...). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen, auf Basis von gegebenen Polygonmodellen.
+In vielen Arbeiten, in denen chirurgische Simulationen Thema sind, wird FleX verwendet (z. B. in \cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} oder in \cite{VRRobSim}). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen auf Basis von gegebenen Polygonmodellen.
 
 % BVH: Bounding Volume Hierarchy in FlexD3D seite 57!
-Des weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um die Partikel-Polygonmodell Kollisionserkennung zu beschleunigen \cite{FlexD3D}. Außerdem wird die Partikelnachbar-Suche und Kollisionserkennung mithilfe von räumlichen Datenstrukturen beschleunigt. Weil hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene den selben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Kollisionserkenung.
+Des Weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um Partikel-Polygonmodell-Kollisionen effizient zu erkennen \cite{FlexD3D}. Außerdem wird die Partikelnachbarsuche mithilfe von räumlichen Datenstrukturen beschleunigt. Weil hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene denselben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Partikel-Kollisionserkenung.
 
 % über partikelnachbarsuche:
 % 3d gitter 0 3d textur, 3d texturen können von gpus gut verarbeitet werden
@@ -172,9 +176,9 @@ Des weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstech
 % Second we can find the neighbors of a particle by determining its cell number and looking up the particles in that cell in the list we generated, we can also look at particles in neighboring cells.
 
 \subsubsection{Lösungsverfahren}
-Die wohl wichtigste Neuerung aus \cite{UPP} ist, dass nicht mehr der sequenziell arbeitende Gauss-Seidel Algorithmus verwendet wird. Stattdessen wird auf Gauss-Jacobi gesetzt um die Constraint-Projektionen besser parallelisieren zu können. Allerdings gibt es einige Fälle, bei denen der Gauss-Seidel Algorithmus nicht konvergiert \cite{UPP}.
+Die wohl wichtigste Neuerung aus \cite{UPP} ist, dass nicht mehr der sequenziell arbeitende Gauss-Seidel Algorithmus verwendet wird. Stattdessen wird auf Gauss-Jacobi gesetzt, um die Constraint-Projektionen besser parallelisieren zu können. Allerdings gibt es einige Fälle, bei denen der Gauss-Seidel Algorithmus nicht konvergiert (siehe \cite{UPP}).
 %z.b. wenn 2 partikel über identisches constraint verbunden sind.
-Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{successive over-relaxation - SOR}) \cite{UPP}. Hierfür werden zuerst alle Constraints verarbeitet und die Korrekturvektoren, $\Delta \textbf{x}_i$, akkumuliert. Nach einer Iteration werden die finalen Korrekturvektoren, $\Delta \widetilde{\textbf{x}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
+Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{successive over-relaxation - SOR}). Hierfür werden zuerst alle Constraints verarbeitet und die Korrekturvektoren, $\Delta \textbf{x}_i$, akkumuliert. Nach einer Iteration werden die finalen Korrekturvektoren, $\Delta \widetilde{\textbf{x}}_i$, mit Gleichung \ref{form_LocRel} berechnet \cite{UPP}.
 
 \begin{equation}
 \begin{split}
@@ -202,7 +206,7 @@ Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} verei
 % polare Zersetzung der Kovarianzmatrix der deformierten Form
 \bild{ShapeMatching}{6cm}{Abbildung aus \cite{FlexD3D}. Das Grundprinzip des Shape Matchings. }
 
-Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbildung \ref{ShapeMatching}: \textit{Rest Configuration}). Diese zusammengehörende Partikelgruppe ist dann ein sogenanntes \textit{Cluster}. Die Partikel eines Clusters können nicht miteinander kollidieren. 
+Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbildung \ref{ShapeMatching}: \textit{Rest Configuration}). Diese zusammengehörende Partikelgruppe ist dann ein sogenanntes \textit{Cluster}. 
 Die Partikel des Clusters werden zunächst normal simuliert, als währen sie nicht miteinander verbunden.
 Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 

@@ -1,44 +1,47 @@
 % Die Arbeit besteht aus Kapiteln (chapter)
 % strg + t -> commend selection. strg+ u -> uncommend selection
+%\chapter{Einleitung}
 \chapter{Einleitung}
-\label{chap_Einleitung}
+\label{Motivation und Problemstellung}
 
-\section{Motivation und Problemstellung} % und grober Aufbau dieser Arbeit?
+%\section{Motivation und Problemstellung} % und grober Aufbau dieser Arbeit?
 
 
 % Motivation für Serous Games:
-Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen an Tieren, meist Schweine, war früher eine gängige Praxis. Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken, sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
+Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen an Tieren, meist Schweine, war früher eine gängige Praxis. Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
 
-Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel geworden um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
+Deswegen sind Serious Games in der Medizin wichtige Hilfsmittel geworden, um Personal auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger medizinische Echtzeitsimulationen eingesetzt, um Personal auf Operationen vorzubereiten \cite{SimRole}. So kann das Personal besser auf eine Operation am echten Patienten vorbereitet werden und die Chance, dass die Operation fehlerfrei verläuft, kann gesteigert werden \cite{VRNeuro}.
 
 %Motivation PBD:
 Die Simulationstechnik \ac{PBD} \cite{PBD} hat sich bereits in vielen Arbeiten als vielversprechende Simulationstechnik für chirurgische Simulatoren erwiesen (siehe Kapitel \ref{section_PBD} für einige Beispiele). 
 
 %Motivation PBD und Überleitung zu Problemstellung 1:
-Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die weitere Elemente implementiert, die für Serious Games nützlich sind. Im ersten Teil dieser Arbeit (Kapitel \ref{chap_Flex_Engine}) wird zunächst geklärt, wie gut die vorhandene Game- und Physik-Engine für die Entwicklung von chirurgischen Simulatoren geeignet ist und was die Möglichkeiten und Grenzen von NVIDIA FleX sind. Dabei stellt sich heraus, dass noch einige wichtige Funktionalitäten fehlen. Alle fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert um ein Software-Framework zu erhalten, das gut für die Entwicklung von Serious Games geeignet ist. Das im Rahmen dieser Arbeit entstehende Software-Framework, sowie die gewonnenen Erkenntnisse, sollen zukünftigen Arbeiten als nützliches Werkzeug zu dienen.
+Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt, um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die weitere Elemente implementiert, die für Serious Games nützlich sind. 
+
+Im ersten Teil dieser Arbeit (Kapitel \ref{chap_Flex_Engine}) wird zunächst geklärt, wie gut die vorhandene Game- und Physik-Engine für die Entwicklung von chirurgischen Simulatoren geeignet ist und was die Möglichkeiten und Grenzen von NVIDIA FleX sind. Dabei stellt sich heraus, dass noch einige wichtige Funktionalitäten fehlen. Alle fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert, um ein Softwareframework zu erhalten, das gut für die Entwicklung von Serious Games geeignet ist. Das im Rahmen dieser Arbeit entstehende Softwareframework sowie die gewonnenen Erkenntnisse, sollen zukünftigen Arbeiten als nützliches Werkzeug zu dienen.
 %Im ersten Teil dieser Arbeit wird untersucht, welche weiteren Softwareelemente noch fehlen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist. Die fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert.
 %um die vorhandene Game- und Physik-Engine um zusätzliche Funktionalitäten zu erweitern, die für chirurgische Simulatoren nützlich sein könnten (Kapitel \ref{chap_Flex_Engine}).
 %Im ersten Teil dieser Arbeit wird untersucht, um welche weiteren Softwareelemente die vorhandene Game- und Physik-Engine erweitert werden müssen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist.
 
-Im zweiten Teil dieser Arbeit (Kapitel \ref{chap_Szenarien}) werden einfache chirurgische Szenarien implementiert, um zu testen wie gut das Software-Framework für den vorgesehenen Einsatzzweck geeignet ist. 
+Im zweiten Teil dieser Arbeit (Kapitel \ref{chap_Szenarien}) werden einfache chirurgische Szenarien implementiert, um zu testen wie gut das Softwareframework für den vorgesehenen Einsatzzweck geeignet ist. 
 
 % Motivation VR Serous Games:
 \ac{VR} spielt für Serous Games auch eine wichtige Rolle. 
 %Mit einem handelsüblichen \ac{HMD} kann die virtuelle Umgebung  besonders immersiv dargestellt werden.
-Mithilfe von handelsüblichen VR-Geräten und haptischem Feedback können Echtzeitsimulatoren erstellt werden, die besonders immersiv und realistisch wirken \cite{VRSim20}. 
+Mithilfe von handelsüblichen VR-Geräten und haptisches Feedback können Echtzeitsimulatoren erstellt werden, die besonders immersiv und realistisch wirken \cite{VRSim20}. 
 Studien zeigen, dass VR-Anwendungen mit haptischem Feedback gut geeignet sind, um medizinische Fachkräfte effektiv für bestimmte Operationsverfahren auszubilden  \cite{VRHapticSim}.
 
 % Überleitung problemstellung 2:
 In dieser Arbeit wird hingegen eine Methode präsentiert, mit der chirurgische VR-Simulatoren ohne haptisches Feedback erstellt werden können. Der Nutzer benötigt nur eine handelsübliche VR-Anlage 
 %mit Handtracking oder Motion Controllern 
-um unterschiedliche Operationen trainieren zu können. 
+um Operationen trainieren zu können. 
 %Für diese Arbeit wurde eine Oculus Quest 2 für 300 Euro eingesetzt. 
 Dies ermöglicht es Nutzern, die keinen Zugriff auf haptische Hardware haben, Operationen in virtueller Realität zu trainieren. 
 
 Eine besondere Herausforderung ist dabei eine Methode zu finden, mit der der Nutzer möglichst realistisch und präzise mit der virtuellen Umgebung interagieren kann, ohne haptisches Feedback zu erhalten. In dieser Arbeit wurde hierfür ein System entwickelt, das es dem Spieler ermöglicht mit virtuellen Werkzeugen simulierte Kräfte auf die virtuelle Umgebung auszuüben. So kann der Spieler beispielsweise eine Nadel in simuliertes Gewebe einführen, indem er seine echte Hand auf bestimmte Weise positioniert und beschleunigt und dadurch Interaktionskräfte zwischen Nadel und Gewebe erzeugt. 
 Dabei erhält der Nutzer nur visuelles Kräftefeedback und kein haptisches.
-Die Nadel-Gewebe Interaktion mit rein virtuellen Kräften ist dabei auch eine besondere Herausforderung, die in Kapitel \ref{sec_needle} behandelt wird. 
-Bei der Nadel-Gewebe-Interaktion wird das Partikelmodel des Gewebes nicht verändert. 
+Die Nadel-Gewebe-Interaktion mit rein virtuellen Kräften ist dabei auch eine besondere Herausforderung, die in Kapitel \ref{sec_needle} behandelt wird. 
+Bei der Nadel-Gewebe-Interaktion wird das Partikelmodell des Gewebes nicht verändert. 
 
 
 

@@ -2,42 +2,50 @@
 \chapter{Zusammenfassung, Fazit und Ausblick}
 
 %\section{Fazit und Ausblick}
-Die für diese Arbeit gesetzten Ziele konnten zum Großteil erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
+%Die für diese Arbeit gesetzten Ziele konnten zum Großteil erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
 
+\subsubsection{FleX und Unreal Engine 4}
 % FleX, UE4 Performance und Simulationsverhalten:
-Das Kombinieren von NVIDIA FleX mit einer Game Engine erwies sich als überaus nützlich um ohne großen Aufwand effiziente und vielfältige Anwendungen für Serious Games zu entwickeln. 
+Das Kombinieren von NVIDIA FleX mit einer Game Engine erwies sich als überaus nützlich um ohne großen Aufwand effiziente und vielfältige Serious Games zu entwickeln. 
 Ohne die vielen nützlichen Funktionen der Unreal Engine 4 hätten niemals so viele Ergebnisse in solch einer kurzen Zeit erzielt werden können. 
-Es konnten die wichtigsten Faktoren identifiziert werden, die den größten Einfluss auf die Simulationsperformance von FleX haben. Mithilfe des angeeigneten theoretischen Wissens über die verwendete Software und PBD konnte stets gut nachvollzogen werden, wieso sich die Simulationen in bestimmten Situationen unterschiedlich verhält. So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen.
+%Es konnten die wichtigsten Faktoren identifiziert werden, die den größten Einfluss auf die Simulationsperformance von FleX haben (Kapitel \ref{subsec_perf_zusa}). 
+Mithilfe des angeeigneten theoretischen Wissens über die verwendete Software und über PBD, konnte stets gut nachvollzogen werden, wieso sich die Simulationen in bestimmten Situationen unterschiedlich verhält. 
+So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen (siehe Kapitel \ref{subsec_perf_zusa}).
 
 %Für zukünftige Projekte könnte noch getestet werden, ob sich FleX-Simulationen auf Standalone VR Anlagen portieren und effizient ausführen lassen. Es wäre interessant zu klären, ob moderne Hardware, wie die Oculus Quest 2 stark genug sind um FleX Simulationen auszuführen.
 
 %Automatisierung
 Ein weiteres Potential für zukünftige Arbeiten könnten die Automatisierungswerkzeuge der Unreal Engine bieten. Mithilfe von Python, Blueprint Scripting und C++ kann der Unreal Editor automatisiert werden. So könnten beispielsweise unterschiedliche FleX-Partikelmodelle automatisiert generiert und simuliert werden um in kurzer Zeit eine große Datenmenge zu generieren, aus der weitere Erkenntnisse gewonnen werden können.
 
+\subsubsection{Partikelmanipulation}
 % Partikelmainpulation auf gpu:
-Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnell erweitert werden, beispielsweise durch Manipulation einzelner Partikel. Wobei die Manipulation der Partikel derzeit noch von der CPU berechnet wird. Zukünftig wäre es besser die Partikelmanipulationen auf die Grafikkarte zu bringen, gerade wenn größere Mengen verarbeitet werden sollen. 
+Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnell erweitert werden, beispielsweise durch Manipulation einzelner Partikel (Kapitel \ref{subsec_forces}). Wobei die Manipulation der Partikel derzeit noch von der CPU berechnet wird. Zukünftig wäre es besser die Partikelmanipulationen auf die Grafikkarte zu bringen, gerade wenn größere Mengen verarbeitet werden sollen. 
 
+\subsubsection{Softwareframework für Serious Games im medizinischen Bereich}
 %Framework, 
-Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die schnelle Entwicklung von Serious Games im medizinischen Bereich geeignet ist. 
+Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die schnelle Entwicklung von Serious Games im medizinischen Bereich geeignet ist (Kapitel \ref{sec_functional}). 
 Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen weitere wissenschaftliche Problemstellungen zu lösen. Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird Sie bereits jetzt für weitere wissenschaftliche Projekte vom IWR (Interdisziplinäres Zentrum für wissens. Rechnen) der Universität Heidelberg eingesetzt. 
 
 %Attachment ausblick:
-Dennoch konnten wegen Zeitmangels nicht alle gewünschten Funktionalitäten implementiert werden. Daher könnte das Framework zukünftig weiter ausgebaut werden. In Kapitel \ref{subsec_attach} wurde beispielsweise bereits erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mit drehen. Dies wäre eine interessante Problemstellung für weiterführende Arbeiten.
+Dennoch konnten wegen Zeitmangels nicht alle gewünschten Funktionalitäten implementiert werden. Daher könnte das Framework zukünftig weiter ausgebaut werden. In Kapitel \ref{subsec_attach} wurde erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mit drehen. Dies wäre eine interessante Problemstellung für weiterführende Arbeiten.
 
+\subsubsection{Demoanwendung und haptisches Feedback}
 %Demoanwendung und haptisches Feedback:
-Im Rahmen dieser Arbeit entstand eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung XXX). 
+Im Rahmen dieser Arbeit entstand eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung \ref{Demo}). 
 
--> hier Bild rein, was mit Framework noch alles tolles gebaut werden konnte....Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel. Kurz in Bildbeschreibung infos über Performance
+\bild{Demo}{10cm}{TEEEEMP. Hier nochmal schöne Shader drauf und schönere bilder machen!!! Mithilfe des Frameworks konnte schnell eine Demo mit vielen Interaktionsmöglichkeiten implementiert werden. TOSO:::}
 
 Im Rahmen dieser Arbeit konnte die Demoanwendung allerdings nicht im großen Umfang von medizinischen Fachpersonen evaluiert werden, weswegen der Realitätsgrad der Demoanwendung noch nicht bewertet werden konnte. 
 Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realismus der Demoanwendung hat. Dadurch können die motorischen Fähigkeiten nicht effizient trainiert werden. 
 %Nur Abläufe und das visuelle Gedächtnis können trainiert werden. 
 
-Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden. %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
+Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden (Kapitel \ref{subsec_no_haptic}). %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
 Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von Jeder Person, die eine handelsübliches VR-Anlage besitzt, verwendet werden kann. Dadurch können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
 
+\subsubsection{Nadel-Gewebe Interaktion}
 %Nadel-Gewebe und nadel manuel befestigen:
-Die Nadel-Gewebe-Interaktion konnte überraschend gut umgesetzt werden, vor allem weil die simulierten Reibungs- und Klemmkräfte auf die Nadel besonders realistisch erschien. Auch hier konnte allerdings noch keine professionelle Evaluation von Fachpersonen durchgeführt werden.
+Die Nadel-Gewebe-Interaktion konnte in Kapitel \ref{sec_needle} überraschend gut umgesetzt werden, vor allem weil die simulierten Reibungs- und Klemmkräfte auf die Nadel besonders realistisch erschienen. Auch hier konnte allerdings noch keine professionelle Evaluation von Fachpersonen durchgeführt werden.
+
 Aus dem Gewebe herausfallende Nadeln könnten zukünftig mithilfe von manuellen Partikelbefestigungen (Nadel an Gewebe) vermieden werden.
 
 

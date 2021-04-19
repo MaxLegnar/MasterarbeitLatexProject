@@ -7,10 +7,10 @@
 \newcommand{\hsmasprache}{de} % de oder en für Deutsch oder Englisch
 
 % Titel der Arbeit auf Deutsch
-\newcommand{\hsmatitelde}{Simulatoren in virtueller Realität ohne haptisches Feedback, mit Position Based Dynamics und Game Engines}
+\newcommand{\hsmatitelde}{Medizinische Simulatoren in virtueller Realität ohne haptisches Feedback, mit Position Based Dynamics und Game Engines}
 
 % Titel der Arbeit auf Englisch
-\newcommand{\hsmatitelen}{Simulators in Virtual Reality without haptic feedback, using Position Based Dynamics and Game Engines}
+\newcommand{\hsmatitelen}{Medical simulators in Virtual Reality without haptic feedback, using Position Based Dynamics and Game Engines}
 %implementation of a buoyancy simulation and an interactive fluid surface for video games
 
 % Weitere Informationen zur Arbeit
@@ -21,7 +21,7 @@
 \newcommand{\hsmajahr}{2021} % Jahr der Abgabe
 \newcommand{\hsmafirma}{Ruprecht-Karls-Universität Heidelberg} % Firma bei der die Arbeit durchgeführt wurde
 \newcommand{\hsmabetreuer}{Prof. Dr. Jürgen Hesser} % Betreuer an der Hochschule
-\newcommand{\hsmazweitkorrektor}{Prof. Dr. XXX} % Betreuer im Unternehmen oder Zweitkorrektor
+\newcommand{\hsmazweitkorrektor}{Prof. Dr. Susanne Krömker} % Betreuer im Unternehmen oder Zweitkorrektor
 \newcommand{\hsmafakultaet}{I} % I für Informatik
 \newcommand{\hsmastudiengang}{MEB} % IB IMB UIB IM MTB
 
@@ -35,15 +35,15 @@
 % Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
 \newcommand{\hsmaabstractde}
 {
-In dieser Arbeit wird untersucht, welches Potential \ac{PBD}-basierten Echtzeitsimulationen \cite{PBD} in Verbindung mit Game Engines für Serious Games im medizinischem Bereich haben. 
+In dieser Arbeit wird untersucht, welches Potenzial Position Based Dynamics (PBD)-basierte Echtzeitsimulationen \cite{PBD} in Verbindung mit Game Engines für Serious Games im Medizinischem Bereich haben. 
 
-Hierfür wird die Unreal Engine 4 zusammen mit NVIDIA FleX \cite{UPP} genutzt, um Software zu untersuchen, die auf einen aktuellen technischen Stand ist. Zuerst wird die Performance und das Simulationsverhalten von NVIDIA FleX  genauer untersucht um in Erfahrung zu bringen, wie die Simulationen von unterschiedlichen Faktoren beeinflusst werden. Daraufhin werden fehlende Funktionalitäten identifiziert, die für die Entwicklung von Serious Games wichtig sind. Daraufhin werden Lösungen präsentiert, mit denen die fehlenden Funktionalitäten implementiert werden können. 
+Hierfür wird die Unreal Engine 4 zusammen mit NVIDIA FleX \cite{UPP} genutzt, um Software zu untersuchen, die auf einen aktuellen technischen Stand ist. Zuerst wird die Performance und das Simulationsverhalten von NVIDIA FleX  genauer untersucht, um in Erfahrung zu bringen, wie PBD-Simulationen von unterschiedlichen Faktoren beeinflusst werden. Daraufhin werden fehlende Funktionalitäten identifiziert, die für die Entwicklung von Serious Games wichtig sind. Daraufhin werden Lösungen präsentiert, mit denen die fehlenden Funktionalitäten implementiert werden können. 
 %Dabei wird vor allem auf die umfangreichen Funktionen der Unreal Engine 4 gesetzt. 
-So erhält man ein umfangreiches Framework, mit dem sich schnell und einfach medizinische Echtzeitsimulationen erstellen lassen.
+So erhalten wir ein umfangreiches Softwareframework, mit dem sich schnell und einfach medizinische Echtzeitsimulationen erstellen lassen.
 
-Außerdem wird eine Lösung präsentiert, mit der sich PBD-basierte chirurgische Simulatoren erstellen lassen, ohne Verwendung von haptischer Hardware. Es wird nur eine handelsübliche VR-Anlage (hier: Oculus Quest 2) mit Motion Controllern benötigt. Dabei kann der Nutzer mithilfe seiner Motion Controller nach virtuellen Werkzeugen greifen und diese benutzen. Mithilfe von simulierten Kräften kann ein virtuelles Werkzeug akkurate Interaktionskräfte auf virtuelles Gewebe ausüben.
+Außerdem wird eine Lösung präsentiert, mit der sich einfache chirurgische Simulatoren erstellen lassen, ohne Verwendung von haptischer Hardware. Es wird nur eine handelsübliche VR-Anlage (z. B. Oculus Quest 2) mit Motion Controllern benötigt. Dabei kann der Nutzer mithilfe seiner Motion Controllern nach virtuellen Werkzeugen greifen und diese intuitiv benutzen. Mithilfe von simulierten Kräften übt ein virtuelles Werkzeug Interaktionskräfte auf die virtuelle Umgebung aus.
 
-Es wird auch eine optisch realistische Nadel-Gewebe-Interaktion umgesetzt. Gewebe und Nadel werden dabei mithilfe von Partikeln und \textit{Shape Matching Constraints} \cite{Shape} modelliert. Die Struktur des Gewebemodells wird dabei nicht verändert.
+Es wird auch eine optisch realistische Nadel-Gewebe-Interaktion umgesetzt. Gewebe und Nadel werden dabei mithilfe von Partikeln und \textit{Shape Matching Constraints} \cite{Shape} modelliert. Die Partikelstruktur des Gewebemodells wird dabei nicht verändert.
 
 %Basierend auf Reynolds Boid-System \cite{Reynolds87flocks} wird ein Modell für die Simulation von Tierschwärmen entwickelt. Wesentlicher Fokus liegt dabei auf lebendig wirkende Schwarmbewegungen, interaktives Verhalten und Performance. 
 %
@@ -68,14 +68,14 @@ Es wird auch eine optisch realistische Nadel-Gewebe-Interaktion umgesetzt. Geweb
 
 \newcommand{\hsmaabstracten}
 {
-This thesis examines the potential of PBD-based real-time simulations \cite{PBD} in connection with game engines for serious games with medical background.
+This thesis examines the potential of Position Based Dynamics (PBD)-based real-time simulations \cite{PBD} in connection with game engines for serious games with medical background.
 
-For this purpose, the Unreal Engine 4 is used together with NVIDIA FleX \cite{UPP} to examine software that is state-of-the-art. First, the performance and simulation behavior of NVIDIA FleX is examined in more detail in order to find out how FleX simulations are influenced by different factors. Then missing functionalities are identified, which could be useful for serious game development. After that, we present solutions which can be used to implement the missing functionalities.
+For this purpose, the Unreal Engine 4 is used together with NVIDIA FleX \newline \cite{UPP} to examine software that is state-of-the-art. First, the performance and simulation behavior of FleX is examined in more detail in order to find out how FleX simulations are influenced by different factors. Then missing functionalities are identified, which could be useful for serious game development. After that, we present solutions which can be used to implement these missing functionalities.
 In that way we optain a comprehensive and easy-to-use framework which serves as a development platform for medical real-time simulations.
 
-In addition, a solution will be presented to implement immersive surgical simulators without haptic feedback. This surgical simulation can be used with standard VR systems, like an Oculus Quest. The user can use his motion controller to grab virtual tools and use them. With the help of simulated forces, a virtual tool can apply accurate interaction forces to virtual tissue.
+In addition, a solution will be presented to implement immersive surgical simulators without haptic feedback. Such surgical simulations can be used with standard VR systems, like an Oculus Quest, HTC vive or valve index. The user can use his motion controller to grab virtual tools and use them. With the help of simulated forces, a virtual tool can apply accurate interaction forces to virtual tissue.
 
-An optically realistic needle-tissue interaction is also implemented. Tissue and needle are modeled with the help of particles and \textit{Shape Matching Constraints} \cite{Shape}. The structure of the tissue model is not changed.
+An optically realistic needle-tissue interaction is also implemented. Tissue and needle are modeled with the help of particles and \textit{Shape Matching Constraints} \newline \cite{Shape}. The particle structure of the tissue model is not changed.
 }
 
 
