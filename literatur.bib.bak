@@ -222,4 +222,11 @@
   url        = {https://doi.org/10.1145/1073204.1073216},
 }
 
+@Misc{FlexDoc,
+  howpublished = {\url{docs.nvidia.com/gameworks/content/gameworkslibrary/physx/flex}},
+  note         = {aufgerufen: 13:31, 5 März 2021},
+  title        = {NVIDIA Flex 1.1.0 documentation},
+  year         = {2021},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

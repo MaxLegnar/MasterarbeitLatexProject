@@ -2,7 +2,7 @@
 \label{chap_Szenarien}
 
 %Welche Use Cases habe ich implementiert und wie? Und wie klappte das?
-In Kapitel \ref{chap_Flex_Engine} wurde die Unreal Engine 4 mit Flex Integration erweitert, damit sie sich besser für die Implementation von chirurgischen Simulatoren eignet. 
+In Kapitel \ref{chap_Flex_Engine} wurde die Unreal Engine 4 mit Flex Integration erweitert, damit sie sich besser für die Implementation von medizinischen Simulatoren eignet. 
 
 Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulatoren zu testen, werden in diesem Kapitel einige Szenarien implementiert, die für chirurgische Simulatoren interessant sein könnten.
 
@@ -10,47 +10,44 @@ Durch Evaluierung der implementierten Szenarien können die Möglichkeiten und G
 
 %In Diesem Kapitel werden Testszenarien implementiert, die für chirurgische Simulatoren interessant sein könnten. Dabei kann experimentell untersucht werden, ob die erweiterte Unreal Integration für Serious Games im medizinischen Bereich geeignet ist.
 
-\section{Gewebe Interaktion mit virtuellen Werkzeugen}
+\section{Gewebeinteraktion mit virtuellen Werkzeugen}
 \label{sec_FSystem}
 
-Das sich simuliertes Gewebe aus einer FleX-Simulation optisch realistisch verhält, wurde bereits in einigen Arbeiten gezeigt (siehe Kapitel \ref{section_PBD}). Für diese Arbeiten wurden vor allem die Werke \cite{PBDKidney} und \cite{BreastBiopsy} als Leitfaden genutzt um realistisches Gewebe als FleX-Objekt zu modellieren und um geeignete Simulationsparameter zu finden.
+Dass sich simuliertes Gewebe aus einer FleX-Simulation optisch realistisch verhält, wurde bereits in einigen Arbeiten gezeigt (siehe Kapitel \ref{section_PBD}). Für diese Arbeiten wurden vor allem die Werke \cite{PBDKidney} und \cite{BreastBiopsy} als Leitfaden genutzt, um realistisches Gewebe als FleX-Objekt zu modellieren und um geeignete Simulationsparameter zu finden.
 
 \subsection{Soft Body Interaktion ohne haptisches Feedback}
 \label{subsec_no_haptic}
-Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
+Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert, das in VR gespielt wird. Hierfür wurde eine VR-Anlage mit Motion Controllern verwendet (Oculus quest 2), damit der Spieler mit virtuellen Händen nach chirurgischen Werkzeugen greifen und diese benutzen kann.
 
 \subsubsection{Problemstellung}
-Für gewöhnlich werden die virtuellen Hände des Spielers stets auf die selbe Position und Rotation gesetzt, wie die des Motion Controllers. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
-Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem Sie Flex-Objekte eindrücken oder weg schiebt. Abbildung \ref{VHand1} zeigt wie dies in der virtuellen Welt aussieht. Wie man Sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
+Für gewöhnlich werden die virtuellen Hände des Spielers stets auf dieselbe Position und Rotation gesetzt wie die des Motion Controllers. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
+Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem sie Flex-Objekte eindrückt oder wegschiebt. Abbildung \ref{VHand1} zeigt, wie dies in der virtuellen Welt aussieht. Wie man sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
 
-\bild{VHand1}{6cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von eine virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil
-%Sie immer auf die Position des Motion Controllers (orange) gesetzt wird und 
+\bild{VHand1}{6cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von einer virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil
 die statische Mauer nicht zur Seite gedrückt werden kann.}
 
-Um die Immersion der VR-Anwendung zu erhöhen wäre es allerdings besser, wenn eine virtuelle Hand auch mit statischen Objekten kollidieren kann. Außerdem ist eine virtuelle Hand sozusagen unendlich stark: Soft Bodies können vom Spieler beliebig stark eingedrückt werden, egal wie steif oder schwer es ist. Das liegt daran, dass die virtuelle Hand immer auf die Position und Rotation des Motion Controllers gesetzt wird. Daher kann eine virtuelle Hand keine Physik simulieren und schiebt Objekte, die Phyik simulieren problemlos zur Seite.
+Um die Immersion der VR-Anwendung zu erhöhen, wäre es allerdings besser, wenn eine virtuelle Hand auch mit statischen Objekten kollidieren kann. Außerdem ist eine virtuelle Hand sozusagen unendlich stark: Soft Bodies können vom Spieler beliebig stark eingedrückt werden, egal wie steif oder schwer es ist. Das liegt daran, dass die virtuelle Hand immer auf die Position und Rotation des Motion Controllers gesetzt wird. Daher kann eine virtuelle Hand keine Physik simulieren und schiebt Objekte, die Phyik simulieren, problemlos zur Seite.
 
 Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung weniger realistisch.
-
-HIER EVT NOCH EINE SOFTWAREÜBERSICHT EINFÜGEN!!! so wie in \cite{VRSim20}, da wurds sehr schön gemacht!
 
 \subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
 Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
 
 In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die virtuelle Umgebung zulässt.
 
-\bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) "drücken" die virtuelle Hand zum Motion Controller. Links: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert die Hand mit der Mauer und drückt mit einer simulierten Kraft dagegen. Rechts: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
+\bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) drücken die virtuelle Hand zum Motion Controller. Links: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert die Hand mit der Mauer und drückt mit einer simulierten Kraft dagegen. Rechts: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
 
 \subsubsection{Regelung des kräftebasierten Interaktions-Systems}
-Das kräftebasierte Interaktions-System kann als Regelsystem betrachtet werden. Dieses Regelsystem drückt mit Kräften und Momenten ($U = (\vec{F} , \vec{M}$) auf die virtuelle Hand, um sie in eine gewünschte Soll-Konfiguration, $W$, zu versetzen. Die Soll-Konfiguration ist die Position und Rotation des Motion Controllers, $W = (\vec{P_s} , \vec{R_s})$. Der Regelfehler, $E$, ergibt sich aus der Differenz zwischen Soll-Konfiguration, $W$, und der derzeitigen Ist-Konfiguration, $X = (\vec{P_i} , \vec{R_i})$ der virtuellen Hand.
+Das kräftebasierte Interaktions-System kann als Regelsystem betrachtet werden. Dieses Regelsystem drückt mit Kräften und Momenten ($U = (\vec{F} , \vec{M}$) auf die virtuelle Hand, um sie in eine gewünschte Soll-Konfiguration, $W$, zu versetzen. Die Soll-Konfiguration ist die Position und Rotation des Motion Controllers, $W = (\vec{P_s} , \vec{R_s})$. Der Regelfehler, $E$, ergibt sich aus der Differenz zwischen Soll-Konfiguration, $W$, und der derzeitigen Ist-Konfiguration, $X = (\vec{P_i} , \vec{R_i})$, der virtuellen Hand.
 
 \begin{equation}
 E = W - X
 \label{form_error}
 \end{equation}
 
-Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Positions- und Rotations-Fehler ($E$) reagiert und außerdem proportional zur Fehlerveränderung reagiert ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, so dass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
+Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Regelfehler, $E$, reagiert und außerdem proportional zur Fehlerveränderung reagiert ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, sodass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
 
-Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$ die er maximal ausüben darf. $F_{max}$ repräsentiert dann nämlich die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
+Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$, die er maximal ausüben darf. $F_{max}$ repräsentiert dann nämlich die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
 
 \subsection{Evaluierung}
 %Werkzeuge
@@ -64,12 +61,12 @@ Dank des kräftebasierten Interaktions-Systems kollidiert das Skalpell mit der U
 Über die Verformung des Gewebes oder über die Größe der Druckkraft können entsprechende Ereignisse ausgelöst werden, beispielsweise das Schneiden des Gewebes.
 
 %Werkzeuge aufheben.
-Mit diesem Framework können beliebige Werkzeuge implementiert werden, die der Spieler in seine Hände nehmen, benutzen und wieder fallenlassen kann. Greift der Spieler mit einer virtuellen Hand nach einem Werkzeug, wird das Flex-Objekt der virtuellen hand mit dem Flex-Objekt des Werkzeugs ersetzt. Dadurch entsteht der Eindruck, der Spieler habe das Werkzeug aufgehoben.
+Mit diesem Framework können beliebige Werkzeuge implementiert werden, die der Spieler in seine Hände nehmen, benutzen und wieder fallenlassen kann. Greift der Spieler mit einer virtuellen Hand nach einem Werkzeug, wird das Flex-Objekt der virtuellen Hand mit dem Flex-Objekt des Werkzeugs ersetzt. Dadurch entsteht der Eindruck, der Spieler habe das Werkzeug aufgehoben.
 
 %was für Werkzeuge implementiert wurden
 Im Rahmen dieser Arbeit wurde eine Pinzette und eine Nadel implementiert. Mithilfe der Pinzette können Fremdkörper aus Gewebe gezogen und nach Flex-Partikeln gegriffen werden. Eine Nadel ist ein besonders dünnen Flex-Objekt und kann daher gut in Gewebe eindringen und darin stecken bleiben (siehe Kapitel \ref{sec_needle}).
 
-BILD!!!!!!!!!!
+%BILD!!!!!!!!!!
 
 %Fehelndes force feedback und schlusswort
 Natürlich ist es unbestreitbar, dass das fehlende haptische Feedback einen besonders negativen Einfluss auf den Realismus der Simulation hat. Dennoch konnte mit den gegebenen Mitteln zumindest optischer Realismus erreicht werden.
@@ -81,52 +78,52 @@ Natürlich ist es unbestreitbar, dass das fehlende haptische Feedback einen beso
 %Wie umgesetzt, welche Tricks angewandt? Constraints? Geeignete Simulationsparameter?
 
 %In dieser Arbeit wurde auch untersucht ob mit Flex und UE4 Nadel-Gewebe Interaktionen realisiert werden können. %Grundsätzlich gelingt dies, allerdings kann es viel Zeit in Anspruch nehmen, die korrekten Simulationsparameter zu finden. 
-In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und experimentell untersucht. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt um mithilfe von Motion Controllern Nadeln in Gewebe zu stecken. 
+In diesem Kapitel wird ein einfaches Nadel-Gewebe Szenario implementiert und evaluiert. Dabei wird das in Kapitel \ref{sec_FSystem} entwickelte Interaktionsystem genutzt, um mithilfe von Motion Controllern Nadeln in Gewebe zu stecken. 
 
-Die Simulation wird dabei möglichst trivial gehalten um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt, beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten gemacht wird (so wie in \cite{PBDCutting}, beispielsweise).
+Die Simulation wird dabei möglichst trivial gehalten, um die Echtzeitfähigkeit zu gewährleisten. Das simulierte Gewebe kann nicht von der Nadel verletzt beziehungsweise geschnitten werden. Daher muss die Partikelstruktur des Gewebemodels nicht verändert werden, so wie es bei virtuellen Schnitten gemacht wird (so wie in \cite{PBDCutting}, beispielsweise).
 
-Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren Cluster basierten \textit{Shape Matching Constraints} realisiert wird, so wie in \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
+Das Flex-Asset für das simulierte Gewebe wird als Soft Body und die Nadel als Rigid Body modelliert, wobei die Verformbarkeit des Gewebes mithilfe von mehreren Cluster-basierten \textit{Shape Matching Constraints} realisiert wird, so wie in \newline \cite{UPP}, \cite{BreastBiopsy} und \cite{PBDKidney}. 
 
 %Als Ausgangspunkt dienen die Werke \cite{PBDKidney} und \cite{BreastBiopsy} in denen bereits gute Simulationsparameter für unterschiedliche Gewebearten ermittelt wurden.
 
 \subsection{Methode}
 \subsubsection{Simulationsparameter}    
 
-In \cite{PBDKidney} und \cite{BreastBiopsy} wurden bereits sehr gute Simulationseinstellungen gefunden um unterschiedliche Gewebearten realitätsnahe zu simulieren. Die in diesen Arbeiten empfohlenen Simulationseinstellungen wurden daher zum Großteil übernommen.
+In \cite{PBDKidney} und \cite{BreastBiopsy} wurden bereits sehr gute Simulationseinstellungen gefunden, um unterschiedliche Gewebearten realitätsnahe zu simulieren. Die in diesen Arbeiten empfohlenen Simulationseinstellungen wurden daher zum Großteil übernommen.
 
 \begin{itemize}
 
-  \item \textit{Sparse Signed Distance Field Collision} sollte deaktiviert sein. \\ 
-  Diese Technik aus wird von NVIDIA Flex eingesetzt um zu vermeiden dass sich zwei Flex-Objekte ineinander verkeilen (siehe \cite{UPP} Kapitel 5.1). Befindet sich ein fremdes Partikel in einem Flex-Objekt, wird es mithilfe eines \ac{SDF} aus dem Flex-Objekt herausbewegt. In unserem Fall ist es allerdings erwünscht, dass Nadel-Partikel von Gewebe-Partikel festgehalten werden. Durch Anpassung der Steifheit, Partikeldichte und Partikelmasse des Gewebes kann eingestellt werden wie fest die Nadel-Partikel eingeklemmt werden.    
+%  \item \textit{Sparse Signed Distance Field Collision} sollte deaktiviert sein. \\ 
+%  Diese Technik aus \cite{UPP} wird von NVIDIA Flex eingesetzt um zu vermeiden dass sich zwei Flex-Objekte ineinander verkeilen. Befindet sich ein fremdes Partikel in einem Flex-Objekt, wird es mithilfe eines \ac{SDF} aus dem Flex-Objekt herausbewegt. In unserem Fall ist es allerdings erwünscht, dass Nadel-Partikel von Gewebe-Partikel festgehalten werden. Durch Anpassung der Steifheit, Partikeldichte und Partikelmasse des Gewebes kann eingestellt werden wie fest die Nadel-Partikel eingeklemmt werden.    
     
      \item Partikelradius, $r$: \\ Der Radius eines Partikels bestimmt seinen Interaktionsradius. Er wurde auf 0,5 bis 2 cm gestellt. Obwohl die Nadel eigentlich deutlich dünner als die Partikel war, konnten dennoch realistisch wirkende Ergebnisse erzielt werden. Kleinere Partikel wurden aus Performance Gründen nicht verwendet. Die benötigte Partikelmenge steigt nämlich kubisch mit abnehmendem Partikelradius.
      
-      \item Reibungskoeffizient: \\ Der Parameter \textit{ParticleFriction} bestimmt wie stark die Reibung zwischen Partikeln sein soll. Mit ihm kann gut angepasst werden wie gut sich die Nadel im Gewebe bewegen lässt und wie stark sich das Gewebe heraus- oder herein-wölbt, wenn die Nadel bewegt wird.
+      \item Reibungskoeffizient: \\ Der Parameter \textit{ParticleFriction} bestimmt, wie stark die Reibung zwischen Partikeln sein soll. Mit ihm kann gut angepasst werden, wie gut sich die Nadel im Gewebe bewegen lässt und wie stark sich das Gewebe heraus- oder herein-wölbt, wenn die Nadel bewegt wird.
       
       %in \cite{PBDKidney} und \cite{BreastBiopsy} wird substep 3 und iterations 9 genommen
       \item Simulation Substeps:  3%, so wie in \cite{PBDKidney} und \cite{BreastBiopsy} empfohlen.
       
       \item Substep Iterations: 9%, so wie in \cite{PBDKidney} und \cite{BreastBiopsy} empfohlen
       
-      \item Gravitation: Wurde auf $(0 , 0 , -980) cm/s^2$ gesetzt, entsprechend der Erde.
+      \item Gravitation: \\ Die Gravitation wurde auf $(0 , 0 , -980) cm/s^2$ gesetzt, entsprechend der Erde.
       
-      \item Partikel Dämpfung: \\ Mithilfe des Simulationsparameters \textit{Damping} können alle Partikelbewegungen gedämpft werden, als währen diese in einer Flüssigkeit. Es erwies sich als hilfreich etwas Dämpfung (0,1 bis 1) zu verwenden um das Auftreten von zitternden Bewegungen zu verringern.
+      \item Partikeldämpfung: \\ Mithilfe des Simulationsparameters \textit{Damping} können alle Partikelbewegungen gedämpft werden, als währen diese in einer Flüssigkeit. Es erwies sich als hilfreich, etwas Dämpfung (0,1 bis 1) zu verwenden, um das Auftreten von zitternden Partikelbewegungen zu verringern.
       
 \end{itemize}
     
 
-\subsubsection{Modellierung der Nadel}
-Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel als Flex-Objekt modelliert, so wie in Abbildung \ref{Needle3} zu sehen. Hierbei wurde darauf geachtet, dass sich die Partikel der Nadel berühren und das Partikelmodel möglichst dünn, beziehungsweise Nadelförmig ist.
+\subsubsection{Modellierung und Programmierung der Nadel}
+Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel als Flex-Objekt modelliert, so wie in Abbildung \ref{Needle3} zu sehen. Hierbei wurde darauf geachtet, dass sich die Partikel der Nadel berühren und dass das Partikelmodell möglichst dünn beziehungsweise nadelförmig ist.
 
 \bild{Needle3}{9cm}{Oben: Das Partikel-Modell der Nadel. Unten: Die hier grün gezeichnete Nadel wird mit dem kräftebasierten Interaktions-System in ein Gewebe-Modell eingeführt.}
 
 Eine Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt wurde. In günstigen Situationen bleibt die Nadel dann im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen. 
-Ob die Nadel im Gewebe stecken bleibt hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
+Ob die Nadel im Gewebe stecken bleibt, hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
 Ist die Gravitationskraft auf die Nadel-Partikel zu groß, fällt die Nadel nahezu ungehindert durch das Gewebe hindurch und schiebt dabei alle Gewebe-Partikel zur Seite. Daher ist darauf zu achten, die Partikelmassen der Nadel entsprechend klein zu halten, damit eine kleine Gravitationskraft auf die Nadel wirkt. Allerdings hat es eine leichte Nadel deutlich schwerer im Gewebe einzudringen. Wenn die Nadel-Partikel deutlich leichter sind als die Gewebe-Partikel, lassen sich die Gewebe-Partikel kaum von den Nadel-Partikeln verschieben.
 
-Um dieses Problem zu lösen wird das Gewicht der Nadel je nach Situation angepasst: Während der Spieler die Nadel in der Hand hält, werden die Massen der Nadel-Partikel erhöht, damit Sie besser in das Gewebe eindringen können. Lässt der Spieler die Nadel los, wird die Masse der Nadel auf einen geringen Wert gesetzt, damit die Gravitationskraft auf die Nadel so klein ist, dass Sie nicht durch das Gewebe hindurch fällt. 
+Um dieses Problem zu lösen, wird das Gewicht der Nadel je nach Situation angepasst: Während der Spieler die Nadel in der Hand hält, werden die Massen der Nadel-Partikel erhöht, damit Sie besser in das Gewebe eindringen können. Lässt der Spieler die Nadel los, wird die Masse der Nadel auf einen geringen Wert gesetzt, damit die Gravitationskraft auf die Nadel so klein ist, dass Sie nicht durch das Gewebe hindurch fällt. 
 
-Alternativ kann die Nadel auch an das Gewebe befestigt werden (wie in Kapitel \textbf{XXX} beschrieben), wenn sie sich im Gewebe befindet und losgelassen wird.
+Alternativ kann die Nadel auch an das Gewebe befestigt werden (wie in Kapitel \ref{subsec_attach} beschrieben), wenn sie sich im Gewebe befindet und losgelassen wird.
 
 %\subsubsection{Parametrisierung für Nadel und Gewebe}
 
@@ -138,21 +135,21 @@ Alternativ kann die Nadel auch an das Gewebe befestigt werden (wie in Kapitel \t
 %\begin{itemize}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Modellierung des Gewebes}
-Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. Die folgenden Punkte erwiesen sich bei der Modellierung als wichtig:
+Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1} rechts zu sehen. Die folgenden Punkte erwiesen sich bei der Modellierung als wichtig:
 
     \begin{itemize}
     
       \item Partikelabstand, $d$: \\ 
-      Die Gewebe-Partikel sollten sich nicht berühren ($d>2r$) sonst können instabile Zustände entstehen, bei denen einzelne Partikel keine Ruheposition (=lokales Minimum im Kräftefeld) mehr finden und dauerhaft umher springen und zittern. Gleichzeitig sollten die Gewebe-Partikel nah genug beisammen sein, damit Nadel-Partikel nicht durch Lücken fallen können, also $d<4r$. 
+      Die Gewebe-Partikel sollten sich nicht berühren ($d>2r$) sonst entstehen häufiger instabile Zustände, bei denen einzelne Partikel keine Ruheposition (lokales Minimum im Kräftefeld) mehr finden und dauerhaft umher springen und zittern. Gleichzeitig sollten die Gewebe-Partikel nah genug beisammen sein, damit Nadel-Partikel nicht durch Lücken fallen können, also $d<4r$. 
       %Ein Partikelabstand zwischen 2r und 3r erwies sich dabei als optimal.
       
       \item Irreguläre Anordnung der Partikel: \\ 
-      Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu sich Entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiederstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
+      Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu, sich entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiderstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
       
       \bild{Tissue1}{8cm}{Links: Partikelanordnung als reguläres 3D Gitter. Rechts: Chaotische Verteilung der Partikel, wobei die Partikeldichte weitestgehend homogen verteilt ist.}
       
       \item Keine Eigenkollision im Gewebe: \\ 
-      Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstanden häufiger instabile Zustände bei denen Partikel keine Ruheposition fanden.
+      Die Partikel des Gewebes sollten nicht miteinander kollidieren können (Attribut \textit{SelfCollide} auf \textit{false} setzen). Wenn die Gewebe-Partikel miteinander kollidieren können, entstanden häufiger instabile Zustände, bei denen Partikel keine Ruheposition fanden.
       
     \end{itemize}
     
@@ -164,141 +161,29 @@ Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1}, rechts zu sehen. D
 %Mithilfe des gegebenen Frameworks konnte nach längerem Experimentieren das folgende Verhalten erreicht werden:
 
 Dank des  kräftebasierten Interaktions-Systems (aus Kapitel \ref{sec_FSystem}) kann die Nadel mit dem Gewebe kollidieren und mit einer simulierten Kraft dagegen drücken. 
-%Durch gezielte Positionierung des Motion Controllers kann die Stärke und Richtung der ausgeübten Kraft gezielt justiert werden. 
-%Weil das Gewebe verformbar ist, kann die starre Nadel in das Gewebe eingeführt werden, wenn die aufgewendete virtuelle Kraft groß genug ist. Dann drücken die Nadel-Partikel die Gewebe-Partikel zur Seite. 
 Ist die Interaktionskraft stark genug, drücken die Nadel-Partikel Gewebe-Partikel zur Seite und die Nadel dringt in das Gewebe ein.
-Aufgrund der dünnen Form kann die Nadel nur mit axialen Bewegungen in das Gewebe eingeführt werden. Wird sie in einem ungünstigen Winkel eingeführt, kann sie seitlich wegrutschen, ohne in das Gewebe einzudringen (siehe Abbildung \ref{Needle4}). Ein ungünstiger Winkel ist ein besonders flacher Winkel zur Gewebeoberfläche. Dann ist die Richtung der simulierten Interaktionskraft ungünstig und der Kraftanteil, der in das Gewebe hineingeht, zu gering.
+Aufgrund der dünnen Form kann die Nadel nur mit axialen Bewegungen in das Gewebe eingeführt werden. 
 
-!!! Zu diskutieren: Ist dieses weg rutschen überhaupt realistisch??? Eine Nadel kann sehr flach angesetzt werden!
+Wird die Nadel in einem ungünstigen Winkel eingeführt, kann sie seitlich wegrutschen, ohne in das Gewebe einzudringen (siehe Abbildung \ref{Needle4}). Ein ungünstiger Winkel ist ein besonders flacher Winkel zur Gewebeoberfläche. Dann ist die Richtung der simulierten Interaktionskraft ungünstig und der Kraftanteil, der in das Gewebe hineingeht, zu gering. Dieses Verhalten wirkt allerdings unrealistisch. In der Realität können Nadeln nämlich sehr flach angesetzt werden, ohne abzurutschen, weil sich die scharfe Spitze der Nadel normalerweise im Gewebe verhakt. 
 
 %Reibung
-Befindet sich die Nadel im Gewebe, sorgt die simulierte Partikel-Reibung und Partikel-Kollision dafür, dass der Spieler noch mehr Kraft aufwenden muss, um die Nadel zu bewegen. Die Gewebe-Partikel, die in Kontakt mit der Nadel sind, haften an der Nadel und bewegen sich mit ihr mit. Dadurch verformt sich das Gewebe wenn die Nadel bewegt wird. Wird die Nadel herausgezogen, wölbt sich das Gewebe nach außen, wird sie hineingeschoben, wölbt sich das Gewebe nach innen (siehe Abbildung \ref{Needle4}).
+Der Reibungswiderstand der Nadel konnte überraschend realistisch vermittelt werden, zumal sich der Grad des Reibungswiderstands gut justieren lässt. 
+Befindet sich die Nadel im Gewebe, sorgt die simulierte Partikelreibung dafür, dass der Spieler noch mehr Kraft aufwenden muss, um die Nadel zu bewegen. Die Gewebepartikel, die in Kontakt mit der Nadel sind, haften an der Nadel und bewegen sich mit ihr mit. Dadurch verformt sich das Gewebe, wenn die Nadel bewegt wird. Wird die Nadel herausgezogen, wölbt sich das Gewebe nach außen, wird sie hineingeschoben, wölbt sich das Gewebe nach innen (siehe Abbildung \ref{Needle4}).
 
 \bild{Needle4}{10cm}{Oben: Verformung des Gewebes bei axialer Bewegung der Nadel. Unten links: Abrutschen der Nadel bei ungünstigem Stechwinkel. Unten rechts: Mehrere Nadeln wurden in unterschiedlichen Tiefen und Winkeln in das Gewebe gesteckt.}
 
 %Steckenbleiben der Nadel:
-Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadel-Partikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadel-Partikel einen kurzen Moment von den Kraftfeldern bewegt bis sie ein lokales Minimum finden und dort zur Ruhe kommen. 
+Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht, um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadelpartikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadelpartikel einen kurzen Moment von den Kraftfeldern bewegt, bis sie ein lokales Minimum finden und dort zur Ruhe kommen. 
 
 %Negative Beeinflussungen des Realismusses und Lösung
-Die kurze Bewegung der Nadel können in manchen Fällen negativ auf den Realismus der Simulation auswirken. Außerdem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Der Reibungswiederstand der Nadel konnte jedoch überraschend realistisch vermittelt werden, zumal sich der Grad des Reibungswiederstands gut justieren lässt. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
+Die kurze Bewegung der Nadel kann sich in manchen Fällen negativ auf den Realismus der Simulation auswirken. Außerdem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
+
+%Problemstellungen:
+% Wiederspruch: Für gute gewebeverformung: SelfCollision=True, für gute nadel interaktion: SelfCollision aus.
+% 
 
 %\section{Weitere Chirurgische Szenarien}
 %
 %... Was konnte wie gut mit gegebenen Werkzeugen implementiert werden?... Was waren Probleme? Was waren Grenzen?
 %Erwähnen: Nicht nur Nadeln können sich in Gewebe verklemmen, auch andere Fremdkörper wie Projektile oder Spreisel.
 
-
-
-
-
-
-%
-%\begin{itemize}
-%  \item Reynolds drei Grundverhaltensregeln:
-%    \begin{itemize}
-%      \item Kohäsion, $\vec{v}_c$
-%      \item Separation, $\vec{v}_s$    
-%      \item Ausrichtung, $\vec{v}_a$
-%    \end{itemize}  
-%  \item Zusatzverhaltensregeln:
-%    \begin{itemize}
-%      \item Punkt verfolgen, $\vec{v}_{cp}$
-%      \item Punkt meiden, $\vec{v}_{sp}$      
-%    \end{itemize}
-%\end{itemize}
-%
-
-%% Please add the following required packages to your document preamble:
-%% \usepackage{booktabs}
-%\begin{table}[]
-%\centering
-%\caption{Einige Boid-Erhaltungsmessungen. Der Verlust von Boids konnte eindeutig nachgewiesen werden. Vor allem bei der Verteilung in zwei Zellen traten massive Verluste auf. }
-%\label{Erhaltungsmessungen}
-%\begin{tabular}{@{}llll@{}}
-%\toprule
-%\begin{tabular}[c]{@{}l@{}}Anzahl der\\ Wahrnehmungsvektoren\end{tabular} & Transportmethode                                                               & \begin{tabular}[c]{@{}l@{}}absoluter \\ Verlust\end{tabular} & \begin{tabular}[c]{@{}l@{}}prozentualer\\ Verlust\end{tabular} \\ \midrule
-%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=8$\end{tabular}  & 539,454                                                      & 17,99                                                          \\
-%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=8$\end{tabular}  & 294,444                                                      & 9,82                                                           \\ \midrule
-%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=4$\end{tabular}  & 1311,055 & 43,73                                                          \\
-%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ eine Zelle,\\ $N_c=4$\end{tabular}  & 570,810 & 19,04                                                          \\ \midrule
-%4                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ zwei Zellen,\\ $N_c=4$\end{tabular} & 2996,141 & 99,95                                                          \\
-%8                                                                         & \begin{tabular}[c]{@{}l@{}}Verteilung in\\ zwei Zellen,\\ $N_c=4$\end{tabular} & 2727,642 & 90,99                                                         
-%\end{tabular}
-%\end{table}
-%
-
-%
-%Die Messergebnisse sind in Tabelle \ref{gtx} aufgelistet. 
-%
-%
-%\clearpage
-%% Please add the following required packages to your document preamble:
-%
-%% \usepackage{booktabs}
-%
-%\begin{table}[]
-%
-%\centering
-%
-%\caption{Die prototypische Shader-Pipeline benötigt vor allem dann mehr Rechenzeit, wenn größere Texturen eingesetzt werden.}
-%
-%\label{gtx}
-%
-%\begin{tabular}{@{}lllllll@{}}
-%
-%\toprule
-%
-%                                                                                & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=256$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=1024$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=4096$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=256$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=1024$\end{tabular} & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=8$\\ $R=4096$\end{tabular} \\ \midrule
-%
-%\multicolumn{1}{l|}{Zeit-}                                                      & 0,39                                                                & 1,89                                                                 & 4,66                                                                 & 1,27                                                                & 1,55                                                                 & 4,6                                                                  \\
-%
-%\multicolumn{1}{l|}{messungen}                                                  & 0,44                                                                & 1,67                                                                 & 4,59                                                                 & 3,79                                                                & 5,87                                                                 & 5,45                                                                 \\
-%
-%\multicolumn{1}{l|}{in ms}                                                      & 0,42                                                                & 0,47                                                                 & 4,59                                                                 & 1,28                                                                & 1,57                                                                 & 4,78                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 2,11                                                                 & 5,16                                                                 & 1,37                                                                & 0,63                                                                 & 5,8                                                                  \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,39                                                                & 2,53                                                                 & 3,62                                                                 & 1,49                                                                & 2,12                                                                 & 4,63                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 2,01                                                                 & 5,07                                                                 & 1,80                                                                & 2,06                                                                 & 4,91                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 1,51                                                                 & 3,86                                                                 & 0,17                                                                & 2,13                                                                 & 4,57                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 1,51                                                                 & 5,14                                                                 & 1,22                                                                & 2,33                                                                 & 4,79                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,42                                                                & 2,07                                                                 & 5,09                                                                 & 2,03                                                                & 2,28                                                                 & 4,85                                                                 \\
-%
-%\multicolumn{1}{l|}{}                                                           & 0,44                                                                & 2,19                                                                 & 3,64                                                                 & 0,39                                                                & 5,92                                                                 & 4,67                                                                 \\ \midrule
-%
-%\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Mittelwert\\ in ms\end{tabular}} & 0,422                                                               & 1,796                                                                & 4,542                                                                & 1,481                                                               & 2,646                                                                & 4,9050                                                               \\
-%
-%\multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Streuung\\ in ms\end{tabular}}   & 0,0193                                                              & 0,5637                                                               & 0,6206                                                               & 0,9893                                                              & 1,7844                                                               & 0,4036                                                             
-%
-%\end{tabular}
-%
-%\end{table}
-%
-%
-
-%
-%\begin{table}[]
-%\centering
-%\caption{Die Verarbeitungsdauer der Shader-Pipeline auf einem etwas schwächerem Gerät.}
-%\label{ThinkPad}
-%\begin{tabular}{@{}ll@{}}
-%\toprule
-%                                & \begin{tabular}[c]{@{}l@{}}$N_c=8$\\ $N_s=4$\\ $R=256$\end{tabular} \\ \midrule
-%                                & 1,89 ms                                                                \\
-%                                & 1,43 ms                                                               \\
-%                                & 1,30 ms                                                                \\
-%                                & 1,41 ms                                                                                                                               \\
-%                                & 1,85 ms                                                                                                                               \\
-%                                & 1,86 ms                                                                                                                               \\
-%                                & 1,76 ms                                                                                                                               \\
-%                                & 1,32 ms                                                                                                                               \\
-%                                & 1,91 ms                                                                                                                               \\
-%                                & 1,32 ms                                                                                                                               \\ \midrule
-%\multicolumn{1}{l|}{Mittelwert in ms} & 1,605                                                               \\
-%\multicolumn{1}{l|}{Streuung in ms}   & 0,2682                                                             
-%\end{tabular}
-%\end{table}

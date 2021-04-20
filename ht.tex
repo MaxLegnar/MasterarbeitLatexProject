@@ -67,7 +67,7 @@ Um einen ersten Überblick von der Performance zu bekommen, wird zunächst eine 
 
 \bild{WaterShaderPerformance}{14cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Wird ein aufwändiger Shader für die Fluid-Partikel verwendet, kommt die GPU schnell an ihre Grenzen und die \ac{FPS} werden deutlich verringert.}
 
-Die Simulationsparameter werden außerdem so gewählt, dass die Simulation möglichst akkurat ausgeführt wird, wodurch der FleX-Solver ebenfalls stärker belastet wird. Die gewählten Simulationsparameter wurden so wie in \cite{BreastBiopsy} gewählt. Diese Parametrisierung hat sich nämlich auch in \cite{PBDKidney} und \cite{VRSim20} bewährt, um Gewebe akkurat zu simulieren.
+Die Simulationsparameter werden außerdem so gewählt, dass die Simulation möglichst akkurat ausgeführt wird, wodurch der FleX-Solver ebenfalls stärker belastet wird. Die gewählten Simulationsparameter wurden so wie in \cite{BreastBiopsy} gewählt. Diese Parametrisierung hat sich nämlich auch in \cite{PBDKidney} und \newline \cite{VRSim20} bewährt, um Gewebe akkurat zu simulieren.
 
 Die verwendeten Simulationsparameter sowie alle Messergebnisse sind in Tabelle \ref{table_mixed_sim} zu sehen.
 
@@ -205,7 +205,7 @@ Die GPU kommt also offenbar bei der Verarbeitung von wenigen großen Clustern sc
 
 Hierfür gibt es zwei Ursachen: Zum Einen ist die Verarbeitung der Shape Constraints laut \cite{FlexD3D} aufwändig, weil hierbei die Momentenmatrizen der Cluster polar zerlegt werden müssen. Das ist besonders rechenintensiv.
 
-Zum anderen verarbeitet NVIDIA FleX Shape Constraints nach der sogenannten Constraint orientierten Methode. Um die Simulation zu verarbeiten, wird in \cite{UPP} zwischen zwei unterschiedlichen Verarbeitungsansätzen unterschieden: Partikel-orientiert und Constraint-orientiert. 
+Zum anderen verarbeitet NVIDIA FleX Shape Constraints nach der sogenannten Constraint orientierten Methode. Um die Simulation zu verarbeiten, wird in \newline \cite{UPP} zwischen zwei unterschiedlichen Verarbeitungsansätzen unterschieden: Partikel-orientiert und Constraint-orientiert. 
 
 Beim Partikel-orientierten Ansatz werden alle Partikel parallel verarbeitet und für jedes Partikel werden die Constraints, die das Partikel beeinflussen, sequenziell verarbeitet. 
 
@@ -433,68 +433,74 @@ Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mit
 
 \subsection{Kollisionserkennung}
 
-LESEZEICHEN!!!!!!!!!!!!!!!!
 
 Eine wichtige Funktionalität, die die meisten Game Engines bieten, ist ein Framework für die Erkennung von Kollisionen zwischen 3d-Modellen. 
-Ein Kollisionserkennungs-Framework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings} (hier evt irgenwas REFERENZIEREN). 
+Ein Kollisionserkennungsframework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen, ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene Klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings}. 
 
-So verhält es sich auch bei der Unreal Engine 4. Hier bieten 3D-Objekte unterschiedliche Kollisions-Events an. Zum Beispiel wird ein \textit{BeginOverlap}-Event ausgelöst, wenn sich zwei 3D-Modelle berühren oder überlappen. Beliebige Klassen können auf das \textit{BeginOverlap}-Event eines 3D-Modells hören (Event-Binding), dann werden Sie immer darüber informiert, wenn das 3D-Modell etwas berührt hat und können dann entsprechend reagieren (Spieler Leben abziehen, nächstes Level laden, oder ähnliches...).
+So verhält es sich auch bei der Unreal Engine 4. Hier bieten 3D-Objekte unterschiedliche Kollisions-Events an. Zum Beispiel wird ein \textit{BeginOverlap}-Event ausgelöst, wenn sich zwei 3D-Modelle berühren oder überlappen. Beliebige Klassen können auf das \textit{BeginOverlap}-Event eines 3D-Modells hören (Event-Binding), damit Sie immer darüber informiert werden, wenn das 3D-Modell etwas berührt hat.
 
-Für chirurgische Simulatoren wird ein Kollisionserkennungs-Framework benötigt, beispielsweise um zu erkennen ob ein Skalpell ein empfindliches Organ berührt oder ob eine die Spitze einer Kanüle eine Blutader getroffen hat.
+Für chirurgische Simulatoren wird ein Kollisionserkennungsframework benötigt, beispielsweise um zu erkennen, ob ein Skalpell ein empfindliches Organ berührt oder ob die Spitze einer Kanüle eine Blutader getroffen hat.
 
 In der Unreal Integration können Flex-Objekte zwar grundsätzlich miteinander kollidieren, allerdings gibt es nicht die Möglichkeit, auf das Kollisions-Event eines Flex-Objekts zu hören (\textit{Event-Binding}) oder eine Kollision zu erkennen.
 
-Um diese fehlende Funktionalität zu ergänzen, wird das bereits bestehende Kollisionserkennungs-Framework der Unreal Engine 4 genutzt, welches auf NVIDIA PhysX aufbaut \cite{ue4physics}. Dieses Kollisionserkennungs-Framework ist nämlich bereits sehr umfangreich und ist mittels Spacial-Data-Ansatz (REFERENZ!!!) optimiert und entsprechend effizient.
+Um diese fehlende Funktionalität zu ergänzen, wird das bereits bestehende Kollisionserkennungsframework der Unreal Engine 4 genutzt, welches auf NVIDIA PhysX aufbaut \cite{ue4physics}. Dieses Kollisionserkennungsframework ist nämlich bereits sehr umfangreich und effizient.
 
 %In \cite{UE4FlexDoc} wird empfohlen, fehlende Kollisionserkennungen mit einer traditionellen Rigid Body Physics Engine zu realisieren. Weil die Unreal Engine 4 bereits solch eine Physics Engine besitzt (\cite{ue4physics}), bietet es sich an, die fehlende Kollisionserkennung mit dieser zu realisieren.
 
-Hier kommt es uns zugute, dass bei der Unreal Integration 3D-Modelle an Flex-Objekte befestigt werden können (siehe kap \textbf{XXXSceneTree}). So können auch PhysX-Kollisionskörper für Flex-Objekte modelliert und an diese befestigt werden, so wie in Abbildung \ref{Scalpel1} zu sehen.
+Hier kommt es uns zugute, dass bei der Unreal Integration 3D-Modelle an Flex-Objekte befestigt werden können (siehe Kapitel \ref{subsec_attach}). So können auch PhysX-Kollisionskörper für Flex-Objekte modelliert und an diese befestigt werden, so wie in Abbildung \ref{Scalpel1} zu sehen.
 
-\bild{Scalpel1}{14cm}{Ein passender PhysX-Kollisionskörper (grünes Polygonmodel) wird an ein Flex-Asset befestigt um so die umfangreiche Kollisionserkennung der Unreal Engine nutzen zu können. Hier reicht ein ungenauer Kollisionskörper aus, weil in diesem Fall nur erkannt werden soll, ob eine virtuelle Hand nach dem Skalpell greift.}
+\bild{Scalpel1}{14cm}{Ein passender PhysX-Kollisionskörper (grünes Polygonmodel) wird an ein Flex-Asset befestigt, um so die umfangreiche Kollisionserkennung der Unreal Engine nutzen zu können. Hier reicht ein ungenauer Kollisionskörper aus, weil in diesem Fall nur erkannt werden soll, ob eine virtuelle Hand nach dem Skalpell greift.}
 
 Die separaten Kollisionskörper werden dann so konfiguriert, dass sie keine Physik simulieren. Nur die Überlappungserkennung wird genutzt, um Überlappungen und Berührungen zu erkennen.
 
-An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden um zwischen unterschiedlichen Berührungen unterscheiden zu können. Beispielsweise um zu erkennen ob die Klinge oder der Griff eines Skalpells etwas berührt hat.
+An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden, um zwischen unterschiedlichen Berührungen unterscheiden zu können. 
+%Beispielsweise um zu erkennen ob die Klinge oder der Griff eines Skalpells etwas berührt hat.
 
 %Hier evt nochmal ein Bild mit komplexeren Kollisionskörpern für Klinge, Griff, Kanülenspitze, Hauptader usw...
 
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
-\subsection{Interaktion zwischen FleX-Objekte und PhysX-Objekte}
+  %%%%%%%%%%%%%%%%%%%% Flex-PhysX Interaktion %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{Interaktion zwischen FleX-Objekte und PhysX-Objekte}
+%
+%%Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
+% 
+%Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodies, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also  FleX-Simulationen und PhysX-Simulationen gleichzeitig ausgeführt werden. Nun stellt sich die Frage, ob und wie elastische  FleX-Objekte mit PhysX-Objekte interagieren können.
+%
+%Bei der verwendeten Unreal Integration können PhysX-Objekte grundsätzlich mit FleX-Objekte kollidieren. Allerdings üben Flex-Objekte keine Kräfte auf PhysX-Objekte aus. FleX-Objekte sehen PhysX-Objekte als statische Kollisionskörper, die nicht verschoben werden können. Dies führt zu Situationen, wie in Abbildung \ref{PhsXInteraction} links abgebildet: Kollidiert ein PhysX-Objekt (weiße Kugel) mit einem Flex-Objekt (blaue Kugel), wird das FleX-Objekt vom PhysX-Objekt ungehindert weg geschoben oder gar überrollt, wie in der Abbildung zu sehen. Weil ein FleX-Objekt keine Reaktionskraft auf das PhysX-Objekt ausüben kann, bewegt sich das PhysX-Objekt ungehindert weiter, als würde überhaupt keine Kollision mit einem anderen Objekt stattfinden.
+%
+%\bild{PhsXInteraction}{10cm}{Links: Das PhysX-Objekt (weiße Kugel) überrollt ungehindert das elastische FleX-Objekt (blaue Kugel), weil FleX-Objekte keine Kraft auf PhysX-Objekte ausüben. Rechts: Die fehlende Reaktionskraft auf das PhysX-Objekt wird anhand der Verformung des Flex-Objekts ausgerechnet und angewandt. Nun prallt das PhysX-Objekt vom Flex-Objekt ab und verursacht nur eine geringe Verformung.}
+%
+%Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf auf das PhysX-Objekt wirkt, berechnet und angewandt werden. 
+%%Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
+%%Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
+%Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf der folgenden Idee: 
+%
+%Wenn ein PhysX-Objekt mit einem elastischen FleX-Objekt kollidiert, verursacht das PhysX-Objekt eine Verformung beim FleX-Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX-Objekt. Für die Flex-Partikel des Flex-Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
+%%Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
+%
+%Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex-Objekts gewichtet.
+%Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. 
+%%Dank des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX-Objekts auf die Simulation aus: Je schwerer ein PhysX-Objekt, desto stärker kann es Flex-Objekte eindrücken.
 
-%Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
- 
-Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodies, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also  FleX-Simulationen und PhysX-Simulationen gleichzeitig ausgeführt werden. Nun stellt sich die Frage, ob und wie elastische  FleX-Objekte mit PhysX-Objekte interagieren können.
-
-Bei der verwendeten Unreal Integration können PhysX Objekte grundsätzlich mit FleX Objekte kollidieren. Allerdings üben Flex Objekte keine Kräfte auf PhysX Objekte aus. FleX Objekte sehen PhysX Objekte als statische Kollisionskörper, die nicht verschoben werden können. Dies führt zu Situationen, wie in Abbildung \ref{PhsXInteraction} links abgebildet: Kollidiert ein PhysX Objekt (weiße Kugel) mit einem Flex Objekt (blaue Kugel), wird das FleX Objekt vom PhysX Objekt ungehindert weg geschoben oder gar überrollt, wie in der Abbildung zu sehen. Weil ein FleX Objekt keine Reaktionskraft auf das PhysX Objekt ausüben kann, bewegt sich das PhysX Objekt ungehindert weiter, als würde überhaupt keine Kollision mit einem anderen Objekt stattfinden.
-
-\bild{PhsXInteraction}{10cm}{Links: Das PhysX Objekt (weiße Kugel) überrollt ungehindert das elastische FleX Objekt (blaue Kugel), weil FleX Objekte keine Kraft auf PhysX Objekte ausüben. Rechts: Die fehlende Reaktionskraft auf das PhysX Objekt wird anhand der Verformung des Flex-Objekts ausgerechnet und angewandt. Nun prallt das PhysX Objekt vom Flex Objekt ab und verursacht nur eine geringe Verformung.}
-
-Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf auf das PhysX Objekt wirkt, berechnet und angewandt werden. 
-%Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
-%Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
-Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf der folgenden Idee: 
-
-Wenn ein PhysX Objekt mit einem elastischem FleX Objekt kollidiert, verursacht das PhysX Objekt eine Verformung beim FleX Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX Objekt. Für die Flex Partikel des Flex Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
-%Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
-
-Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex Objekts gewichtet.
-Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. Danke des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX Objekts auf die Simulation aus: Je schwerer ein PhysX Objekt, desto stärker kann es Flex Objekte eindrücken.
+  %%%%%%%%%%%%%%%%%%%% Flex-PhysX Interaktion ENDE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Kräfte und Momente}
 \label{subsec_forces}
+
 Eine Funktionalität, die einige Game Engines anbieten, ist die Möglichkeit per Funktionsaufruf Kräftevektoren auf einzelne Körper wirken zu lassen. 
 %Diese Funktionalität steht bei Game Engines als Funktion in der Form \textit{AddForce(FVector* ForceVector)} zur Verfügung, wie auch bei der Unreal Engine 4 (REEEEF). 
 
-Diese Funktionalität wird meist genutzt um kräftebasierte Effekte oder Systeme zu programmieren. Beispielsweise können Kräfte auf Körper, die sich innerhalb einer Explosion befinden, angewandt werden, damit sie von der Explosion weg geschleudert werden. In REEEEEFFFF wird diese Funktionalität genutzt, um Auftriebskräfte auf schwimmende Objekte wirken zu lassen. 
+Diese Funktionalität wird meist genutzt, um kräftebasierte Effekte oder Systeme zu programmieren. Beispielsweise können Kräfte auf Körper, die sich innerhalb einer Explosion befinden, angewandt werden, damit sie von der Explosion weggeschleudert werden. 
+In \cite{Studienarbeit} wird diese Funktionalität genutzt, um Auftriebskräfte auf schwimmende Objekte wirken zu lassen. 
 Außerdem können mit dieser Funktionalität realistische Regelsysteme implementiert werden, die mit Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität ohne haptisches Feedback (siehe Kapitel \ref{sec_FSystem}).
 
 %Bei der verwendeten Unreal Engine mit Flex Integration gibt es nicht die Möglichkeit, Kräfte auf einzelne Flex-Objekte oder Flex-Partikel wirken zu lassen.
 
-Die NVIDIA FleX Bibliothek bietet zwar die Möglichkeit an, Kraftfelder zu erstellen (\textit{NvFlexExtForceField}), allerdings gibt es nicht die Möglichkeit, Kräfte oder Momente gezielt auf einzelne Flex-Objekte oder Partikel wirken zu lassen. %Die Kräftefelder definieren nur einen Bereich, in dem konstante Kräftevektoren im Raum verteilt sind. Dann wirkt auf alle Partikel, die sich innerhalb eines Kräftefeldes befinden, eine Kraft, abhängig von den Partikelpositionen.
+Die NVIDIA FleX Bibliothek bietet zwar die Möglichkeit, Kraftfelder zu erstellen (\textit{NvFlexExtForceField}), allerdings gibt es nicht die Möglichkeit, Kräfte oder Momente gezielt auf einzelne Flex-Objekte oder Partikel wirken zu lassen. %Die Kräftefelder definieren nur einen Bereich, in dem konstante Kräftevektoren im Raum verteilt sind. Dann wirkt auf alle Partikel, die sich innerhalb eines Kräftefeldes befinden, eine Kraft, abhängig von den Partikelpositionen.
 
 %Idee und Ansatz:
-Eine einfache Möglichkeit eine Kraft auf ein Partikel wirken zu lassen, ist die Manipulation der Partikelgeschwindigkeiten, so wie es auch in \cite{PBD} getan wird. Um eine Kraft, die auf ein Partikel wirken soll, zu simulieren, wird eine Geschwindigkeitsänderung, $\Delta\textbf{v}$, zur aktuellen Geschwindigkeit, $\textbf{v}$, des Partikels hinzu addiert. So kann die Flex-Simulation ungestört weiterlaufen und alle Constraints
+Eine einfache Möglichkeit, eine Kraft auf ein Partikel wirken zu lassen, ist die Manipulation der Partikelgeschwindigkeiten, so wie es auch in \cite{PBD} getan wird. Um eine Kraft, die auf ein Partikel wirken soll, zu simulieren, wird eine Geschwindigkeitsänderung, $\Delta\textbf{v}$, zur aktuellen Geschwindigkeit, $\textbf{v}$, des Partikels hinzuaddiert. So kann die Flex-Simulation ungestört weiterlaufen und alle Constraints
 %, wie das Kollisions-Constraint, 
 wirken sich weiterhin auf die simulierten Partikel aus.
 
@@ -502,7 +508,7 @@ wirken sich weiterhin auf die simulierten Partikel aus.
 \subsubsection{Kräfte}
 Gegeben sei eine Kraft, $\textbf{F}$, die auf ein Flex-Objekt, das aus $n$ Partikeln besteht, wirken soll. Dann wird $\textbf{F}$ in $n$ gleichgroße Partikelkräfte, $\textbf{F}_i = \textbf{F} / n$ unterteilt. Jede Partikelkraft, $\textbf{F}_i$, wird dann auf ein Partikel, $i$, mit einer Punktmasse von $m_i$, angewandt.
 
-Weil wir es mit Punktmassen zu tun haben, gilt für die Partikelkraft:
+Weil wir es mit Punktmassen zu tun haben, gilt für die Partikelkraft, $\textbf{F}_i$:
 
 \begin{equation}
 \textbf{F}_i = m_i \cdot \textbf{a} = m_i \dfrac{\Delta \textbf{v}_i}{\Delta t}
@@ -521,16 +527,16 @@ Wobei $\Delta t$ der derzeitige Zeitschritt der Flex-Simulation ist.
 %Um eine Kraft auf ein komplettes Flex-Objekt zu wirken, wird $\Delta \textbf{v_i}$ auf all seine Partikel angewandt. 
 %Um die gesamte Kraft, die auf ein Flex-Objekt wirkt, zu berechnen, müssen alle Partikelkräfte, $F_i$ summiert werden.
 
-Mit dieser einfachen Methode können Flex-Objekte realistisch umher geschoben werden. Wird eine Kraft von $(0 , 0 , 9.81 )$ Newton auf ein Flex-Objekts mit einer Masse von 1 kg angewandt, wirkt es schwerelos (bei $g=(0 , 0 , -9.81 )$). Das zeigt, dass alle Einheiten korrekt berechnet wurden.
+Mit dieser einfachen Methode können Flex-Objekte realistisch umher geschoben werden. Wird eine Kraft von $(0 \quad 0 \quad 9,81 )$ Newton auf ein Flex-Objekts mit einer Masse von 1 kg angewandt, wirkt es schwerelos (bei $\textbf{g}=(0 \quad 0 \quad -9,81 )$). Das zeigt, dass alle Einheiten korrekt berechnet wurden.
 
 %Die Masse eines Flex-Objekts ergibt sich durch die Summe all seiner $n$ Partikelmassen, beziehungsweise durch $n \cdot m_p$, wenn alle Partikelmassen, $m_p$, gleich groß sind.
 
 \subsubsection{Momente}
 
-Wirkt während eines Simulationsschritts ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden. Wie bei der Kraft auch, zerlegen wir $M$ in $n$ gleichgroße Partikelmomente, $M_i=M/n$ und betrachten nun kleinere Momente, die auf Punktmassen wirken.
+Wirkt während eines Zeitschritts ein Moment, $M$, auf ein Flex-Objekt, müssen auf all seine Partikel Winkelgeschwindigkeiten, $\Delta \omega_i$, hinzu addiert werden. Wie bei der Kraft auch, zerlegen wir $M$ in $n$ gleichgroße Partikelmomente, $M_i=M/n$ und betrachten nun kleinere Momente, die auf Punktmassen wirken.
 
 %Zunächst wird die Winkelgeschwindigkeit, $\Delta \omega$, berechnet. 
-Die Berechnung von $\Delta \omega_i$ erfolgt wie zuvor, nur im rotatorischem Sinne (Gleichung \ref{form_omega}):
+Die Berechnung von $\Delta \omega_i$ erfolgt wie zuvor nur im rotatorischem Sinne (siehe Gleichung \ref{form_omega}):
 
 \begin{equation}
 \begin{split}
@@ -540,21 +546,21 @@ M_i = m_i   \dot{\omega}_i = m_i \dfrac{\Delta \omega_i}{\Delta t} \\
 \label{form_omega}
 \end{equation}
 
-Um die Rechenkomplexität zu senken, gehen wir davon aus, dass alle Partikel die selbe Masse haben, wodurch alle Partikel um die selbe Winkelgeschwindigkeit ($\Delta \omega_i$) rotiert werden müssen. 
+%Um die Rechenkomplexität zu senken, gehen wir davon aus, dass alle Partikel die selbe Masse haben, wodurch alle Partikel mit der selben Winkelgeschwindigkeit ($\Delta \omega_i$) rotiert werden müssen. 
 
-Neben der Größe des Moments, $M_i$, sei auch eine örtlich gebundene Achse definiert, die angibt in welche Richtung das Drehmoment wirkt. Diese Achse besteht aus einem normalisierten Richtungsvektor, $\textbf{e}$, der sich an der Position, $\textbf{c}$, befindet (siehe Abbildung \ref{moment}). $\textbf{e}$ und $\textbf{c}$ definieren also die örtlich gebundene Achse, um die sich das Flex-Objekt drehen wird, aufgrund des wirkenden Drehmoments. Das bedeutet, alle $n$ Partikel sollen sich nun zusätzlich mit einer Winkelgeschwindigkeit von $\Delta \omega_i$ um diese Drehmomentachse drehen.
+Neben der Größe des Moments, $M_i$, sei auch eine örtlich gebundene Achse definiert, die angibt, in welche Richtung das Drehmoment wirkt. Diese Achse besteht aus einem normalisierten Richtungsvektor, $\textbf{e}$, der sich an der Position, $\textbf{c}$, befindet (siehe Abbildung \ref{moment}). $\textbf{e}$ und $\textbf{c}$ definieren also die örtlich gebundene Achse, um die sich das Flex-Objekt drehen wird, aufgrund des wirkenden Drehmoments. Das bedeutet, alle $n$ Partikel sollen sich nun zusätzlich mit einer Winkelgeschwindigkeit von $\Delta \omega_i$ um diese Drehmomentachse drehen.
 
 Nun muss berechnet werden, in welche vektorielle Richtung, $\Delta \textbf{v}_i$ sich ein Partikel $i$ bewegen muss, damit es sich mit der gewünschten Winkelgeschwindigkeit, $\Delta \omega_i$, um die Drehmomentachse dreht. Dabei habe das Partikel die Position $\textbf{p}_i$. Abbildung \ref{moment} visualisiert diese Problemstellung.
 
-\bild{moment}{6cm}{Das Partikel $i$ muss sich zusätzlich in die Richtung $\textbf{d}$ bewegen, damit es damit beginnt, sich um die Drehmomentachse zu drehen. Die Drehmomentachse habe die Position $\textbf{c}$ und Ausrichtung $\textbf{e}$}
+\bild{moment}{6cm}{Das Partikel $i$ muss sich zusätzlich in die Richtung $\textbf{d}$ bewegen, damit es damit beginnt, sich um die Drehmomentachse zu drehen. Die Drehmomentachse habe die Position $\textbf{c}$ und Ausrichtung $\textbf{e}$.}
 
 
-$\Delta \textbf{v}_i$ besteht aus einer Geschwindigkeit, $s=|\Delta \textbf{v}_i|$ und einer Bewegungsrichtung, $\textbf{d}$, mit $|\textbf{d}|=1$. Das heißt es gilt $\Delta \textbf{v}_i = s \cdot \textbf{d}$.
+$\Delta \textbf{v}_i$ besteht aus einer Geschwindigkeit, $s_i=|\Delta \textbf{v}_i|$ und einer Bewegungsrichtung, $\textbf{d}$, mit $|\textbf{d}|=1$. Das heißt, es gilt $\Delta \textbf{v}_i = s_i \cdot \textbf{d}$.
 
-$s$ ist die Umfangsgeschwindigkeit des Partikels, um die Drehmomentachse und ist abhängig von der Winkelgeschwindigkeit $\Delta \omega_i$ (siehe Gleichung \ref{form_speed}).
+$s$ ist die Umfangsgeschwindigkeit des Partikels um die Drehmomentachse und ist abhängig von der Winkelgeschwindigkeit $\Delta \omega_i$ (siehe Gleichung \ref{form_speed}).
 
 \begin{equation}
-s = \Delta \omega_i \cdot r
+s_i = \Delta \omega_i \cdot r
 \label{form_speed}
 \end{equation}
 
@@ -562,11 +568,12 @@ $r$ ist dabei die kürzeste Entfernung, die das Partikel zur Drehmomentachse hat
 Weil $|\textbf{e}|=1$, kann $r$ aus dem folgenden Skalarprodukt berechnet werden (siehe Gleichung \ref{form_r}):
 
 \begin{equation}
-r = ||\textbf{e} \cdot \textbf{u}_i||
+\begin{split}
+r = ||\textbf{e} \cdot \textbf{u}_i|| \\
+\text{mit } \textbf{u}_i=\textbf{p}_i-\textbf{c}
+\end{split}
 \label{form_r}
 \end{equation}
-
--Mit $\textbf{u}_i=\textbf{p}_i-\textbf{c}$. 
 
 Der Richtungsvektor, $\textbf{d}$, muss orthogonal zu $\textbf{u}_i$ und $\textbf{e}$ sein und eine Länge von 1 haben. Also kann $\textbf{d}$ mit Gleich \ref{form_dir} berechnet werden:
 
@@ -575,16 +582,16 @@ Der Richtungsvektor, $\textbf{d}$, muss orthogonal zu $\textbf{u}_i$ und $\textb
 \label{form_dir}
 \end{equation}
 
-Wobei mit $unit(...)$ der Einheitsvektor aus dem Kreuzprodukt $\textbf{u}_i \times \textbf{e} $ gemeint ist.
+Wobei mit $unit(...)$ der Einheitsvektor aus einem Vektor gemeint ist.
 
-Schlussendlich ergibt sich die Geschwindigkeit, die zur Partikelgeschiwindigkeit hinzu addiert werden muss durch (Gleichung \ref{form_momentfinal}):
+Schlussendlich ergibt sich die Geschwindigkeit, die zur Partikelgeschiwindigkeit hinzuaddiert werden muss, durch Formel    \ref{form_momentfinal}:
 
 \begin{equation}
 \Delta \textbf{v}_i =  \dfrac{M_i}{m_i} \Delta t ||\textbf{e} \cdot \textbf{u}|| \cdot unit(\textbf{u}_i \times \textbf{e} )
 \label{form_momentfinal}
 \end{equation}
 
-Auch mit diesem Ansatz konnten optisch realistische Ergebnisse erzielt werden.
+Auch mit diesem Ansatz konnten optisch realistisch wirkende Ergebnisse erzielt werden.
 
 %TODO: Kurz erläutern wie das funktioniert und was Probleme sind (Partikel wollen sich immer bisl weg von Achse bewegen, wodurch innere Spannungen auftreten, die con constraints aber gelöst werden...
 

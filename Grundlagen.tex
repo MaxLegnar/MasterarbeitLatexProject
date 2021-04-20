@@ -110,7 +110,7 @@ auftritt, beseitigt.
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \textit{Density-Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
+Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \newline \textit{Density}-\textit{Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
 
 %Weitere Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
@@ -127,7 +127,7 @@ Als Startwerte für die gesuchten $N$ Partikelpositionen werden geschätzte Posi
 Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun eine Korrektion, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
 %Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
 
-Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \cite{PBD} $C(\textbf{p}+\Delta \textbf{p})$ wie folgt linearisiert:
+Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \newline \cite{PBD} $C(\textbf{p}+\Delta \textbf{p})$ wie folgt linearisiert:
 
 \begin{equation}
 C(\textbf{p}+\Delta \textbf{p}) \approx C(\textbf{p}) + \nabla_p C(\textbf{p}) \cdot \Delta \textbf{p} = 0
