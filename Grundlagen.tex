@@ -15,7 +15,7 @@ Vor allem in der Chirurgie werden immer häufiger Serious Games in Form von chir
 %par Simulatoren als Beispiel:
 In \cite{VRSim20} wird beispielsweise ein VR-Simulator für die neonatale endotracheale Intubation entwickelt, weil niedrige Intubationserfolgsraten darauf hinweisen, dass das derzeitige Trainingsprogramm nicht ausreicht, um positive Erfolgsraten zu erzielen (siehe Abbildung \ref{VRSim20}).
 
-\bild{VRSim20}{14cm}{Eine Bildercollage aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Laryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Laryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnehmen kann.}
+\bild{VRSim20}{14cm}{Eine Bildercollage aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Laryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Laryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnimmt.}
 
 Aus diversen Studien geht hervor, dass VR-Simulatoren mit haptischem Feedback besonders gute Lerneffekte erzielen \cite{VRHapticSim}.
 
@@ -23,7 +23,7 @@ Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen 
 
 \bild{SurSim2}{14cm}{Bilder aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
 
-Eine wichtige Anforderung von solchen Simulatoren ist neben dem fotorealistischem Rendern auch die Echtzeitfähigkeit. In der Regeln wird eine Bildwiederholungsrate von mindestens 30 Hz benötigt \cite{SimUpdate}, damit die Simulation optisch realistisch wirkt. 
+Eine wichtige Anforderung von solchen Simulatoren ist neben dem fotorealistischem Rendern auch die Echtzeitfähigkeit. In der Regel wird eine Bildwiederholungsrate von mindestens 30 Hz benötigt \cite{SimUpdate}, damit die Simulation optisch realistisch wirkt. 
 %wobei für heutige VR-Anwendungen meistens mindestens 90Hz angestrebt werden (RREEEFF!!). 
 Für realistisches Force Feedback benötigt die haptische Hardware sogar eine Aktualisierungsrate von 1 kHz \cite{SimUpdate}. 
 
@@ -56,7 +56,7 @@ Um der Echtzeitanforderung nachkommen zu können, müssen also bei der Simulatio
 
 
 
-\section{Simulationsmethoden und Physik Engines für chirurgische Simulatoren}
+\section{Simulationsmethoden und Software}
 %Engines: meist partikelbasiert und gpu-beschleunigt, PhysX, FleX, CUDA, SOFA...
 
 Wie bereits erwähnt, werden für chirurgische Physik Simulationen vor allem schnelle Rechenergebnisse benötigt, während die Simulationsgenauigkeit geringere Priorität hat. Es ist ausreichend, wenn die Simulation rein optisch einen realistischen Eindruck vermittelt.
@@ -69,7 +69,7 @@ Deswegen können Physik Engines, die für Videospiele konzipiert wurden, für ch
 
 Physik Engines führen ihre Simulationen in der Regel auf der Grafikkarte oder SIMD-Recheneinheiten aus, um die Berechnungen zu parallelisieren. So kann die Simulation um ein vielfaches beschleunigt werden.
 
-Geläufige Physik Engines, vor allem NVIDIA PhysX, sind bereits in den meisten Game Engines integriert, beispielsweise in der Unreal Engine 4 \cite{ue4physics}. 
+Geläufige Physik Engines sind bereits in den meisten Game Engines integriert. Beispielsweise nutzt Unreal Engine 4 \textit{NVIDIA PhysX} \cite{ue4physics}, eine traditionelle Rigid-Body Physics Engine.
 %Weil Game Engines auch weitere wichtige Elemente implementieren, die für chirurgische Simulatoren benötigt werden, bietet es sich an Game Engines zu verwenden
 
 Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit auch die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren interessant, um Körperflüssigkeiten zu simulieren.
@@ -196,7 +196,7 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
 %solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
-\subsubsection{Soft Body Simulationen mit NVDIA FleX und \textit{Clustered Shape Matching}}
+\subsection{Soft Body Simulationen mit \textit{Clustered Shape Matching}}
 %auch region-based shape matching constraints genannt:
 
 Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
@@ -214,7 +214,7 @@ Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint e
 
 Die Steifheit eines Soft Bodies hängt nicht nur vom Steifheitsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
 
-\subsubsection{Unreal Engine 4 mit Flex integration}
+\subsection{Unreal Engine 4 mit Flex integration}
 
 Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA FleX. 
 
@@ -224,3 +224,12 @@ So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in 
 % Doku und Lizenz:
 Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von GitHub bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
 
+%\subsection{Weitere Physik Engines für medizinische Simulationen}
+%
+%In Kapitel 3.3 aus \cite{josh} werden einige alternative Physik Engines vorgestellt, die für Echtzeitsimulationen im medizinischem Bereich geeignet sind. 
+%
+%\subsubsection{SOFA}
+%
+%\subsubsection{NVIDIA PhysX}
+%
+%\subsubsection{FEMFX}

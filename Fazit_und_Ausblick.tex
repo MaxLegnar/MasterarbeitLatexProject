@@ -1,5 +1,5 @@
 % Die Arbeit besteht aus Kapiteln (chapter)
-\chapter{Zusammenfassung, Fazit und Ausblick}
+\chapter{Diskussion}
 
 %\section{Fazit und Ausblick}
 %Die für diese Arbeit gesetzten Ziele konnten zum Großteil erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
@@ -24,31 +24,37 @@ Die PBD-basierte FleX-Simulation war einfach in der Handhabung und konnte schnel
 \subsubsection{Softwareframework für Serious Games im medizinischen Bereich}
 %Framework, 
 Auf Grundlage der verwendeten Unreal Integration konnte ein umfangreiches Framework erstellt  werden, das gut für die schnelle Entwicklung von Serious Games im medizinischen Bereich geeignet ist (Kapitel \ref{sec_functional}). 
-Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen, weitere wissenschaftliche Problemstellungen zu lösen. Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird sie bereits jetzt für weitere wissenschaftliche Projekte vom IWR (Interdisziplinäres Zentrum für wissens. Rechnen) der Universität Heidelberg eingesetzt. 
+%Das Framework ist ein nützliches Werkzeug für weitere wissenschaftliche Arbeiten und könnte zukünftig dabei helfen, weitere wissenschaftliche Problemstellungen zu lösen. %%%%%%%%%%%%%%%%%%%%%%%%%%%% doofer doppelsatz!!!!!!!!!!!!!
+Zwar ist die Installation der Software noch umständlich  und die Portabilität eingeschränkt, aber dennoch kann und wird sie bereits jetzt für weitere wissenschaftliche Projekte vom IWR (Interdisziplinäres Zentrum für wissens. Rechnen) der Universität Heidelberg eingesetzt. 
 
 %Attachment ausblick:
-Dennoch konnten wegen Zeitmangels nicht alle gewünschten Funktionalitäten implementiert werden. Daher könnte das Framework zukünftig weiter ausgebaut werden. In Kapitel \ref{subsec_attach} wurde erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mit drehen. Dies wäre eine interessante Problemstellung für weiterführende Arbeiten.
+%Wegen Zeitmangels konnten nicht alle gewünschten Funktionalitäten implementiert werden. 
+Allerdings ist das Framework noch ausbaufähig. In Kapitel \ref{subsec_attach} wurde zum Beispiel erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mitdrehen. Dies ist eine interessante Problemstellung für weiterführende Arbeiten.
 
 \subsubsection{Demoanwendung und haptisches Feedback}
 %Demoanwendung und haptisches Feedback:
 Im Rahmen dieser Arbeit entstand eine umfangreiche Demoanwendung, in der die Möglichkeiten von NVIDIA FleX und Game Engines in virtueller Realität erkundet werden können (siehe Abbildung \ref{Demo}). 
 
-\bild{Demo}{14cm}{TEEEEMP. Hier nochmal schöne Shader drauf und schönere bilder machen!!! Mithilfe des Frameworks konnte schnell eine Demo mit vielen Interaktionsmöglichkeiten implementiert werden....}
+\bild{Demo}{14cm}{\href{https://drive.google.com/file/d/1rk51AqzD1PNhjfIWnJPo6_Y4d7exYnvB/view?usp=sharing}{Interaktive Demoanwendung}. Oben links und rechts: Mithilfe einer Pinzette können Fremdkörper aus Gewebe entfernt und Haut zerrissen werden. Unten links und rechts: Trifft die Nadel eine bestimmte Stelle im Gewebe, wird eine interaktive Fluidsimulation gestartet, um eine Blutung darzustellen. Je nach Blutmenge werden 7 bis 20 Tausend Partikel simuliert und die Demo läuft mit 80 bis 120 FPS.}
 
-Im Rahmen dieser Arbeit konnte die Demoanwendung allerdings nicht im großen Umfang von medizinischen Fachpersonen evaluiert werden, weswegen der Realitätsgrad der Demoanwendung noch nicht bewertet werden konnte. 
-Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realismus der Demoanwendung hat. Dadurch können die motorischen Fähigkeiten nicht effizient trainiert werden. 
+%Im Rahmen dieser Arbeit konnte die Demoanwendung allerdings nicht im großen Umfang von medizinischen Fachpersonen evaluiert werden, weswegen der Realitätsgrad der Demoanwendung noch nicht bewertet werden konnte. 
+Eine ausführliche Evaluierung der Demoanwendung von medizinischem Fachpersonal hätte den Rahmen der Arbeit gesprengt. Deswegen kann der Realitätsgrad der Demoanwendung noch nicht professionell bewertet werden.
+Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realismus der Demoanwendung hat.
+%Dadurch können die motorischen Fähigkeiten nicht effizient trainiert werden. 
 %Nur Abläufe und das visuelle Gedächtnis können trainiert werden. 
 
 Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden (Kapitel \ref{subsec_no_haptic}). %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
-Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von jeder Person, die eine handelsübliche VR-Anlage besitzt, verwendet werden kann. Dadurch können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von jeder Person, die eine handelsübliche VR-Anlage besitzt, verwendet werden kann. Dadurch wird der Simulator zugänglicher und es können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+%%%%%%%%%%%%%%%% Technische voraussetzung nicht so hoch...
 
 \subsubsection{Nadel-Gewebe Interaktion}
 %Nadel-Gewebe und nadel manuel befestigen:
-Die Nadel-Gewebe-Interaktion konnte in Kapitel \ref{sec_needle} überraschend gut umgesetzt werden, vor allem weil die simulierten Reibungs- und Klemmkräfte auf die Nadel besonders realistisch erschienen. Auch hier konnte allerdings noch keine professionelle Evaluation von Fachpersonen durchgeführt werden.
+Die Nadel-Gewebe-Interaktion konnte in Kapitel \ref{sec_needle} überraschend gut umgesetzt werden, vor allem weil die simulierten Reibungs- und Klemmkräfte auf die Nadel besonders realistisch erschienen. Auch hier fehlt noch eine Evaluation von medizinischem Fachpersonal.
 
 Aus dem Gewebe herausfallende Nadeln könnten zukünftig mithilfe von manuellen Partikelbefestigungen (Nadel an Gewebe) vermieden werden.
 
-Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen der Nadel. Die Nadel macht keinen spitzen Eindruck weil sich ihre Spitze nicht mit der Gewebeoberfläche verhakt. Hierfür könnte eine manuelle Lösung implementiert werden, die bewirkt, dass die Spitze der Nadel stärker an Gewebeoberflächen haftet.
+%Eine weitere Problemstellung, die noch eine Lösuing bedarf,...
+Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen der Nadel beim Stechen ins Gewebe. Die Nadel macht keinen spitzen Eindruck, weil sich ihre Spitze nicht mit der Gewebeoberfläche verhakt. Hierfür könnte eine manuelle Lösung implementiert werden, die bewirkt, dass die Spitze der Nadel stärker an Gewebeoberflächen haftet.
 
 
 
@@ -71,6 +77,6 @@ Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen 
 \chapter*{Danksagung}
 Zuerst möchte ich mich herzlich bei allen Dozenten der Universität Heidelberg, an deren Vorlesungen ich teilnehmen durfte, bedanken. Alle Dozenten waren mir eine große Hilfe und lehrten stets mit Leidenschaft und Hingabe, wodurch nicht nur mein Verständnis, sondern auch meine Motivation wuchs.
 
-Ein ganz besonderes Dankeschön geht an meinen Betreuer Herrn Prof. Dr. Hesser, der mich nicht nur hervorragend bei dieser Arbeit unterstützte, sondern mir auch viel über Computergrafik, Echtzeitsimulationen und Game-Development beibrachte, was sich zu meinen größten Leidenschaften entwickelt hat.
+Ein ganz besonderes Dankeschön geht an meinen Betreuer Herrn Prof. Dr. Hesser, der mich nicht nur hervorragend bei dieser Arbeit unterstützte, sondern mir auch viel über Computergrafik, Echtzeitsimulationen und Game-Development beibrachte, was sich zu einer meiner größten Leidenschaften entwickelt hat.
 
 Danke für die vielen inspirierenden Gespräche und Hilfestellungen von Josia Muench, Sara Nonji Azad, Marvin Kinz und Julian Gröger. Abschließend danke ich meinen Freunden und Verwandten, die mich während meines Studiums immer bedingungslos unterstützt haben.
