@@ -4,7 +4,7 @@
 %Welche Use Cases habe ich implementiert und wie? Und wie klappte das?
 In Kapitel \ref{chap_Flex_Engine} wurde die Unreal Engine 4 mit Flex Integration erweitert, damit sie sich besser für die Implementation von medizinischen Simulatoren eignet. 
 
-Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulatoren zu testen, werden in diesem Kapitel einige Szenarien implementiert, die für chirurgische Simulatoren interessant sein könnten.
+Um nun die Eignung der erweiterten Unreal Integration für chirurgische Simulatoren zu testen, werden in diesem Kapitel einige Szenarien implementiert, die für chirurgische Simulatoren nützlich sein könnten.
 
 Durch Evaluierung der implementierten Szenarien können die Möglichkeiten und Grenzen von NVIDIA FleX mit \ac{UE4} ermittelt werden.
 
@@ -28,7 +28,7 @@ die statische Mauer nicht zur Seite gedrückt werden kann.}
 
 Um die Immersion der VR-Anwendung zu erhöhen, wäre es allerdings besser, wenn eine virtuelle Hand auch mit statischen Objekten kollidieren kann. Außerdem ist eine virtuelle Hand sozusagen unendlich stark: Soft Bodies können vom Spieler beliebig stark eingedrückt werden, egal wie steif oder schwer es ist. Das liegt daran, dass die virtuelle Hand immer auf die Position und Rotation des Motion Controllers gesetzt wird. Daher kann eine virtuelle Hand keine Physik simulieren und schiebt Objekte, die Phyik simulieren, problemlos zur Seite.
 
-Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung weniger realistisch.
+Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch fassen kann, wirkt die VR-Anwendung wenig realistisch.
 
 \subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
 Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
@@ -45,9 +45,9 @@ E = W - X
 \label{form_error}
 \end{equation}
 
-Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Regelfehler, $E$, reagiert und außerdem proportional zur Fehlerveränderung reagiert ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, sodass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
+Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Regelfehler, $E$, reagiert und außerdem proportional zur Fehlerveränderung ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, sodass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
 
-Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$, die er maximal ausüben darf. $F_{max}$ repräsentiert dann nämlich die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
+Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$, die er maximal ausüben darf. $F_{max}$ repräsentiert dann die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
 
 \subsection{Evaluierung}
 %Werkzeuge
@@ -69,7 +69,7 @@ Im Rahmen dieser Arbeit wurde eine Pinzette und eine Nadel implementiert. Mithil
 %BILD!!!!!!!!!!
 
 %Fehelndes force feedback und schlusswort
-Natürlich ist es unbestreitbar, dass das fehlende haptische Feedback einen besonders negativen Einfluss auf den Realismus der Simulation hat. Dennoch konnte mit den gegebenen Mitteln zumindest optischer Realismus erreicht werden.
+Natürlich ist es unbestreitbar, dass das fehlende haptische Feedback einen besonders negativen Einfluss auf den Realismus der Simulation hat. Dennoch konnte mit den gegebenen Mitteln zumindest optischer Realismus erzeugt werden.
 
 
 \section{Nadel-Gewebe Interaktion}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,7 +119,7 @@ Für die Nadel-Gewebe Interaktion wird als erstes eine stark vereinfachte Nadel 
 
 Eine Besonderheit ist, dass der VR-Spieler die Nadel loslassen kann, nachdem sie in das Gewebe eingeführt wurde. In günstigen Situationen bleibt die Nadel dann im Gewebe stecken, weil Nadel-Partikel von Gewebe-Partikeln umgeben sind und sich darin verklemmen. 
 Ob die Nadel im Gewebe stecken bleibt, hängt vor allem mit der Gravitationskraft, die auf die Nadel wirkt, ab.
-Ist die Gravitationskraft auf die Nadel-Partikel zu groß, fällt die Nadel nahezu ungehindert durch das Gewebe hindurch und schiebt dabei alle Gewebe-Partikel zur Seite. Daher ist darauf zu achten, die Partikelmassen der Nadel entsprechend klein zu halten, damit eine kleine Gravitationskraft auf die Nadel wirkt. Allerdings hat es eine leichte Nadel deutlich schwerer im Gewebe einzudringen. Wenn die Nadel-Partikel deutlich leichter sind als die Gewebe-Partikel, lassen sich die Gewebe-Partikel kaum von den Nadel-Partikeln verschieben.
+Ist die Gravitationskraft auf die Nadel-Partikel zu groß, fällt die Nadel nahezu ungehindert durch das Gewebe hindurch und schiebt dabei alle Gewebe-Partikel zur Seite. Daher ist darauf zu achten, die Partikelmassen der Nadel entsprechend klein zu halten, damit eine kleine Gravitationskraft auf die Nadel wirkt. Allerdings hat es eine leichte Nadel deutlich schwerer ins Gewebe einzudringen. Wenn die Nadel-Partikel deutlich leichter sind als die Gewebe-Partikel, lassen sich die Gewebe-Partikel kaum von den Nadel-Partikeln verschieben.
 
 Um dieses Problem zu lösen, wird das Gewicht der Nadel je nach Situation angepasst: Während der Spieler die Nadel in der Hand hält, werden die Massen der Nadel-Partikel erhöht, damit Sie besser in das Gewebe eindringen können. Lässt der Spieler die Nadel los, wird die Masse der Nadel auf einen geringen Wert gesetzt, damit die Gravitationskraft auf die Nadel so klein ist, dass Sie nicht durch das Gewebe hindurch fällt. 
 
@@ -144,7 +144,9 @@ Das Partikelmodel des Gewebes ist in Abbildung \ref{Tissue1} rechts zu sehen. Di
       %Ein Partikelabstand zwischen 2r und 3r erwies sich dabei als optimal.
       
       \item Irreguläre Anordnung der Partikel: \\ 
-      Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu, sich entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiderstand entlang der Hauptachsen geringer als in diagonale Richtungen. Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
+      Die Partikel werden chaotisch/irregulär verteilt, wobei die Partikeldichte weitestgehend homogen bleiben sollte. Werden die Partikel beispielsweise als reguläres Gitter angeordnet (Abbildung \ref{Tissue1} links), neigt die Nadel dazu, sich entlang der Hauptachsen des regulären Gitters auszurichten. Außerdem ist dann der Reibungswiderstand entlang der Hauptachsen geringer als in diagonale Richtungen. 
+      Solch ein Verhalten ist unrealistisch und ist nicht erwünscht.
+%Solch ein Verhalten spiegelt die Realität nicht wieder und ist daher nicht erwünscht.
       
       \bild{Tissue1}{8cm}{Links: Partikelanordnung als reguläres 3D Gitter. Rechts: Chaotische Verteilung der Partikel, wobei die Partikeldichte weitestgehend homogen verteilt ist.}
       
@@ -176,7 +178,7 @@ Befindet sich die Nadel im Gewebe, sorgt die simulierte Partikelreibung dafür, 
 Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im Gewebe stecken (siehe Abbildung \ref{Needle4}). Wobei die Nadel in einigen Situationen kurz nach dem Loslassen eine kurze Bewegung vollzieht, um darauf hin stehen zu bleiben. Das liegt daran, dass die Nadelpartikel im übertragendem Sinne von mehreren Kraftfeldern umgeben sind, wegen der Partikel-Partikel-Kollision zwischen Gewebe- und Nadel-Partikeln. Wird die Nadel losgelassen, werden die Nadelpartikel einen kurzen Moment von den Kraftfeldern bewegt, bis sie ein lokales Minimum finden und dort zur Ruhe kommen. 
 
 %Negative Beeinflussungen des Realismusses und Lösung
-Die kurze Bewegung der Nadel kann sich in manchen Fällen negativ auf den Realismus der Simulation auswirken. Außerdem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
+Die kurze Bewegung der Nadel kann sich in manchen Fällen negativ auf den Realitätsgrad der Simulation auswirken. Zudem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
 
 %Problemstellungen:
 % Wiederspruch: Für gute gewebeverformung: SelfCollision=True, für gute nadel interaktion: SelfCollision aus.

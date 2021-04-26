@@ -15,7 +15,7 @@ So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist
 %Für zukünftige Projekte könnte noch getestet werden, ob sich FleX-Simulationen auf Standalone VR Anlagen portieren und effizient ausführen lassen. Es wäre interessant zu klären, ob moderne Hardware, wie die Oculus Quest 2 stark genug sind um FleX Simulationen auszuführen.
 
 %Automatisierung
-Ein weiteres Potenzial für zukünftige Arbeiten könnten die Automatisierungswerkzeuge der Unreal Engine bieten. Mithilfe von Python, Blueprint Scripting und C++ kann der Unreal Editor automatisiert werden. So könnten beispielsweise unterschiedliche FleX-Partikelmodelle automatisiert generiert und simuliert werden, um in kurzer Zeit eine große Datenmenge zu generieren, aus der weitere Erkenntnisse gewonnen werden können.
+Ein weiteres Potenzial für zukünftige Arbeiten könnten die Automatisierungswerkzeuge der Unreal Engine bieten. Mithilfe von Python, Blueprint Scripting und C++ kann der Unreal Editor automatisiert werden. So könnten beispielsweise unterschiedliche FleX-Partikelmodelle automatisiert, generiert und simuliert werden, um in kurzer Zeit eine große Datenmenge zu generieren, aus der weitere Erkenntnisse gewonnen werden können.
 
 \subsubsection{Partikelmanipulation}
 % Partikelmainpulation auf gpu:
@@ -29,7 +29,7 @@ Zwar ist die Installation der Software noch umständlich  und die Portabilität 
 
 %Attachment ausblick:
 %Wegen Zeitmangels konnten nicht alle gewünschten Funktionalitäten implementiert werden. 
-Allerdings ist das Framework noch ausbaufähig. In Kapitel \ref{subsec_attach} wurde zum Beispiel erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mitdrehen. Dies ist eine interessante Problemstellung für weiterführende Arbeiten.
+Allerdings ist das Framework noch ausbaufähig. In Kapitel \ref{subsec_attach} wurde zum Beispiel erwähnt, dass sich an FleX-Objekte befestigte Szenen nicht mit dem FleX-Objekt mitdrehen. Dies ist eine interessante Problemstellung für weiterführende wissenschaftliche Arbeiten.
 
 \subsubsection{Demoanwendung und haptisches Feedback}
 %Demoanwendung und haptisches Feedback:
@@ -38,13 +38,14 @@ Im Rahmen dieser Arbeit entstand eine umfangreiche Demoanwendung, in der die Mö
 \bild{Demo}{14cm}{\href{https://drive.google.com/file/d/1rk51AqzD1PNhjfIWnJPo6_Y4d7exYnvB/view?usp=sharing}{Interaktive Demoanwendung}. Oben links und rechts: Mithilfe einer Pinzette können Fremdkörper aus Gewebe entfernt und Haut zerrissen werden. Unten links und rechts: Trifft die Nadel eine bestimmte Stelle im Gewebe, wird eine interaktive Fluidsimulation gestartet, um eine Blutung darzustellen. Je nach Blutmenge werden 7 bis 20 Tausend Partikel simuliert und die Demo läuft mit 80 bis 120 FPS.}
 
 %Im Rahmen dieser Arbeit konnte die Demoanwendung allerdings nicht im großen Umfang von medizinischen Fachpersonen evaluiert werden, weswegen der Realitätsgrad der Demoanwendung noch nicht bewertet werden konnte. 
-Eine ausführliche Evaluierung der Demoanwendung von medizinischem Fachpersonal hätte den Rahmen der Arbeit gesprengt. Deswegen kann der Realitätsgrad der Demoanwendung noch nicht professionell bewertet werden.
-Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realismus der Demoanwendung hat.
+Eine ausführliche Evaluierung der Demoanwendung von medizinischem Fachpersonal hätte den Rahmen der Arbeit gesprengt. Daher kann die Praxistauglichkeit der Demoanwendung noch nicht professionell bewertet werden.
+Allerdings ist es unbestreitbar, dass das Fehlen des haptischen Feedbacks einen negativen Einfluss auf den Realitätsgrad der Demoanwendung hat.
+%Allerdings ist das fehlen einer haptischen Rückmeldung nicht vollständig kompensierbar.
 %Dadurch können die motorischen Fähigkeiten nicht effizient trainiert werden. 
 %Nur Abläufe und das visuelle Gedächtnis können trainiert werden. 
 
 Dennoch konnte eine funktionierende Lösung für das Fehlen von haptischer Hardware gefunden und prototypisch implementiert werden (Kapitel \ref{subsec_no_haptic}). %Mithilfe von simulierten Kräften kann der Nutzer mit der virtuellen Umgebung interagieren und Werkzeuge benutzen. 
-Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von jeder Person, die eine handelsübliche VR-Anlage besitzt, verwendet werden kann. Dadurch wird der Simulator zugänglicher und es können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
+Trotz des Abstriches im Realismus bleibt der Vorteil, dass solche Simulatoren von jeder Person, die eine handelsübliche VR-Anlage besitzt, verwendet werden kann. Dadurch wird die Trainingsmöglichkeit zugänglicher und es können Kosten gespart werden, weil keine haptische Hardware angeschafft werden muss.
 %%%%%%%%%%%%%%%% Technische voraussetzung nicht so hoch...
 
 \subsubsection{Nadel-Gewebe Interaktion}
@@ -54,7 +55,7 @@ Die Nadel-Gewebe-Interaktion konnte in Kapitel \ref{sec_needle} überraschend gu
 Aus dem Gewebe herausfallende Nadeln könnten zukünftig mithilfe von manuellen Partikelbefestigungen (Nadel an Gewebe) vermieden werden.
 
 %Eine weitere Problemstellung, die noch eine Lösuing bedarf,...
-Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen der Nadel beim Stechen ins Gewebe. Die Nadel macht keinen spitzen Eindruck, weil sich ihre Spitze nicht mit der Gewebeoberfläche verhakt. Hierfür könnte eine manuelle Lösung implementiert werden, die bewirkt, dass die Spitze der Nadel stärker an Gewebeoberflächen haftet.
+Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen der Nadel beim Stechen ins Gewebe. Die Nadel macht keinen spitzen Eindruck, weil sich ihre Spitze nicht mit der Gewebeoberfläche verhakt. Hierfür könnte eine manuelle Lösung implementiert werden, die bewirkt, dass die Spitze der Nadel stärker an der Gewebeoberflächen haftet.
 
 
 

@@ -10,16 +10,16 @@
 
 Unter Serous Games versteht man Videospiele, die nicht der reinen Unterhaltung dienen, sondern primär zum Lernen und Trainieren eingesetzt werden.
 
-Vor allem in der Chirurgie werden immer häufiger Serious Games in Form von chirurgischen Simulationen eingesetzt, um Personal auf bestimmte Operationen vorzubereiten und auszubilden. Dabei geht es nicht nur darum, Operationsabläufe zu verinnerlichen. Auch die motorischen Fähigkeiten und das motorische Gedächtnis des Spielers wird dabei trainiert. So kann die Sicherheit der Patienten und die Ausbildungszeit verbessert werden \cite{SimRole}.
+Vor allem in der Chirurgie werden immer häufiger Serious Games in Form von chirurgischen Simulationen eingesetzt, um medizinisches Personal gezielt auf bestimmte Operationen vorzubereiten und auszubilden. Dabei geht es nicht nur darum, Operationsabläufe zu verinnerlichen. Auch die motorischen Fähigkeiten und das motorische Gedächtnis des Operateurs wird dabei trainiert. So kann die Sicherheit der Patienten und die Ausbildungszeit verbessert werden \cite{SimRole}.
 
 %par Simulatoren als Beispiel:
-In \cite{VRSim20} wird beispielsweise ein VR-Simulator für die neonatale endotracheale Intubation entwickelt, weil niedrige Intubationserfolgsraten darauf hinweisen, dass das derzeitige Trainingsprogramm nicht ausreicht, um positive Erfolgsraten zu erzielen (siehe Abbildung \ref{VRSim20}).
+In \cite{VRSim20} wird beispielsweise ein VR-Simulator für die neonatale endotracheale Intubation entwickelt, da niedrige Intubationserfolgsraten darauf hinweisen, dass herkömmliche Trainingsprogramme nicht ausreicht, um positive Erfolgsraten zu erzielen (siehe Abbildung \ref{VRSim20}).
 
 \bild{VRSim20}{14cm}{Eine Bildercollage aus \cite{VRSim20}. Neonatale endotracheale Intubation als VR-Simulation mit einem \ac{HMD} (\textit{HTC Vive Pro}). Der Nutzer hält ein reales Werkzeug (Laryngoskop) in der Hand, welches auch in der virtuellen Realität sichtbar ist. Trifft das virtuelle Laryngoskop auf simuliertes Gewebe, wird das haptische Gerät so angesteuert, dass der Spieler einen entsprechenden Widerstand wahrnimmt.}
 
 Aus diversen Studien geht hervor, dass VR-Simulatoren mit haptischem Feedback besonders gute Lerneffekte erzielen \cite{VRHapticSim}.
 
-Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen entstanden, die sich auf dieses Gebiet spezialisiert haben. Beispielsweise stellt die Firma \textit{VRmagic} \cite{VRmagic} Simulatoren für die intraokulare Chirurgie her. In Abbildung \ref{SurSim2} ist der Simulator \textit{Eyesi Surgical} von VRmagic zu sehen. Wie man in der Abbildung rechts sieht, werden hierfür virtuelle Werkzeuge und ein virtuelles Auge fotorealistisch gerendert.
+Aufgrund des wachsenden Bedarfs an chirurgischen Simulatoren sind einige Firmen entstanden, die sich auf dieses Gebiet spezialisiert haben. Beispielsweise stellt die Firma \textit{VRmagic} \cite{VRmagic} Simulatoren für die intraokulare Chirurgie (Augenoperationen) her. In Abbildung \ref{SurSim2} ist der Simulator \textit{Eyesi Surgical} von VRmagic zu sehen. Wie man in der Abbildung rechts sieht, werden hierfür virtuelle Werkzeuge und ein virtuelles Auge fotorealistisch gerendert.
 
 \bild{SurSim2}{14cm}{Bilder aus \cite{VRmagic}. Links: Die Trainingsstation. Mitte: Die räumliche Position und Orientierung des Werkzeugs wird mittels Sensorik erfasst. Rechts: Die Interaktion zwischen dem virtuellen Auge und dem Werkzeug wird in Echtzeit simuliert und fotorealistisch dargestellt.}
 
@@ -63,7 +63,7 @@ Wie bereits erwähnt, werden für chirurgische Physik Simulationen vor allem sch
 
 %... inzwischen werden immer häufiger auch Soft Bodies unterstützt?
 
-Deswegen können Physik Engines, die für Videospiele konzipiert wurden, für chirurgische Simulatoren eingesetzt werden. Solche Physik Engines sind bereits auf eine gute Echtzeitfähigkeit ausgelegt und konnten beispielsweise in \cite{SimUpdate} erfolgreich für chirurgische Simulationen eingesetzt werden. 
+Daher können Physik Engines, die für Videospiele konzipiert wurden, für chirurgische Simulatoren eingesetzt werden. Solche Physik Engines sind bereits auf eine gute Echtzeitfähigkeit ausgelegt und konnten beispielsweise in \cite{SimUpdate} erfolgreich für chirurgische Simulationen eingesetzt werden. 
 %Im Computerspielebereich werden häufig die Physik Engines NVIDIA PhysX oder Havok eingesetzt. 
 %Solche Physik Engines reichen allein aber nicht für chirurgische Simulatoren aus, weil sie in der Regel nur traditionelle Rigid Body Simulationen unterstützen. Für chirurgische Simulatoren werden neben Rigid Body- auch Soft Body- Simulationen benötigt, beispielsweise für elastisches Gewebe. 
 
@@ -72,7 +72,7 @@ Physik Engines führen ihre Simulationen in der Regel auf der Grafikkarte oder S
 Geläufige Physik Engines sind bereits in den meisten Game Engines integriert. Beispielsweise nutzt Unreal Engine 4 \textit{NVIDIA PhysX} \cite{ue4physics}, eine traditionelle Rigid-Body Physics Engine.
 %Weil Game Engines auch weitere wichtige Elemente implementieren, die für chirurgische Simulatoren benötigt werden, bietet es sich an Game Engines zu verwenden
 
-Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit auch die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren interessant, um Körperflüssigkeiten zu simulieren.
+Eine wichtige Anforderung an eine Game Engine für chirurgische Simulatoren ist neben der Echtzeitfähigkeit auch die Soft Body Simulation. Für chirurgische Simulatoren werden neben Rigid Body- auch elastische Soft Body- Simulationen benötigt, beispielsweise um elastisches Gewebe zu simulieren. Auch Fluid-Simulationen sind für chirurgische Simulatoren relevant, um Körperflüssigkeiten zu simulieren.
 
 \subsection{Position Based Dynamics}
 \label{section_PBD}
@@ -82,7 +82,7 @@ Position Based Dynamics (PBD) \cite{PBD}, ist eine Partikelsystem-basierte Simul
 %vorteile einheitlicher solver
 Durch die Verwendung eines einheitliches Solvers für unterschiedliche Simulationen ergibt sich eine schlanke, einfache und übersichtlichere Softwarearchitektur. Außerdem muss nur ein Solver optimiert werden und vor allem können Elemente unterschiedlicher Art (Soft Bodies, Flüssigkeiten etc.) miteinander interagieren, ohne dass zusätzlicher Programmieraufwand anfällt.
 
-PBD konnte bereits in vielen Arbeiten erfolgreich für chirurgische Simulationen eingesetzt werden. Beispielsweise in \cite{PBDThread} für chirurgisches Nähen, in \cite{VRLaparoscop} für laparoskopische Operationen, in \cite{PBDCutting} für chirurgisches Schneiden oder in \cite{VRRobSim} für die roboterunterstützte Chirurgie. 
+PBD konnte bereits in vielen Arbeiten erfolgreich für chirurgische Simulationen eingesetzt werden. Beispielsweise in \cite{PBDThread} für chirurgisches Nähen, in \cite{VRLaparoscop} für laparoskopische Operationen, in \cite{PBDCutting} für chirurgisches Schneiden oder in \cite{VRRobSim} für die roboterunterstützte, minimalinvasive Chirurgie. 
 PBD konnte auch erfolgreich für die realitätsnahe Echtzeitsimulation unterschiedlicher Gewebearten eingesetzt werden. Beispielsweise für die Simulation von Brustgewebe \cite{BreastBiopsy} oder Nierengewebe \cite{PBDKidney}.
 
 \subsubsection{Grundprinzip von PBD}
@@ -100,17 +100,17 @@ Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(\textbf{p
 Der PBD-Solver löst alle Distance-Constraints bei der sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $\textbf{p}_1$ \& $\textbf{p}_2$, so projiziert werden, dass das Constraint erfüllt ist, das heißt das $C(\textbf{p}_1,\textbf{p}_2) \approx 0$. 
 
 %Im Vergleich zu kräftebasierten Simulationsmethoden, bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. 
-Ein Vorteil von PBD entstehen durch die Constraint Projektion. 
+Ein wesentlicher Vorteil von PBD entstehen durch die Constraint Projektion. 
 %Bei diesem Prozess werden direkt projizierte Position als Ergebnis geliefert, während bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) Beschleunigungen integriert werden. 
 Weil hierbei direkt eine Position als Lösung projiziert wird,
 %statt Beschleunigungen zu integrieren 
-wird das Überschießproblem, das bei Integrator basierten Methoden 
+wird das Überschießproblem, das bei integrator-basierten Methoden 
 %(z. B. implizit oder explizit Euler) 
 auftritt, beseitigt. 
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \newline \textit{Density}-\textit{Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
+Durch Formulierung neuer Constraint-Funktionen können weitere physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \newline \textit{Density}-\textit{Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
 
 %Weitere Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
@@ -120,11 +120,11 @@ Durch Formulieren neuer Constraint-Funktionen können weiter physikalische Effek
 %arbeitsweise des solvers / constraint projection:
 %Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
 
-Um alle Constraints zu lösen, wird das Gauss-Seidel verfahren auf einen Satz Constraints, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
+Um alle Constraints zu lösen, wird das Gauß-Seidel-Verfahren auf einen Satz Constraints, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
 % Bei Gauss-Seidel müssen zuerst gute Startwerte gewählt werden damit der Algorithmuss möglichst schnell convergiert.
 Als Startwerte für die gesuchten $N$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $\textbf{p}_i = \textbf{x}_i + \Delta t \cdot \textbf{v}_i$, ergeben. 
 
-Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun eine Korrektion, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
+Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun ein Korrekturvektor, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
 %Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
 
 Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \newline \cite{PBD} $C(\textbf{p}+\Delta \textbf{p})$ wie folgt linearisiert:
@@ -164,10 +164,10 @@ Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem, bei dem alle Par
 Mit der Veröffentlichung des Werks \textit{Unified Particle Physics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
 Zuerst lief FleX nur auf NVIDIA Grafikkarten, weil CUDA als Voraussetzung benötigt wurde. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
 
-In vielen Arbeiten, in denen chirurgische Simulationen Thema sind, wird FleX verwendet (z. B. in \cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} oder in \cite{VRRobSim}). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikelmodellen auf Basis von gegebenen Polygonmodellen.
+In vielen Arbeiten, in denen chirurgische Simulationen Thema sind, wird FleX verwendet (z. B. in \cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} oder in \cite{VRRobSim}). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikel-modellen auf Basis von gegebenen Polygonmodellen.
 
 % BVH: Bounding Volume Hierarchy in FlexD3D seite 57!
-Des Weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um Partikel-Polygonmodell-Kollisionen effizient zu erkennen \cite{FlexD3D}. Außerdem wird die Partikelnachbarsuche mithilfe von räumlichen Datenstrukturen beschleunigt. Weil hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene denselben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Partikel-Kollisionserkenung.
+Des Weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um Partikel-Polygonmodell-Kollisionen effizient zu erkennen \cite{FlexD3D}. Außerdem wird die Partikelnachbarsuche mithilfe von räumlichen Datenstrukturen beschleunigt. Da hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene denselben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Partikel-Kollisionserkenung.
 
 % über partikelnachbarsuche:
 % 3d gitter 0 3d textur, 3d texturen können von gpus gut verarbeitet werden
@@ -188,9 +188,10 @@ Dieses Problem wird mithilfe der sukzessiven Überentspannung gelöst (\textit{s
 \label{form_LocRel}
 \end{equation}
 
--Mit $n_i$ = Anzahl der Constraints, die auf Partikel $i$ wirken. $\omega$ ist ein globaler Parameter mit dem sich die Intensität der sukzessiven Überentspannung justiert lässt.
+-Mit $n_i$ = Anzahl der Constraints, die auf Partikel $i$ wirken. $\omega$ ist ein globaler Parameter mit dem sich die Intensität der sukzessiven Überentspannung justieren lässt.
 
-Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten laut \cite{UPP} keine optisch wahrnehmbaren Fehler auf, was in dieser Arbeit bestätigt werden konnte.
+Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass die Trägheit (bzw. der Schwung) erhalten bleibt. Dennoch treten laut \cite{UPP} keine optisch wahrnehmbaren Fehler auf. 
+%In dieser Arbeit kann dies ebenfalls bestätigt werden. auch in dieser Arbeit bestätigt werden konnte.
 
 % !!!!!! evt erwähen: Als Optimization problem und Vergleich zu euler: !!!!!!
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
@@ -207,10 +208,13 @@ Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} verei
 \bild{ShapeMatching}{6cm}{Abbildung aus \cite{FlexD3D}. Das Grundprinzip des Shape Matchings. }
 
 Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbildung \ref{ShapeMatching}: \textit{Rest Configuration}). Diese zusammengehörende Partikelgruppe ist dann ein sogenanntes \textit{Cluster}. 
-Die Partikel des Clusters werden zunächst normal simuliert, als währen sie nicht miteinander verbunden.
+Die Partikel des Clusters werden zunächst simuliert, als währen sie nicht miteinander verbunden.
 Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 
-Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein Steifheitsparameter zugeordnet. Größere Soft Bodies können mithilfe von mehreren Clustern modelliert werden. Die Partikel von überlappenden Clustern nehmen interpolierte Position ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
+Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein 
+%Steifheitsparameter 
+Elastizitätsparameter
+zugeordnet. Größere Soft Bodies können mithilfe mehrerer Cluster modelliert werden. Die Partikel von überlappenden Clustern nehmen interpolierte Positionen ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
 
 Die Steifheit eines Soft Bodies hängt nicht nur vom Steifheitsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
 

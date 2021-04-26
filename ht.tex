@@ -3,7 +3,7 @@
 
 In Kapitel \ref{chap_Flex_Engine} wird die verwendete Unreal Engine 4 mit FleX Integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
 
-Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serious Games unverzichtbar ist, wird direkt präsentiert, wie die fehlende Funktionalität implementiert wurde.
+Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serious Games unverzichtbar ist, wird direkt gezeigt, wie die fehlende Funktionalität implementiert wurde.
 
 %nicht ändern, nur erweitern:
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
@@ -61,7 +61,7 @@ RAM & 32GB DDR4            \\ \hline
 \label{subsec_perf_tests}
 \subsubsection{Gemischte Simulationen}
 
-Um einen ersten Überblick von der Performance zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird des FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density-Constraints), sowie Kollisions-Constraints und Friction-Constraints.
+Um einen ersten Überblick von der Performance zu bekommen, wird zunächst eine Szene simuliert, in der sich mehrere unterschiedliche Objektarten befinden. Dadurch wird der FleX-Solver stark belastet, weil er viele unterschiedliche Constraints lösen muss. Dazu gehören beispielsweise Shape Constraints (Soft- und Rigid Bodies), Spring-Constraints (Stoff-Objekte), Flüssigkeiten (Density-Constraints), sowie Kollisions-Constraints und Friction-Constraints.
 
 %\bild{WaterInteraction}{10cm}{Mehrere Objektarten interagieren auf realistische Weise miteinander. Werkzeuge (Skalpelle) werden von der Flüssigkeit weggespült und Körper, die eine geringere Dichte als die Flüssigkeit haben, schwimmen.}
 
@@ -95,7 +95,7 @@ Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genüge
 
 Was in dieser Arbeit besonders auffiel, ist dass das Rendern von simulierten Flüssigkeiten besonders rechenintensiv werden kann. Wird die Flüssigkeit mit aufwendigen Wasser-Shadern gerendert, so wie in Abbildung \ref{WaterShaderPerformance} rechts, kann dies zu deutlich weniger \ac{FPS} führen. Es ist also ratsam, besonders effiziente Rendertechniken für simulierte Flüssigkeiten einzusetzen.
 
-Weil für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern interessant ist, werden die nächsten Tests nur noch mit Soft Bodies simuliert, die aus \textit{clustered Shape-Constraints} bestehen.
+Da für chirurgische Simulatoren vor allem das Simulieren von Weichkörpern relevant ist, werden die nächsten Tests nur noch mit Soft Bodies simuliert, die aus \textit{clustered Shape-Constraints} bestehen.
 
 %\begin{table}[]
 %\centering
@@ -131,19 +131,19 @@ Self Collision & deaktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für
 %TODO: Auf Substeps und Substep iterations eingehen!!!
 
 In Abbildung \ref{figure33} ist zu sehen, wie schnell unterschiedlich viele Soft Bodies simuliert werden konnten, bei unterschiedlichen Simulationsparametern. %Für alle Simulationen wurde ein Partikelradius von 1 cm verwendet. 
-Mit den Simulationsparametern von der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden, wobei sich damit keine akkuraten Gewebeverformungen simulieren lassen. Wie man sieht, steigt die Blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$). Selbst wenn mehr als 100 Tausend Partikel (26 Soft Bodies, 10478 Cluster) simuliert werden, benötigt der FleX-Solver nur 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 FPS gerendert werden.
+Mit den Simulationsparametern der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden, wobei sich damit keine akkuraten Gewebeverformungen simulieren lassen. Wie man sieht, steigt die blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$). Selbst wenn mehr als 100.000 Partikel (26 Soft Bodies, 10478 Cluster) simuliert werden, benötigt der FleX-Solver nur 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 FPS gerendert werden.
 %\clearpage
-\bild{figure33}{14cm}{Die blaue Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einfachen (kleinen) Simulationsparametern. Die rote Kurve zeigt die die Simulationsgeschwindigkeit von FleX bei einer akkurateren Simulation mit größeren Simulationsparametern.}
+\bild{figure33}{14cm}{Die blaue Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einfachen (kleinen) Simulationsparametern. Die rote Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einer akkurateren Simulation mit größeren Simulationsparametern.}
 
-Wird die Simulation allerdings akkurater ausgeführt, mit den Parametern der roten Kurve (gut für akkurate Gewebesimulationen), wird die Lösungsgeschwindigkeit ab einer kritischen Partikelanzahl deutlich langsamer. In Abbildung \ref{figure33} erkennt man sehr deutlich, wie die rote Kurve ab einer Partikalanzahl von etwa 60 Tausend nach oben schießt. Davor läuft die Simulation nahezu genauso schnell wie zuvor, bei geringeren Simulationsparametern.
+Wird die Simulation allerdings akkurater ausgeführt, mit den Parametern der roten Kurve (gut für akkurate Gewebesimulationen), wird die Lösungsgeschwindigkeit ab einer kritischen Partikelanzahl deutlich langsamer. In Abbildung \ref{figure33} erkennt man sehr deutlich, wie die rote Kurve ab einer Partikalanzahl von etwa 60.000 nach oben schießt. Davor läuft die Simulation nahezu genauso schnell wie zuvor, bei geringeren Simulationsparametern.
 %, mit einer Steigung von ca. 0,28.
 
-Abbildung \ref{figure4} zeigt welche Auswirkung die steigende Simulationszeiten auf die Renderfrequenz hatten. Hierzu sei gesagt, dass in dieser Szene mittelmäßig komplexe Shader und Grafikeinstellungen eingesetzt wurden.
+Abbildung \ref{figure4} zeigt welche Auswirkung die steigende Simulationszeit auf die Renderfrequenz hatten. Hierzu sei gesagt, dass in dieser Szene mittelmäßig komplexe Shader und Grafikeinstellungen eingesetzt wurden.
 
 \bild{figure4}{10cm}{Blau: Slove Sync Sime bei der akkuraten Simulation. Die rote Kurve zeigt, wie die FPS mit steigender Partikelanzahl abgefallen sind.}
 
 Das plötzliche Ansteigen der Simulationszeiten bei der akkurateren Simulation weist auf eine Hardwaregrenze hin, bei der nicht mehr genügend Hardwareressourcen zur Verfügung stehen, um weiterhin effizient arbeiten zu können. Der Grafikspeicher der Grafikkarte wurde allerdings niemals voll ausgenutzt (maximal 4 von 8 GB wurden belegt). 
-Die Grenze von 60 Tausend Partikeln konnte im Anwendungsteil dieser Arbeit nie überschritten werden. Im finalen chirurgischen Simulator mussten lediglich 12000-20000 Partikel simuliert werden. Dadurch konnten problemlos zusätzliche Simulationen ausgeführt und komplexere Rendertechniken eingesetzt werden, ohne negativen Einfluss auf die FPS.
+Die Grenze von 60.000 Partikeln konnte im Anwendungsteil dieser Arbeit nie überschritten werden. Im finalen chirurgischen Simulator mussten lediglich 7.000-20.000 Partikel simuliert werden. Dadurch konnten problemlos zusätzliche Simulationen ausgeführt und komplexere Rendertechniken eingesetzt werden, ohne negativen Einfluss auf die FPS.
 
 
 
@@ -164,9 +164,9 @@ In diesem Kapitel wird untersucht, welchen Einfluss unterschiedliche Cluster Kon
 
 Hierfür wurden zwei sehr ähnliche FleX Assets modelliert, die sich nur durch ihre Cluster Konfigurationen unterscheiden (siehe Abbildung \ref{Clusters} und Tabelle \ref{table_clusters}). Der wesentliche Unterschied zwischen den beiden Assets ist, dass Asset A aus vielen kleinen Clustern besteht, während Asset B aus wenigen großen Clustern besteht. 
 
-\bild{Clusters}{14cm}{Dasselbe FleX-Asset mit zwei unterschiedlicher Cluster Anordnungen. Die Cluster werden als Koordinatensysteme visualisiert. Das linke Asset hat viele kleine Cluster, während das Rechte wenige große Cluster besitzt. Mit beiden Assets können optisch realistisch wirkende Deformationen simuliert werden, allerdings gibt es große Performance Unterschiede.}
+\bild{Clusters}{14cm}{Dasselbe FleX-Asset mit zwei unterschiedlicher Cluster Anordnungen. Die Cluster werden als Koordinatensysteme visualisiert. Das linke Asset hat viele kleine Cluster, während das Rechte wenige große Cluster besitzt. Mit beiden Assets können optisch realistisch wirkende Deformationen simuliert werden, allerdings gibt es große Performance-Unterschiede.}
 
-Eine erste intuititive Vermutung wäre nun, dass Asset B performanter simuliert werden kann, weil hier weniger Shape-Constraints gelöst werden müssen. Aus den Messergebnissen (siehe Tabelle \ref{table_clusters}) geht allerdings das Gegenteil hervor: Bei Asset B wurde eine 70-mal größere Solve Sync Time gemessen als bei Asset A. 
+Die erste intuititive Vermutung wäre nun, dass Asset B performanter simuliert werden kann, weil hier weniger Shape-Constraints gelöst werden müssen. Aus den Messergebnissen (siehe Tabelle \ref{table_clusters}) geht allerdings das Gegenteil hervor: Bei Asset B wurde eine 70-mal größere Solve Sync Time gemessen als bei Asset A. 
 %Dadurch konnte Asset B nurnoch mit 46 FPS gerendert werden, während Asset A bei 120 FPS gemessen wurden.
 
 %\begin{table}[]
@@ -213,7 +213,7 @@ Beim Constraint-orientierten Ansatz werden alle Constraints parallel verarbeitet
 
 NVIDIA FleX setzt beide Verarbeitungsansätze ein, je nachdem um welche Art von Constraint es sich handelt. Shape-Constraints werden mit dem Constraint-orientierten Ansatz verarbeitet \cite{FlexD3D}. Weil für jedes Cluster ein entsprechendes Shape-Constraint gelöst wird, kann man sich also vorstellen, dass alle Cluster parallel verarbeitet werden, während alle Partikel, die sich innerhalb eines Clusters befinden, sequenziell verarbeitet werden. Je größer ein Cluster, desto mehr Partikel beinhält es und desto mehr Partikel müssen sequenziell verarbeitet werden. 
 
-Deswegen ist es besser, viele kleine Cluster zu verwenden. So wird mehr Arbeit parallelisiert (viele Cluster) und es muss weniger sequenziell verarbeitet werden (wenig Partikel pro Cluster). Außerdem bringt dies den zusätzlichen Vorteil mit sich, dass sich ein Soft Body, das aus vielen Clustern besteht, vielfältiger verformen lässt.
+Deswegen ist es besser, viele kleine Cluster zu verwenden. So wird mehr Arbeit parallelisiert (viele Cluster) und es muss weniger sequenziell verarbeitet werden (wenig Partikel pro Cluster). Außerdem bringt dies den zusätzlichen Vorteil, dass sich ein Soft Body, das aus vielen Clustern besteht, vielfältiger verformen lässt.
 
 
 
@@ -263,7 +263,7 @@ Mithilfe der durchgeführten Tests konnten wichtige Erkenntnisse über die Perfo
     
       \item \textbf{Hardwaregrenzen:} \\Die Performance von FleX Simulationen skaliert nur flach mit der Partikel- und Constraint-Anzahl, solange alle Cluster klein sind. Je nach Hardware gibt es jedoch eine Grenze, bei der die Performance deutlich stärker mit wachsender Partikel- und Constraint-Anzahl abfällt. Je nach Simulationsparametrisierung tritt diese Grenze früher oder später auf. Die Hardwaregrenze sollte bekannt sein und nicht überschritten werden, um noch genügend Ressourcen für zusätzliche Simulationen und fotorealistisches Rendern zu haben.
       
-      \item \textbf{Partikeldichte:} \\ Bei der Modellierung von FleX Assets sollten sich benachbarte Partikel berühren, aber nicht zu stark überlappen. Vor allem wenn Self Collision aktiviert ist, können zu viele Kollisions-Constraints entstehen, was die Performance negativ beeinflusst.
+      \item \textbf{Partikeldichte:} \\ Bei der Modellierung von FleX Assets sollten sich benachbarte Partikel berühren, aber nicht zu stark überlappen. Vor allem wenn Self Collision aktiviert ist, können zu viele Kollisions-Constraints entstehen, wodurch die Performance negativ beeinflusst wird.
       
       \item \textbf{Geringe Partikelanzahl pro Cluster:} \\ Bei der Modellierung von Soft Assets sollten viele kleine Cluster verwendet werden. Das heißt, die Cluster sollten nur wenige Partikel, etwa maximal 200, umfassen. Je mehr Partikel die Cluster verarbeiten müssen, desto schneller kommt die Hardware an ihre Grenzen.
       
@@ -423,13 +423,15 @@ Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Bef
 
 %Diese Problemstellung wurde im Rahmen dieser Arbeit nicht weiter verfolgt, weil hier keine Szenen an Soft Bodies befestigt werden mussten. Es wurden nur Szenen an Rigid Bodies befestigt, was problemlos funktionierte.
 
-Diese Problemstellung wurde in dieser Arbeit aus Zeitgründen nicht weiter verfolgt. Diese Problemstellung könnte für nachfolgende Arbeiten interessant sein.
+Diese Problemstellung wurde in dieser Arbeit aus Zeitgründen nicht weiter verfolgt, sie könnte für nachfolgende Arbeiten interessant sein.
 
 \subsubsection{Befestigung von Flex-Partikel an Flex-Partikel}
 
-Grundsätzlich kann ein FleX-Partikel an ein anderes FleX-Partikel befestigt werden, indem die inverse Masse des befestigten Partikels auf 0 gesetzt wird und dessen Position stets auf die Position des anderen Partikels gesetzt wird. Dann wird allerdings keine Physik mehr für das befestigte Partikel simuliert. Im Rahmen dieser Arbeit wurde dies allerdings nicht erwünscht. In vielen Fällen sollten zwar zwei Flex-Objekte aneinander befestigt werden, allerdings sollten sich beide physikalisch realistisch verhalten. 
+Grundsätzlich kann ein FleX-Partikel an einem anderes FleX-Partikel befestigt werden, indem die inverse Masse des befestigten Partikels auf 0 gesetzt wird und dessen Position stets auf die Position des anderen Partikels gesetzt wird. 
+Dann wird allerdings keine Physik mehr für das befestigte Partikel simuliert. %satz bisl doof...
+Im Rahmen dieser Arbeit war dies allerdings nicht erwünscht. In vielen Fällen sollten zwar zwei Flex-Objekte aneinander befestigt werden, allerdings sollten sich beide physikalisch realistisch verhalten. 
 
-Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekte hergestellt werden. Solche Verbindungen heißen \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
+Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekten hergestellt werden. Solche Verbindungen heißen \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
 
 \subsection{Kollisionserkennung}
 
@@ -493,7 +495,7 @@ Eine Funktionalität, die einige Game Engines anbieten, ist die Möglichkeit per
 
 Diese Funktionalität wird meist genutzt, um kräftebasierte Effekte oder Systeme zu programmieren. Beispielsweise können Kräfte auf Körper, die sich innerhalb einer Explosion befinden, angewandt werden, damit sie von der Explosion weggeschleudert werden. 
 In \cite{Studienarbeit} wird diese Funktionalität genutzt, um Auftriebskräfte auf schwimmende Objekte wirken zu lassen. 
-Außerdem können mit dieser Funktionalität realistische Regelsysteme implementiert werden, die mit Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität ohne haptisches Feedback (siehe Kapitel \ref{sec_FSystem}).
+Außerdem können mit dieser Funktionalität Regelsysteme implementiert werden, die mithilfe von simulierten Kräften Körper balancieren oder zu einer Zielkonfiguration bewegen. In dieser Arbeit wird solch ein kräftebasiertes Regelsystem implementiert und dient als wichtige Grundlage für die Interaktion mit Soft Bodies in virtueller Realität ohne haptisches Feedback (siehe Kapitel \ref{sec_FSystem}).
 
 %Bei der verwendeten Unreal Engine mit Flex Integration gibt es nicht die Möglichkeit, Kräfte auf einzelne Flex-Objekte oder Flex-Partikel wirken zu lassen.
 
