@@ -21,7 +21,8 @@ Im Rahmen dieser Arbeit wurde eine Demoversion eines Serious Games implementiert
 
 \subsubsection{Problemstellung}
 Für gewöhnlich werden die virtuellen Hände des Spielers stets auf dieselbe Position und Rotation gesetzt wie die des Motion Controllers. Dadurch befinden sich die virtuellen Hände immer genau da, wo sich die echten Hände des Spieler befinden, weil der Spieler die Motion Controller in den Händen hält.
-Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem sie Flex-Objekte eindrückt oder wegschiebt. Abbildung \ref{VHand1} zeigt, wie dies in der virtuellen Welt aussieht. Wie man sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
+Diese einfache Herangehensweise führt allerdings dazu, dass die virtuellen Hände des Spielers nicht mit statischen Objekten kollidieren können, weil statische Objekte nicht verschiebbar sind. Mit einem Flex-Objekt kann eine virtuelle Hand hingegen kollidieren, indem sie Flex-Objekte eindrückt oder wegschiebt. Abbildung \ref{VHand1} zeigt, wie dies in der virtuellen Welt aussieht. Wie man sieht, kann der Spieler hier durch eine Mauer (weißer Block) hindurch greifen, wohingegen sich ein Flex-Objekt (grüne Kugel) deformieren und bewegen lässt. 
+%Eine Kollision zwischen virtueller Hand und der statischen Mauer ist nicht realisierbar, weil ein statisches Objekt nicht verschiebbar ist.
 
 \bild{VHand1}{6cm}{Die grüne Kugel ist ein Flex-Objekt und lässt sich von einer virtuellen Hand berühren und beliebig stark eindrücken. Die Mauer (weißer Block) kann nicht berührt werden. Die virtuelle Hand durchdringt die Mauer ungestört, weil
 die statische Mauer nicht zur Seite gedrückt werden kann.}
@@ -33,7 +34,7 @@ Weil der Spieler unendlich viel Kraft hat und durch statische Objekte hindurch f
 \subsubsection{Lösungsansatz: Soft Body Interaktion mit simulierten Kräften}
 Um für mehr Realismus zu sorgen, wird ein kräftebasiertes Interaktions-System für die virtuellen Hände entwickelt. Nun ist die virtuelle Hand ein Flex-Objekt, das Physik simuliert. Statt die Hand direkt zur Position des Motion Controllers zu setzen, wird sie mithilfe von simulierten Kräften (und Moment) zum Motion Controller bewegt, beziehungsweise "gedrückt". Befindet sich ein Hindernis zwischen Hand und Motion Controller, kollidiert die Hand mit dem Hindernis, weil sie Physik simuliert. 
 
-In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die virtuelle Umgebung zulässt.
+In Abbildung \ref{VHand2} ist dieses Prinzip zu sehen. Wie man sieht, kann sich der \linebreak Motion Controller (orange gezeichnet) zwar in einem Gegenstand befinden, allerdings nicht die virtuelle Hand. Sie folgt nur dem Motion Controller, wenn es die virtuelle Umgebung zulässt.
 
 \bild{VHand2}{12cm}{Ein Moment und eine Kraft (roter Pfeil) drücken die virtuelle Hand zum Motion Controller. Links: Befindet sich der Motion Controller in einer statischen Mauer (blau), kollidiert die Hand mit der Mauer und drückt mit einer simulierten Kraft dagegen. Rechts: Weil die simulierte Kraft begrenzt groß ist, kann der Spieler den Weichkörper nur zu einem gewissen Grad eindrücken.}
 
@@ -45,7 +46,7 @@ E = W - X
 \label{form_error}
 \end{equation}
 
-Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Regelfehler, $E$, reagiert und außerdem proportional zur Fehlerveränderung ($\Delta E = E_0 - E_1$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, sodass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
+Dieses System kann mit unterschiedlichen Reglern geregelt werden. Im Rahmen der Arbeit wurde ein PD-Regler genutzt, der proportional zum Regelfehler, $E$, reagiert und außerdem proportional zur Fehlerveränderung ($\Delta E = (E_0 - E_1)/\Delta t$). Mit diesem Regler konnten schnell passende P- und D-Parameter gefunden werden, sodass die Hand dem Motion Controller schnell folgt und ohne zu schwingen zum Stillstand kommt.
 
 Eine wichtige Eigenschaft, die der Regler haben sollte, ist eine Kraft, $F_{max}$, die er maximal ausüben darf. $F_{max}$ repräsentiert dann die maximale Kraft, die der Spieler mit einer Hand ausüben kann. Wenn der Spieler beispielsweise maximal 50 kg heben können soll, wird die maximale Kraft auf $F_{max} = 50kg \cdot g$ gesetzt.
 
@@ -182,7 +183,7 @@ Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im G
 Die kurze Bewegung der Nadel kann sich in manchen Fällen negativ auf den Realitätsgrad der Simulation auswirken. Zudem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
 
 %radiale Bewegung im Gewebe
-Wird die Nadel ins Gewebe eingeführt, neigt sie dazu, sich einen axialen Weg durch das Gewebe zu bahnen. Seitliche beziehungsweise radiale Bewegungen der Nadel sind aufgrund ihrer spitzen Form kaum möglich. Übt der Anwender allerdings eine zu starke radiale Kraft auf die Nadel aus, kann es passieren, dass Gewebepartikel von der starken Kraft zur Seite gedrückt werden. Dann bewegt sich die Nadel in radiale Richtung durch das Gewebe. Dieses Verhalten wirkt unrealistisch und sollte vermieden werden. Beispielsweise durch Begrenzung der maximal möglichen radialen Kraft auf die Nadel. Wobei diese Begrenzung nur angewandt wird, solange sich die Nadel im Gewebe befindet.
+Wird die Nadel ins Gewebe eingeführt, neigt sie dazu, sich einen axialen Weg durch das Gewebe zu bahnen. Seitliche beziehungsweise radiale Bewegungen der Nadel sind aufgrund ihrer spitzen Form kaum möglich. Übt der Anwender allerdings eine zu starke radiale Kraft auf die Nadel aus, kann es passieren, dass Gewebepartikel von der starken Kraft zur Seite gedrückt werden. Dann bewegt sich die Nadel in radiale Richtung durch das Gewebe. Dieses Verhalten wirkt unrealistisch und sollte vermieden werden. Beispielsweise durch Begrenzung der maximal möglichen radialen Kraft auf die Nadel. Wobei diese Begrenzung nur angewendet wird, solange sich die Nadel im Gewebe befindet.
 
 %Problemstellungen:
 % Wiederspruch: Für gute gewebeverformung: SelfCollision=True, für gute nadel interaktion: SelfCollision aus.

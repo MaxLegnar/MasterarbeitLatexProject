@@ -100,13 +100,13 @@ Beispielsweise können zwei Partikel mit einem Distance-Constraint, $C(\textbf{p
 Der PBD-Solver löst alle Distance-Constraints bei der sogenannten \textit{Constraint-Projection}, indem die beiden Positionen, $\textbf{p}_1$ \& $\textbf{p}_2$, so projiziert werden, dass das Constraint erfüllt ist, das heißt das $C(\textbf{p}_1,\textbf{p}_2) \approx 0$. 
 
 %Im Vergleich zu kräftebasierten Simulationsmethoden, bei denen Bewegungsgleichungen mit Integratoren gelöst werden (z.B. implizit oder explizit Euler), werden bei PBD die Kräfte durch Constraints ersetzt und statt Integratoren wird die Constraint Projection verwendet. 
-Ein wesentlicher Vorteil von PBD entstehen durch die Constraint Projektion. 
+Ein wesentlicher Vorteil von PBD entstehen durch die \textit{Constraint Projektion}. 
 %Bei diesem Prozess werden direkt projizierte Position als Ergebnis geliefert, während bei Integrator basierten Methoden (z.B. implizit oder explizit Euler) Beschleunigungen integriert werden. 
 Weil hierbei direkt eine Position als Lösung projiziert wird,
 %statt Beschleunigungen zu integrieren 
 wird das Überschießproblem, das bei integrator-basierten Methoden 
 %(z. B. implizit oder explizit Euler) 
-auftritt, beseitigt. 
+auftritt, beseitigt \cite{PBD}. 
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
@@ -120,9 +120,9 @@ Durch Formulierung neuer Constraint-Funktionen können weitere physikalische Eff
 %arbeitsweise des solvers / constraint projection:
 %Bei der Constraint Projection wird nach der Gauss-Seidel Iteration gearbeitet. Bei jeder Iteration werden die Constraints sequenziell gelöst, mit \cite{PBD}:
 
-Um alle Constraints zu lösen, wird das Gauß-Seidel-Verfahren auf einen Satz Constraints, $C(p)=0$, angewandt. Wobei $p$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
+Um ein Constraint mit einer Kardinalität von $n$ zu lösen, wird das Gauß-Seidel-Verfahren verwendet, um das Gleichungssystem $C(\textbf{p})=0$, zu lösen. Wobei $\textbf{p}$ die Konkatenation $[\textbf{p}_1^T,...\textbf{p}_n^T]^T$ sei.
 % Bei Gauss-Seidel müssen zuerst gute Startwerte gewählt werden damit der Algorithmuss möglichst schnell convergiert.
-Als Startwerte für die gesuchten $N$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $\textbf{p}_i = \textbf{x}_i + \Delta t \cdot \textbf{v}_i$, ergeben. 
+Als Startwerte für die gesuchten $n$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $\textbf{p}_i = \textbf{x}_i + \Delta t \cdot \textbf{v}_i$, ergeben. 
 
 Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun ein Korrekturvektor, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
 %Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
@@ -211,12 +211,12 @@ Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbil
 Die Partikel des Clusters werden zunächst simuliert, als währen sie nicht miteinander verbunden.
 Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 
-So erhält man zunächst eine Möglichkeit, Rigid Bodies zu simulieren. Bei NVIDIA FleX wird das Shape Matching von einem Constraint namens \textit{Shape-Constraint} umgesetzt. Pro Simulationsschritt muss also für jedes Rigid Body ein Shape-Constraint gelöst werden.
+So erhält man zunächst eine Möglichkeit, Rigid Bodies mit Partikelsystemen zu simulieren. Bei NVIDIA FleX wird das Shape Matching von einem Constraint namens \textit{Shape-Constraint} umgesetzt. Pro Simulationsschritt muss also für jedes Rigid Body ein Shape-Constraint gelöst werden.
 
 Um nun auch kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein 
 %Steifheitsparameter 
 Elastizitätsparameter
-zugeordnet. Vielfältigere Verformungen können mithilfe von mehreren Clustern erzielt werden. Dann besteht ein Soft Body aus mehreren Clustern, die sich leicht überlappen (siehe Abbildung \ref{ClusterJosh}). Die Partikel von überlappenden Clustern nehmen interpolierte Positionen ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
+zugeordnet. Vielfältigere Verformungen können durch Kombinierung von mehreren Clustern erzielt werden. Dann besteht ein Soft Body aus mehreren Clustern, die sich leicht überlappen (siehe Abbildung \ref{ClusterJosh}). Die Partikel von überlappenden Clustern nehmen interpolierte Positionen ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
 
 Die Steifheit eines Soft Bodies hängt nicht nur vom Elastizitätsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
 

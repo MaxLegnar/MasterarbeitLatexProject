@@ -1,7 +1,7 @@
 \chapter{NVIDIA FleX und Unreal Engine 4 für Serious Games}
 \label{chap_Flex_Engine}
 
-In Kapitel \ref{chap_Flex_Engine} wird die verwendete Unreal Engine 4 mit FleX Integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
+In diesem Kapitel wird die Unreal Engine 4 mit FleX Integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
 
 Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serious Games unverzichtbar ist, wird direkt gezeigt, wie die fehlende Funktionalität implementiert wurde.
 
@@ -89,7 +89,7 @@ Self Collision & aktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für 2
 \end{tabular}
 \end{table}
 
-Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis die FleX Simulation für einen Frame von der GPU abgearbeitet wurde. Das heißt, dass der FleX Solver wahrscheinlich noch schneller gearbeitet hat als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
+Der Wert \textit{Solve Sync Time} gibt an, wie lange die CPU gewartet hat, bis die FleX Simulation für einen Frame von der GPU abgearbeitet wurde. Das heißt, dass der FleX Solver wahrscheinlich noch schneller gearbeitet hat als angegeben, weil die Datentransferzeiten zwischen CPU und GPU in den Messungen mit enthalten sind. Dennoch ist dies ein gutes Maß dafür, wie schnell die FleX Simulation ist.
 
 Das Ergebnis von 0,35 ms ist zufriedenstellend. Die GPU hat dadurch noch genügend Zeit, um die Szene mit 60-120 \ac{FPS} bei 1080p zu rendern, solange einfache Rendertechniken und mittelmäßig komplexe Shader eingesetzt werden. 
 
@@ -133,12 +133,12 @@ Self Collision & deaktiviert \\ \hline%Nur bei Cloth Assets aktiviert, also für
 In Abbildung \ref{figure33} ist zu sehen, wie schnell unterschiedlich viele Soft Bodies simuliert werden konnten, bei unterschiedlichen Simulationsparametern. %Für alle Simulationen wurde ein Partikelradius von 1 cm verwendet. 
 Mit den Simulationsparametern der blauen Kurve können bereits erste optisch realistisch wirkende Simulationen ausgeführt werden, wobei sich damit keine akkuraten Gewebeverformungen simulieren lassen. Wie man sieht, steigt die blaue Kurve nur sehr schwach an (Steigung ca. $10^{-5}$). Selbst wenn mehr als 100.000 Partikel (26 Soft Bodies, 10478 Cluster) simuliert werden, benötigt der FleX-Solver nur 1,12 Millisekunden für einen Simulationsschritt. Die Szene konnte daher immer mit 120 FPS gerendert werden.
 %\clearpage
-\bild{figure33}{14cm}{Die blaue Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einfachen (kleinen) Simulationsparametern. Die rote Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einer akkurateren Simulation mit größeren Simulationsparametern.}
+\bild{figure33}{14cm}{Die blaue Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einfachen (kleinen) Simulationsparametern. Die rote Kurve zeigt die Simulationsgeschwindigkeit von FleX bei einer akkurateren Simulation mit anspruchsvolleren Simulationsparametern.}
 
 Wird die Simulation allerdings akkurater ausgeführt, mit den Parametern der roten Kurve (gut für akkurate Gewebesimulationen), wird die Lösungsgeschwindigkeit ab einer kritischen Partikelanzahl deutlich langsamer. In Abbildung \ref{figure33} erkennt man sehr deutlich, wie die rote Kurve ab einer Partikalanzahl von etwa 60.000 nach oben schießt. Davor läuft die Simulation nahezu genauso schnell wie zuvor, bei geringeren Simulationsparametern.
 %, mit einer Steigung von ca. 0,28.
 
-Abbildung \ref{figure4} zeigt welche Auswirkung die steigende Simulationszeit auf die Renderfrequenz hatten. Hierzu sei gesagt, dass in dieser Szene mittelmäßig komplexe Shader und Grafikeinstellungen eingesetzt wurden.
+Abbildung \ref{figure4} zeigt welche Auswirkung die steigende Simulationszeit auf die Renderfrequenz hatte. Hierzu sei gesagt, dass in dieser Szene mittelmäßig komplexe Shader und Grafikeinstellungen eingesetzt wurden.
 
 \bild{figure4}{10cm}{Blau: Slove Sync Sime bei der akkuraten Simulation. Die rote Kurve zeigt, wie die FPS mit steigender Partikelanzahl abgefallen sind.}
 
@@ -203,7 +203,7 @@ Die erste intuititive Vermutung wäre nun, dass Asset B performanter simuliert w
 
 Die GPU kommt also offenbar bei der Verarbeitung von wenigen großen Clustern schnell an ihre Grenzen.
 
-Hierfür gibt es zwei Ursachen: Zum Einen ist die Verarbeitung der Shape Constraints laut \cite{FlexD3D} aufwändig, weil hierbei die Momentenmatrizen der Cluster polar zerlegt werden müssen. Das ist besonders rechenintensiv.
+Hierfür gibt es zwei Ursachen: Zum Einen ist die Verarbeitung der Shape Constraints aufwändig, weil hierbei die Momentenmatrizen der Cluster polar zerlegt werden müssen. Das ist besonders rechenintensiv \cite{FlexD3D}.
 
 Zum anderen verarbeitet NVIDIA FleX Shape Constraints nach der sogenannten Constraint orientierten Methode. Um die Simulation zu verarbeiten, wird in \newline \cite{UPP} zwischen zwei unterschiedlichen Verarbeitungsansätzen unterschieden: Partikel-orientiert und Constraint-orientiert. 
 
@@ -316,7 +316,7 @@ Diese wichtige Funktionalität muss also noch hinzugefügt werden. Dabei wird da
 
 \subsubsection{\textit{SetWorldTransform}}
 
-Um die Welt-Transformation eines Flex-Objekts zu ändern, müssen die Positionen all seiner Partikel mithilfe einer homogenen Transformationsmatrix, $T_{world}$, transformiert werden. Über die NVIDIA FleX Bibliothek können die lokalen Positionen, $\vec{p}_{local}$, der Partikel eines Flex-Assets ermittelt werden. Das sind die lokalen Partikelpositionen des Flex-Assets, während seiner Ruheposition. Die neue Position, $\vec{p}_{new}$ eines Partikels ergibt sich dann mit Gleichung \ref{form_worldtransf}.
+Um die Welt-Transformation eines Flex-Objekts zu ändern, müssen die Positionen all seiner Partikel mithilfe einer homogenen Transformationsmatrix, $T_{world}$, transformiert werden. Über die NVIDIA FleX Bibliothek können die lokalen Positionen, $\vec{p}_{local}$, der Partikel eines Flex-Assets ermittelt werden. Das sind die lokalen Partikelpositionen des Flex-Assets, während seiner Ruheposition. Die neue Position, $\vec{p}_{new}$, eines Partikels ergibt sich dann mit Gleichung \ref{form_worldtransf}.
 
 \begin{equation}
 \vec{p}_{new} = T_{world} \cdot \vec{p}_{local}

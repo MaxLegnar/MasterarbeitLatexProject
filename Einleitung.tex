@@ -8,7 +8,9 @@
 
 
 % Motivation für Serous Games:
-Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. Auch das Trainieren von Operationen an Tieren, meist an Schweinen, war früher eine gängige Praxis. Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
+%Die klassische Art, bestimmte Operationen praktisch zu unterrichten, ist die Beobachtung eines erfahrenen Chirurgen über mehrere durchgeführte Operationen. 
+Klassischerweise werden bestimmte Operationen praktisch unterrichtet, indem die angehenden  Chirurgen einen erfahrener Chirurg über mehrere durchgeführte \linebreak Operationen beobachten.
+Auch das Trainieren von Operationen an Tieren, meist an Schweinen, war früher eine gängige Praxis. Diese Ansätze werden zunehmend durch rechtliche und ethische Bedenken sowie des Zeitbedarfs und der Kosten behindert \cite{SurgSim}.
 
 Daher sind Serious Games in der Medizin wichtige Hilfsmittel geworden, um 
 angehende Chirurgen  %personal weg machen, besser sowas wie angehende chirurgen oder oder angehender operantör...
@@ -18,9 +20,9 @@ auszubilden und zu trainieren. Vor allem in der Chirurgie werden immer häufiger
 Die Simulationstechnik \ac{PBD} \cite{PBD} hat sich bereits in vielen Arbeiten als vielversprechende Simulationstechnik für chirurgische Simulatoren erwiesen (siehe Kapitel \ref{section_PBD} für einige Beispiele). 
 
 %Motivation PBD und Überleitung zu Problemstellung 1:
-Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt, um Gewebe, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die weitere Elemente implementiert, die für Serious Games nützlich sind. 
+Aufgrund der Vielseitigkeit, Stabilität, Einfachheit und Effizienz von PBD wird auch in dieser Arbeit eine PBD-basierte Physik Engine (NVIDIA FleX) genutzt, um Gewebe, Häute, Flüssigkeiten und Rigid Bodies in Echtzeit zu simulieren. Zusätzlich wird eine Game Engine (Unreal Engine 4 \cite{UE4FlexDoc}) eingesetzt, die weitere Elemente implementiert, die für Serious Games nützlich sind. 
 
-Im ersten Teil dieser Arbeit (Kapitel \ref{chap_Flex_Engine}) wird zunächst geklärt, wie gut die vorhandene Game- und Physik-Engine für die Entwicklung von chirurgischen Simulatoren geeignet ist und was die Möglichkeiten und Grenzen von NVIDIA FleX sind. Dabei stellt sich heraus, dass noch einige wichtige Funktionalitäten fehlen. Alle fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert, um ein Softwareframework zu erhalten, das gut für die Entwicklung von Serious Games geeignet ist. Das im Rahmen dieser Arbeit entstehende Softwareframework sowie die gewonnenen Erkenntnisse, sollen zukünftigen wissenschaftlichen Arbeiten als nützliches Werkzeug dienen.
+Im ersten Teil dieser Arbeit (Kapitel \ref{chap_Flex_Engine}) wird zunächst geklärt, wie gut die genutzte Game- und Physik-Engine für die Entwicklung von chirurgischen Simulatoren geeignet ist und was die Möglichkeiten und Grenzen von NVIDIA FleX sind. Dabei stellt sich heraus, dass noch einige wichtige Funktionalitäten fehlen. Alle fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert, um ein Softwareframework zu erhalten, das gut für die Entwicklung von Serious Games geeignet ist. Das im Rahmen dieser Arbeit entstehende Softwareframework sowie die gewonnenen Erkenntnisse, sollen zukünftigen wissenschaftlichen Arbeiten als nützliches Werkzeug dienen.
 %Im ersten Teil dieser Arbeit wird untersucht, welche weiteren Softwareelemente noch fehlen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist. Die fehlenden Softwareelemente werden dann methodisch entwickelt und implementiert.
 %um die vorhandene Game- und Physik-Engine um zusätzliche Funktionalitäten zu erweitern, die für chirurgische Simulatoren nützlich sein könnten (Kapitel \ref{chap_Flex_Engine}).
 %Im ersten Teil dieser Arbeit wird untersucht, um welche weiteren Softwareelemente die vorhandene Game- und Physik-Engine erweitert werden müssen um ein Framework zu erhalten, das gut für die Entwicklung von chirurgischen Simulatoren geeignet ist.
@@ -41,7 +43,7 @@ um Operationen trainieren zu können.
 Dies ermöglicht es Nutzern, die keinen Zugriff auf haptische Hardware haben, Operationen in virtueller Realität zu trainieren. 
 
 
-Eine besondere Herausforderung ist dabei eine Methode zu finden, mit der der Nutzer möglichst realistisch und präzise mit der virtuellen Umgebung interagieren kann, ohne haptisches Feedback zu erhalten. In dieser Arbeit wurde hierfür ein System entwickelt, das es dem Nutzer ermöglicht mit virtuellen Werkzeugen simulierte Kräfte auf die virtuelle Umgebung auszuüben. So kann der Nutzer beispielsweise eine Nadel in simuliertes Gewebe einführen, indem er seine echte Hand auf bestimmte Weise positioniert und beschleunigt und dadurch Interaktionskräfte zwischen Nadel und Gewebe erzeugt. 
+Eine besondere Herausforderung ist dabei eine Methode zu finden, mit der der Nutzer möglichst realistisch und präzise mit der virtuellen Umgebung interagieren kann, ohne haptisches Feedback zu erhalten. In dieser Arbeit wurde hierfür ein System entwickelt, das es dem Nutzer ermöglicht mit virtuellen Werkzeugen simulierte Kräfte auf die virtuelle Umgebung auszuüben. So kann der Nutzer beispielsweise eine Nadel in simuliertes Gewebe einführen, indem er seine echte Hand auf bestimmte Weise positioniert und bewegt und dadurch Interaktionskräfte zwischen Nadel und Gewebe erzeugt. 
 Dabei erhält der Nutzer nur visuelles Kräftefeedback und kein haptisches. %wiederrhoooluuuung
 Die Nadel-Gewebe-Interaktion mit rein virtuellen Kräften ist dabei auch eine besondere technische Herausforderung, die in Kapitel \ref{sec_needle} behandelt wird. 
 Bei der Nadel-Gewebe-Interaktion wird das Partikelmodell des Gewebes nicht verändert, das heißt, das virtuelle Gewebe wird nicht von der Nadel verletzt beziehungsweise geschnitten.
