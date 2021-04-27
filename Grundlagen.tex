@@ -110,7 +110,7 @@ auftritt, beseitigt \cite{PBD}.
 %Deswegen konvergieren PBD-Solver besonders schnell und sind zugleich sehr stabil. 
 Dafür können mit Integrator basierten Methoden akkuratere Simulationsergebnisse erzielt werden.
 
-Durch Formulierung neuer Constraint-Funktionen können weitere physikalische Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \newline \textit{Density}-\textit{Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
+Durch Formulierung neuer Constraint-Funktionen können weitere physikalische \linebreak Effekte erstellt werden. In \cite{UPP} wird beispielsweise ein \newline \textit{Density}-\textit{Constraint} definiert, um nicht komprimierbare Flüssigkeiten zu simulieren. Dieses Constraint projiziert Fluid-Partikel so, dass das Gesamtsystem eine möglichst konstante Dichte beibehält.
 
 %Weitere Constaints: Distance(cloth) shape-matching(rigid, plastic/elastic deformation, siehe paper fig 5) density(fluid) volume(inflatables), friction(wichtiges constraint für nadel, flex is stolz auf friction constraint, siehe sand-teepot-demos), different collisions...
 
@@ -124,7 +124,7 @@ Um ein Constraint mit einer Kardinalität von $n$ zu lösen, wird das Gauß-Seid
 % Bei Gauss-Seidel müssen zuerst gute Startwerte gewählt werden damit der Algorithmuss möglichst schnell convergiert.
 Als Startwerte für die gesuchten $n$ Partikelpositionen werden geschätzte Positionen genommen, die sich aus den derzeitigen Partikelgeschwindigkeiten, $\textbf{p}_i = \textbf{x}_i + \Delta t \cdot \textbf{v}_i$, ergeben. 
 
-Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun ein Korrekturvektor, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
+Zunächst wird die Problemstellung etwas umformuliert: Gesucht sei nun ein \linebreak Korrekturvektor, $\Delta \textbf{p}$, so dass $C(\textbf{p}+\Delta \textbf{p})=0$. 
 %Dabei wird $\Delta p$ entlang des Gradienten $\nabla C_p$ ausgerichtet um die lineare und rotatorische Trägheit zu erhalten \cite{PBD}.
 
 Der Gauss-Seidel Algorithmus ist nur für lineare Gleichungssysteme geeignet, allerdings sind die meisten Constraint-Funktionen nicht linear. Daher wird in \newline \cite{PBD} $C(\textbf{p}+\Delta \textbf{p})$ wie folgt linearisiert:
@@ -148,9 +148,9 @@ $\lambda$ wird \textit{constraint error} genannt und ist ein Maß für die Schri
 \label{form_db}
 \end{equation}
 
-Nachdem alle Constraints gelöst wurden, wird $\textbf{p}$ mit $\Delta \textbf{p}$ aktualisiert, woraufhin die nächste Iteration startet. Nach einer fixen Anzahl von Lösungsiterationen wird der Gauss-Seidel Algorithmus abgeschlossen. Die mehrmals projizierten Partikelpositionen werden übernommen und die Partikelgeschwindigkeiten werden mit $\Delta \textbf{v} = \Delta \textbf{p} / \Delta t$ aktualisiert.
+Nachdem alle Constraints gelöst wurden, wird $\textbf{p}$ mit $\Delta \textbf{p}$ aktualisiert, woraufhin die nächste Iteration startet. Nach einer fixen Anzahl von Lösungsiterationen wird der Gauss-Seidel Algorithmus abgeschlossen. Die mehrmals projizierten Partikelpositionen werden übernommen und die Partikelgeschwindigkeiten werden mit \linebreak  $\Delta \textbf{v} = \Delta \textbf{p} / \Delta t$ aktualisiert.
 
-Dieser Algorithmus konvergiert in der Regal nach 5 bis 10 Iterationen. Die Konvergierungsgeschwindigkeit konnte später in den Werken \textit{Hierarchical Position Based Dynamics} \cite{Mller2008HierarchicalPB} und \textit{Unified Particle Physics for Real-Time Applications} \cite{UPP} weiter optimiert werden. Mit der PBD-basierten Physik Engine NVIDIA FleX können schon mit 2 Iterationen optisch zufriedenstellende Ergebnisse erzielt werden.
+Dieser Algorithmus konvergiert in der Regal nach 5 bis 10 Iterationen. Die Konvergierungsgeschwindigkeit konnte später in den Werken \textit{Hierarchical Position Based Dynamics} \cite{Mller2008HierarchicalPB} und \textit{Unified Particle Physics for Real-Time Applications} \cite{UPP} weiter optimiert werden. Mit der PBD-basierten Physik  \linebreak Engine NVIDIA FleX können schon mit 2 Iterationen optisch zufriedenstellende Ergebnisse erzielt werden.
 
 Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem, bei dem alle Partikel dieselbe Massen haben. Ist dies nicht der Fall, wird Gleichung \ref{form_lambda} durch Gleichung \ref{form_lambda2} ersetzt, damit die Trägheit (bzw. der Schwung) eines Partikels erhalten bleibt \cite{PBD}.
 
@@ -164,7 +164,7 @@ Die bisherigen Rechnungen beziehen sich auf ein Partikelsystem, bei dem alle Par
 Mit der Veröffentlichung des Werks \textit{Unified Particle Physics} \cite{UPP} veröffentlichte NVIDIA eine umfangreiche Physik Engine namens NVIDIA FleX.  Diese Physik Engine ist frei verfügbar und arbeitet mit den in \cite{UPP} beschriebenen Techniken um PBD-Simulationen besonders effizient auf Grafikkarten zu bringen.
 Zuerst lief FleX nur auf NVIDIA Grafikkarten, weil CUDA als Voraussetzung benötigt wurde. Seit NVIDIA FleX 1.2 kann die Software alternativ mit DirectX 11 oder DirectX 12 ausgeführt werden, wodurch nun eine breite Menge von unterschiedlicher Hardware unterstützt wird (siehe \cite{FlexD3D}).
 
-In vielen Arbeiten, in denen chirurgische Simulationen Thema sind, wird FleX verwendet (z. B. in \cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} oder in \cite{VRRobSim}). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikel-modellen auf Basis von gegebenen Polygonmodellen.
+In vielen Arbeiten, in denen chirurgische Simulationen Thema sind, wird FleX verwendet (z. B. in \cite{BreastBiopsy}, \cite{PBDKidney}, \cite{VRSim20} oder in \cite{VRRobSim}). FleX liefert nämlich einen schnellen und einfachen Einstieg in performante PBD-Simulationen und implementiert direkt viele \linebreak  Constraints, mit denen viele unterschiedliche Materialien simuliert werden können. Beispielsweise für elastisches Gewebe, Häute, Fäden oder Flüssigkeiten. FleX bietet auch hilfreiche Werkzeuge an, beispielsweise für das Generieren von Partikel-modellen auf Basis von gegebenen Polygonmodellen.
 
 % BVH: Bounding Volume Hierarchy in FlexD3D seite 57!
 Des Weiteren implementiert NVIDIA FleX bereits einige bewährte Optimierungstechniken. Beispielsweise wird ein BVH Tree verwendet, um Partikel-Polygonmodell-Kollisionen effizient zu erkennen \cite{FlexD3D}. Außerdem wird die Partikelnachbarsuche mithilfe von räumlichen Datenstrukturen beschleunigt. Da hierfür ein reguläres 3D Gitter verwendet wird, müssen alle Partikel aus einer Simulationsszene denselben Radius besitzen \cite{UPP}. FleX Simulationen sind also auf einen konstanten Partikelradius limitiert, dafür bietet NVIDIA FleX eine effiziente Partikel-Partikel-Kollisionserkenung.
@@ -200,7 +200,7 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 \subsection{Clustered Shape Matching}
 %auch region-based shape matching constraints genannt:
 
-Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
+Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape  \linebreak Matching für Rigid- als auch für Soft Body Simulationen ein.
 
 Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} vereinfacht visualisiert. 
 
@@ -225,12 +225,12 @@ Die Steifheit eines Soft Bodies hängt nicht nur vom Elastizitätsparameter ab. 
 
 
 
-\subsection{Unreal Engine 4 mit Flex integration}
+\subsection{Unreal Engine 4 mit FleX Integration}
 
 Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA FleX Integration verwendet und getestet (siehe \cite{UE4FlexDoc}). Diese spezielle Version der Unreal Engine 4 beinhält nicht nur viele nützliche Elemente einer klassischen Game Engine, sondern auch eine umfangreiche Integration von NVIDIA FleX. 
 
 % Funktionalitäten:
-So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA FleX, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygonmodelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygonmodelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt und visualisiert werden.
+So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA FleX, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygonmodelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygonmodelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle  \linebreak Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte  \linebreak (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt und visualisiert werden.
 
 % Doku und Lizenz:
 Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von GitHub bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). 

@@ -3,7 +3,7 @@
 
 In diesem Kapitel wird die Unreal Engine 4 mit FleX Integration evaluiert und wenn nötig verbessert. Die Evaluation dient dazu, einen Eindruck davon zu bekommen, wie gut die Software für die Entwicklung von Serious Games im medizinischen Bereich geeignet ist und ob noch fehlende Funktionalitäten hinzugefügt werden müssen. 
 
-Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von Serious Games unverzichtbar ist, wird direkt gezeigt, wie die fehlende Funktionalität implementiert wurde.
+Wenn eine fehlende Funktionalität entdeckt wird, die für die Entwicklung von \linebreak  Serious Games unverzichtbar ist, wird direkt gezeigt, wie die fehlende Funktionalität implementiert wurde.
 
 %nicht ändern, nur erweitern:
 %Im Rahmen dieser Arbeit wird stets darauf geachtet, den Source Code der Unreal Integration nicht zu verändern. 
@@ -308,9 +308,9 @@ In der Einleitung von \cite{UE4FlexDoc} wird bereits darauf hingewiesen, dass di
 Game Engines verfügen in der Regel über eine umfangreiche Bibliothek für Transformationsberechnungen. So können Punkte oder Richtungen mit homogenen Transformationen manipuliert und die Transformationsmatrizen von unterschiedlichen 3D-Objekten miteinander verrechnet werden.
 Dies ist eine wichtige Grundlage, um 3D-Objekte bewegen, rotieren und skalieren zu können. 
 
-Die Unreal Engine bietet hierfür den Datentyp \textit{FTransform} und die Bibliothek \textit{TransformCalculus.h} an. Jedes 3D-Objekt besitzt eine eigene Transformation, die zur Laufzeit manipuliert werden kann. Häufig werden die beiden Funktionen \newline \textit{SetWorldTransform($T_{world}$)} und \textit{SetRelativeTransform($T_{relative}$)} genutzt, um 3D-Objekte relativ zur Welt oder relativ zum derzeitigen Eltern-Objekt zu bewegen.
+Die Unreal Engine bietet hierfür den Datentyp \textit{FTransform} und die Bibliothek  \linebreak \textit{TransformCalculus.h} an. Jedes 3D-Objekt besitzt eine eigene Transformation, die zur Laufzeit manipuliert werden kann. Häufig werden die beiden Funktionen \newline \textit{SetWorldTransform($T_{world}$)} und \textit{SetRelativeTransform($T_{relative}$)} genutzt, um 3D-Objekte relativ zur Welt oder relativ zum derzeitigen Eltern-Objekt zu bewegen.
 
-Bei der Unreal Engine mit Flex Integration wurde das Transformationsframework nur teilweise für FleX-Objekte angepasst. Obwohl alle \textit{FlexComponents} eine eigene Transformation vom Typ \textit{FTransform} besitzen, kann diese weder relativ noch absolut gesetzt werden. Die beiden Funktionen \textit{SetWorldTransform()} und \textit{SetRelativeTransform()} haben keine Auswirkung auf FlexComponents.
+Bei der Unreal Engine mit Flex Integration wurde das Transformationsframework nur teilweise für FleX-Objekte angepasst. Obwohl alle \textit{FlexComponents} eine eigene Transformation vom Typ \textit{FTransform} besitzen, kann diese weder relativ noch absolut gesetzt werden. Die beiden Funktionen \textit{SetWorldTransform()} und  \linebreak \textit{SetRelativeTransform()} haben keine Auswirkung auf FlexComponents.
 
 Diese wichtige Funktionalität muss also noch hinzugefügt werden. Dabei wird das bereits bestehende Transformationsframework der Unreal Engine benutzt.
 
