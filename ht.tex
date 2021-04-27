@@ -215,7 +215,8 @@ NVIDIA FleX setzt beide Verarbeitungsansätze ein, je nachdem um welche Art von 
 
 Deswegen ist es besser, viele kleine Cluster zu verwenden. So wird mehr Arbeit parallelisiert (viele Cluster) und es muss weniger sequenziell verarbeitet werden (wenig Partikel pro Cluster). Außerdem bringt dies den zusätzlichen Vorteil, dass sich ein Soft Body, das aus vielen Clustern besteht, vielfältiger verformen lässt.
 
-
+Bei der Modellierung von größeren Rigid Bodies kann es allerdings schwierig sein, die Partikelanzahl pro Cluster klein zu halten. Jedes Rigid Body besteht nämlich aus nur einem Cluster. Deswegen kommt die GPU schnell an ihre Grenzen, wenn größere Rigid Bodies simuliert werden, die aus vielen Partikeln bestehen. Daher sollten Rigid Bodies mit so wenig Partikeln wie möglich modelliert werden, wenn möglich. %Beispielsweise indem der Partikelradius auf einen großen Wert gesetzt wird oder indem die Partikel nur auf die Oberfläche des Polygonmodells gesetzt werden. 
+Lässt sich die Partikelanzahl pro Rigid Body nicht ausreichend reduzieren, kann es sich lohnen, alle Rigid Bodies mit einer traditionellen Rigid Body Physics Engine zu simulieren, beispielsweise mit NVIDIA PhysX. Solche Engines können auch größere Rigid Bodies effizient simulieren. Wie NVIDIA PhysX und NVIDIA FleX gleichzeitig verwendet werden können, wird in Kapitel \ref{physXFleX} behandelt.
 
 \subsubsection{Self Collision und Partikelradius}
 
@@ -265,7 +266,9 @@ Mithilfe der durchgeführten Tests konnten wichtige Erkenntnisse über die Perfo
       
       \item \textbf{Partikeldichte:} \\ Bei der Modellierung von FleX Assets sollten sich benachbarte Partikel berühren, aber nicht zu stark überlappen. Vor allem wenn Self Collision aktiviert ist, können zu viele Kollisions-Constraints entstehen, wodurch die Performance negativ beeinflusst wird.
       
-      \item \textbf{Geringe Partikelanzahl pro Cluster:} \\ Bei der Modellierung von Soft Assets sollten viele kleine Cluster verwendet werden. Das heißt, die Cluster sollten nur wenige Partikel, etwa maximal 200, umfassen. Je mehr Partikel die Cluster verarbeiten müssen, desto schneller kommt die Hardware an ihre Grenzen.
+      \item \textbf{Geringe Partikelanzahl pro Cluster:} \\ Bei der Modellierung von Soft Assets sollten viele kleine Cluster verwendet werden. Das heißt, die Cluster sollten nur wenige Partikel, etwa maximal 200, umfassen. Je mehr Partikel die Cluster verarbeiten müssen, desto schneller kommt die Hardware an ihre Grenzen. Weil ein Rigid Body immer aus einem Cluster besteht, sollten alle Rigid Bodies aus so wenig Partikeln wie möglich bestehen.
+      
+
       
       \item \textbf{Simulationsparametrisierung:} \\ In einigen Arbeiten und auch in dieser Arbeit erwiesen sich die Simulationsparameter aus Tabelle \ref{table_perf_zusa} als geeignet, um performante und akkurate Simulationen zu erhalten:
       
@@ -288,57 +291,6 @@ Fixed Time Step& True\\ \hline
 \end{tabular}
 \end{table}
 
-%%%%%%%%%%%%%%%% ALT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\subsubsection{Test Szenario}
-
-%Für die Anwendungsfälle dieser Arbeit sind vor allem Soft Bodies interessant. Daher wird nun eine Szene simuliert, in der sich ausschließlich Soft Bodies befinden (siehe Abbildung \ref{PerfGTX1Scene}). 
-%
-%TODO: Welche Constraints verwendet und wie viele???!!!
-%
-%\bild{PerfGTX1Scene}{12cm}{In der Testszene befinden sich mehrere unterschiedliche Soft Bodies, die eine Treppe hinunter rollen.}
-%
-%Die simulierten Körper kollidierten und verformten sich dabei stets augenscheinlich realistisch.
-%
-%Folgenden Simulationsparameter wurden eingesetzt (siehe Abbildung \ref{PerfGTX1Set}):
-%
-%\bild{PerfGTX1Set}{10cm}{Die verwendeten Simulationsparamer für dies Testreihe.}
-%
-%Für alle Messungen wurde der Simulationsparameter \textit{Sleep Threshold} auf einen negativen Wert gesetzt, um zu verhindern, dass zu langsame Partikel von der Simulation ausgeschlossen werden.
-
-%Alle Messungen wurden mithilfe des Befehls \textit{stat flex} ermittelt. In \cite{UE4FlexDoc} unter \url{gameworksdocs.nvidia.com/FleX/1.2/ue4_docs/FLEXUe4_Debug.html} kann nachgeschlagen werden, was die gemessenen und gezeigten Attribute bedeuten.
-
-%\subsubsection{Messergebnisse}
-%
-%%Typische Frametime: 15 ms bis 17ms sind im 60 fps-Bereich (1000ms / 15 ms = 66,66… FPS)
-%
-%In Abbildung \ref{PerfGTX1} sind die Messdaten zu sehen, die sich ergaben.
-%
-%\bild{PerfGTX1}{14cm}{TEMP!!! Performance Messungen bei unterschiedlichen Partikelanzahlen mit einem Partikelradius von 10cm. Die durchschnittliche Solver Zeit steigt flach und linear mit der Partikelanzahl an.}
-%
-%Zu den Messdaten sei gesagt, dass \textit{Solve Sync Time} mithilfe der CPU gemessen wurde. \textit{Solve Sync Time} repräsentiert also nicht nur die Zeit, die der Flex-Solver benötigt, sondern zusätzlich die CPU-GPU Synchronisierungszeit. Dennoch ist dies ein gutes Maß für die Performance von NVIDIA Flex. 
-%
-%Zur gemessenen Performance: 
-%Die Messungen zeigen eindeutig, dass NVIDIA Flex besonders gut für Echtzeitanwendungen geeignet ist. Selbst bei 70000 simulierten Partikeln (und 134 Soft Bodies) benötigt der Flex Solver durchschnittlich nur 1 ms zum Lösen aller Constraints, wobei er maximal 2,5 ms benötigt, was immer noch im akzeptablen Bereich für eine realistische Optik liegt. 
-%
-%%In Abbildung \ref{PerfGTX1} zeigt die Linie \textit{SumAvg} an, wie lange der gesamte Simulationsprozess im Durchschnitt gedauert hat. Der gesamte Simulationsprozess ergibt sich aus den Zeiten der folgenden Arbeitsschritte, summiert (Abbildung \ref{PerfStats}):
-%
-%%\bild{PerfStats}{12cm}{Alle gemessenen Arbeitsschritte und ihre Bedeutungen \cite{UE4FlexDoc} -> Das hier evt nur als Anlage???}
-%
-%Dank der beeindruckenden Geschwindigkeit des Flex-Solvers konnten alle Tests mit 120 \ac{FPS} gerendert werden, bei einer Auflösung von ca. 1080p. 
-%%Mit einer Oculus Quest 2 konnte die Szene stets mit 90 FPS bei einer Auflösung von \textbf{XXX} dargestellt werden. 
-%So wie in \cite{FlexD3D} bereits erwähnt, 
-%%hat die Anzahl der simulierten Partikel einen geringen Einfluss auf die Geschwindigkeit des Solvers.
-%skaliert die Simulationsgeschwindigkeit nur schwach mit der Partikelanzahl.
-
-
-
-%Auch wenn die Messungen viel versprechen, wird sich erst am Ende dieser Arbeit zeigen (siehe Kapitel \ref{chap_Szenarien}), ob NVIDIA Flex für Serious Games im chirurgischen Bereich geeignet ist.
-
-%% ----EVT TODO--------
-%Dann nochmal mit kleineren Partikeln und mehr substeps simulieren, weil das besser auf chirurges-szenario passt. In einigen anderen Arbeiten wurden ja auch recht kleine radi verwendet und mehr substeps usw (könnte man auch kurz drauf verweisen, auf diese paper und argumentieren das wir daher besser auf solche szenarien achten sollten)
-
-%%%%%%%%%%%%%%%% ALT ENDE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clearpage
 \section{Funktionalitäten}
@@ -463,27 +415,30 @@ An ein Flex-Asset können auch mehrere Kollisionskörper befestigt werden, um zw
 %  - FlexCollisionComponent kann nur emitter-partikel zählen oder löschen
   
   %%%%%%%%%%%%%%%%%%%% Flex-PhysX Interaktion %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Interaktion zwischen FleX-Objekte und PhysX-Objekte}
-%
-%%Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
-% 
-%Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodies, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also  FleX-Simulationen und PhysX-Simulationen gleichzeitig ausgeführt werden. Nun stellt sich die Frage, ob und wie elastische  FleX-Objekte mit PhysX-Objekte interagieren können.
-%
-%Bei der verwendeten Unreal Integration können PhysX-Objekte grundsätzlich mit FleX-Objekte kollidieren. Allerdings üben Flex-Objekte keine Kräfte auf PhysX-Objekte aus. FleX-Objekte sehen PhysX-Objekte als statische Kollisionskörper, die nicht verschoben werden können. Dies führt zu Situationen, wie in Abbildung \ref{PhsXInteraction} links abgebildet: Kollidiert ein PhysX-Objekt (weiße Kugel) mit einem Flex-Objekt (blaue Kugel), wird das FleX-Objekt vom PhysX-Objekt ungehindert weg geschoben oder gar überrollt, wie in der Abbildung zu sehen. Weil ein FleX-Objekt keine Reaktionskraft auf das PhysX-Objekt ausüben kann, bewegt sich das PhysX-Objekt ungehindert weiter, als würde überhaupt keine Kollision mit einem anderen Objekt stattfinden.
-%
-%\bild{PhsXInteraction}{10cm}{Links: Das PhysX-Objekt (weiße Kugel) überrollt ungehindert das elastische FleX-Objekt (blaue Kugel), weil FleX-Objekte keine Kraft auf PhysX-Objekte ausüben. Rechts: Die fehlende Reaktionskraft auf das PhysX-Objekt wird anhand der Verformung des Flex-Objekts ausgerechnet und angewandt. Nun prallt das PhysX-Objekt vom Flex-Objekt ab und verursacht nur eine geringe Verformung.}
-%
-%Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf auf das PhysX-Objekt wirkt, berechnet und angewandt werden. 
-%%Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
-%%Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
-%Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf der folgenden Idee: 
-%
-%Wenn ein PhysX-Objekt mit einem elastischen FleX-Objekt kollidiert, verursacht das PhysX-Objekt eine Verformung beim FleX-Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX-Objekt. Für die Flex-Partikel des Flex-Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden um einen finalen Kräftevektor zu erhalten, der sich wie gewünscht verhält. 
-%%Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
-%
-%Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex-Objekts gewichtet.
-%Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben. 
-%%Dank des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX-Objekts auf die Simulation aus: Je schwerer ein PhysX-Objekt, desto stärker kann es Flex-Objekte eindrücken.
+\subsection{Interaktion zwischen FleX- und PhysX-Objekte}
+\label{physXFleX}
+
+%Flex-Objekte sehen Physics-Kollisionen als World-Kollision, also als ein statisches Objekt das nicht weg schiebbar ist. Dadurch überrollen Physics-Objekte andere Flex-Objekte, so als ob ihre Masse unendlich groß wäre.
+ 
+Die Unreal Engine 4 besitzt bereits eine traditionelle Physics Engine für Rigid Bodies, die auf NVIDIA PhysX basiert \cite{ue4physics}. Mithilfe der Unreal Integration können also  FleX-Simulationen und PhysX-Simulationen gleichzeitig ausgeführt werden. Nun stellt sich die Frage, ob und wie elastische  FleX-Objekte mit PhysX-Objekten interagieren können.
+
+Bei der verwendeten Unreal Integration können PhysX-Objekte grundsätzlich mit FleX-Objekten kollidieren. Allerdings üben Flex-Objekte keine Kräfte auf PhysX-Objekte aus. FleX-Objekte sehen PhysX-Objekte als statische Kollisionskörper, die nicht verschoben werden können. Dies führt zu Situationen, wie in Abbildung \ref{PhsXInteraction} links abgebildet: Kollidiert ein PhysX-Objekt (weiße Kugel) mit einem Flex-Objekt (blaue Kugel), wird das FleX-Objekt vom PhysX-Objekt ungehindert weggeschoben oder gar überrollt, wie in der Abbildung zu sehen. Weil ein FleX-Objekt keine Reaktionskraft auf das PhysX-Objekt ausüben kann, bewegt sich das PhysX-Objekt ungehindert weiter, als würde überhaupt keine Kollision mit einem anderen Objekt stattfinden.
+
+\bild{PhsXInteraction}{10cm}{Links: Das PhysX-Objekt (weiße Kugel) überrollt ungehindert das elastische FleX-Objekt (blaue Kugel), weil FleX-Objekte keine Kraft auf PhysX-Objekte ausüben. Rechts: Die fehlende Reaktionskraft auf das PhysX-Objekt wird anhand der Verformung des Flex-Objekts ausgerechnet und angewandt. Nun prallt das PhysX-Objekt vom Flex-Objekt ab und verursacht nur eine geringe Verformung.}
+
+Um dieses Problem zu lösen, muss die fehlende Reaktionskraft, die auf das PhysX-Objekt wirkt, berechnet und angewandt werden. 
+%Im Rahmen dieser Arbeit wurden hierfür eine vereinfachte Methode entwickelt. 
+%Der Resultierende Kraftvektor ergibt sich aus der Verformung, die das PhysX Objekt auf das Flex Objekt
+Im Rahmen dieser Arbeit wurde der Vektor der fehlenden Reaktionskraft so berechnet, wie in \cite{VRSim20}, Kapitel 6 (\textit{Haptic Feedback}). Dieser einfache Ansatz basiert auf der folgenden Idee: 
+
+Wenn ein PhysX-Objekt mit einem elastischen FleX-Objekt kollidiert, verursacht das PhysX-Objekt eine Verformung beim FleX-Objekt. Vereinfacht lässt sich sagen: Je stärker die Verformung und je größer die Fläche der Verformung, desto stärker die Reaktionskraft auf das PhysX-Objekt. Für die Flex-Partikel des Flex-Objekts heißt das: Je stärker die Partikel verschoben werden und je mehr Partikel verschoben werden, desto stärker ist die Reaktionskraft. Also müssen nur die Partikelverschiebungsvektoren ermittelt, umgedreht und summiert werden, um einen finalen Kraftvektor zu erhalten, der sich wie gewünscht verhält. 
+%Dabei werden die Partikelverschiebungsvektoren mit den Massen der verschobenen Partikel gewichtet. Dadurch werden schwerere FleX Objekte geringer verschoben.
+
+Zusätzlich wird der Kräftevektor mit dem \textit{Stiffness} Parameter des Flex-Objekts gewichtet.
+Der Kräftevektor wird dann mithilfe eines einfachen Funktionsaufrufs an die PhysX Simulation übergeben.
+In dieser Arbeit konnten mit dieser einfachen Methode optisch realistisch wirkende Ergebnisse erzielt werden.
+%Dieser Ansatz ist nur für weiche Soft Bodies geeignet. Handelt es sich um steifere Soft Bodies, könnte noch zusätzlich der Impuls mitberücksichtigt werden. 
+%Dank des gegebenen PhysX Frameworks wirkt sich weiterhin auch die Masse des PhysX-Objekts auf die Simulation aus: Je schwerer ein PhysX-Objekt, desto stärker kann es Flex-Objekte eindrücken.
 
   %%%%%%%%%%%%%%%%%%%% Flex-PhysX Interaktion ENDE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

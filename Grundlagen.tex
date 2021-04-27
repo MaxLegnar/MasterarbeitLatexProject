@@ -197,7 +197,7 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 % In \cite{UPP} wird PBD außerdem als Optimierungsproblem betrachtet, wodurch interessante Erkenntnisse zustande kommen. 
 %solver: PBD-solver, \cite{UPP} constraint-projektion als optimization problem, siehe kap 4.2, Gleichung (7). Bei jedem sim-step PBD versucht die Distanz zur Constraint-Verteilung (constraint manifold) zu minimieren unter berücksichtigung der partikel massen. Das tolle an dieser optimization sichtweise ist, das wir den PBD solver mit anderen solvern veergleichen können. So erkennt man das implizit euler recht ähnlich zu PBD ist. Unterschied: euler macht die minimization with respect zur initialen condition. bei BPD with respect to last iteration.
 
-\subsection{Soft Body Simulationen mit \textit{Clustered Shape Matching}}
+\subsection{Clustered Shape Matching}
 %auch region-based shape matching constraints genannt:
 
 Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape Matching für Rigid- als auch für Soft Body Simulationen ein.
@@ -211,12 +211,19 @@ Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbil
 Die Partikel des Clusters werden zunächst simuliert, als währen sie nicht miteinander verbunden.
 Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 
-Um kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein 
+So erhält man zunächst eine Möglichkeit, Rigid Bodies zu simulieren. Bei NVIDIA FleX wird das Shape Matching von einem Constraint namens \textit{Shape-Constraint} umgesetzt. Pro Simulationsschritt muss also für jedes Rigid Body ein Shape-Constraint gelöst werden.
+
+Um nun auch kleine elastische Deformationen zu realisieren, wird jedem Shape-Constraint ein 
 %Steifheitsparameter 
 Elastizitätsparameter
-zugeordnet. Größere Soft Bodies können mithilfe mehrerer Cluster modelliert werden. Die Partikel von überlappenden Clustern nehmen interpolierte Positionen ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
+zugeordnet. Vielfältigere Verformungen können mithilfe von mehreren Clustern erzielt werden. Dann besteht ein Soft Body aus mehreren Clustern, die sich leicht überlappen (siehe Abbildung \ref{ClusterJosh}). Die Partikel von überlappenden Clustern nehmen interpolierte Positionen ein. Dadurch erscheinen Verformungen umso abgerundeter, je stärker sich Cluster überlappen \cite{FlexDoc}.
 
-Die Steifheit eines Soft Bodies hängt nicht nur vom Steifheitsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
+Die Steifheit eines Soft Bodies hängt nicht nur vom Elastizitätsparameter ab. Auch die Größe des Zeitschritts, die Anzahl der Lösungsiterationen und die Menge und Größen der verwendeten Cluster haben einen Einfluss darauf \cite{PBDKidney}.
+
+\clearpage
+\bild{ClusterJosh}{10cm}{Abbildung aus \cite{josh}. Die oberen beiden Cluster überlappen sich nicht und repräsentieren daher zwei voneinander getrennte Körper. Die unteren drei Cluster überlappen sich und repräsentieren somit einen zusammenhängenden Körper. Die Nähe eines Partikels zu einem Clusterzentrum wird als Interpolationsgewicht für seine finale Position verwendet. Das heißt je näher ein Partikel an einem Clusterzentrum, desto stärker wird es von diesem Cluster beeinflusst.}
+
+
 
 \subsection{Unreal Engine 4 mit Flex integration}
 
@@ -226,7 +233,8 @@ Für diese Arbeit wurde die Game Engine \textit{Unreal Engine 4.19} mit NVIDIA F
 So bietet die Unreal Integration einen sehr schnellen und einfachen Einstieg in die Nutzung von NVIDIA FleX, weil hier bereits viele Funktionalitäten implementiert sind, die für die Nutzung von Flex benötigt werden. Polygonmodelle (im FBX-Format) können unkompliziert importiert und in Soft Bodies, Rigid Bodies oder Cloth-Assets konvertiert werden, indem die Polygonmodelle in Partikelmodelle umgewandelt werden. Eine Flex-Simulation ist schnell aufgesetzt und alle Simulationsparameter lassen sich komfortabel in einer übersichtlichen Tabelle einstellen. Unterschiedliche Flex-Simulationsinstanzen können als Objekte (\textit{FlexContainer}) vorbereitet und abgespeichert werden. Auch Fluidsimulationen können schnell und einfach aufgesetzt und visualisiert werden.
 
 % Doku und Lizenz:
-Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von GitHub bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
+Unreal Engine 4.19 mit Flex-Integration steht als Open Source Variante zur Verfügung und kann von GitHub bezogen und weiterentwickelt werden (\url{github.com/NvPhysX/UnrealEngine/tree/FleX-4.19.2}). 
+Es ist erlaubt, den Sourcecode nach den eigenen Bedürfnissen anzupassen und zu erweitern, wobei man stets an die Endnutzer Lizenzbedingungen der Unreal Engine 4 gebunden ist (siehe \url{unrealengine.com/en-US/eula/publishing}).
 
 %\subsection{Weitere Physik Engines für medizinische Simulationen}
 %

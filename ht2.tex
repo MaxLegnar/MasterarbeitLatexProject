@@ -166,6 +166,7 @@ Dank des  kräftebasierten Interaktions-Systems (aus Kapitel \ref{sec_FSystem}) 
 Ist die Interaktionskraft stark genug, drücken die Nadel-Partikel Gewebe-Partikel zur Seite und die Nadel dringt in das Gewebe ein.
 Aufgrund der dünnen Form kann die Nadel nur mit axialen Bewegungen in das Gewebe eingeführt werden. 
 
+%weg rutschen
 Wird die Nadel in einem ungünstigen Winkel eingeführt, kann sie seitlich wegrutschen, ohne in das Gewebe einzudringen (siehe Abbildung \ref{Needle4}). Ein ungünstiger Winkel ist ein besonders flacher Winkel zur Gewebeoberfläche. Dann ist die Richtung der simulierten Interaktionskraft ungünstig und der Kraftanteil, der in das Gewebe hineingeht, zu gering. Dieses Verhalten wirkt allerdings unrealistisch. In der Realität können Nadeln nämlich sehr flach angesetzt werden, ohne abzurutschen, weil sich die scharfe Spitze der Nadel normalerweise im Gewebe verhakt. 
 
 %Reibung
@@ -179,6 +180,9 @@ Wenn die Nadel tief genug im Gewebe steckt und losgelassen wird, bleibt sie im G
 
 %Negative Beeinflussungen des Realismusses und Lösung
 Die kurze Bewegung der Nadel kann sich in manchen Fällen negativ auf den Realitätsgrad der Simulation auswirken. Zudem rutschen Nadeln, die nicht tief genug ins Gewebe gesteckt werden, wieder heraus. Allerdings lässt sich das Problem der verrutschenden oder herausfallenden Nadel leicht lösen. Beispielsweise indem die Nadel manuell an das Gewebe befestigt wird, sobald der Spieler die Nadel loslässt, während Sie sich im Gewebe befindet. Dabei werden alle Nadel-Partikel an die Gewebe-Partikel befestigt, die sie berühren. In Kapitel \ref{subsec_attach} wurde bereits geklärt, wie sich Partikel an andere Partikel befestigen lassen. 
+
+%radiale Bewegung im Gewebe
+Wird die Nadel ins Gewebe eingeführt, neigt sie dazu, sich einen axialen Weg durch das Gewebe zu bahnen. Seitliche beziehungsweise radiale Bewegungen der Nadel sind aufgrund ihrer spitzen Form kaum möglich. Übt der Anwender allerdings eine zu starke radiale Kraft auf die Nadel aus, kann es passieren, dass Gewebepartikel von der starken Kraft zur Seite gedrückt werden. Dann bewegt sich die Nadel in radiale Richtung durch das Gewebe. Dieses Verhalten wirkt unrealistisch und sollte vermieden werden. Beispielsweise durch Begrenzung der maximal möglichen radialen Kraft auf die Nadel. Wobei diese Begrenzung nur angewandt wird, solange sich die Nadel im Gewebe befindet.
 
 %Problemstellungen:
 % Wiederspruch: Für gute gewebeverformung: SelfCollision=True, für gute nadel interaktion: SelfCollision aus.
