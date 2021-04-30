@@ -200,16 +200,17 @@ Für diese Lösungsmethode kann allerdings nicht mehr garantiert werden, dass di
 \subsection{Clustered Shape Matching}
 %auch region-based shape matching constraints genannt:
 
-Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. NVIDIA FleX setzt Shape  \linebreak Matching für Rigid- als auch für Soft Body Simulationen ein.
+Für Chirurgische Simulatoren ist vor allem die Soft Body Simulation für virtuelles Gewebe interessant. Für PBD-basierte Simulationen hat sich hierfür das sogenannte \textit{Shape Matching} aus \cite{Shape} bewährt. Im Vergleich zu herkömmlichen Masse-Feder-Modellen ist Shape Matching deutlich performanter und die Parametrisierung ist leichter. Auch NVIDIA FleX setzt Shape Matching für Soft Body Simulationen ein. 
 
-Das Grundprinzip des Shape Matchings wird in Abbildung \ref{ShapeMatching} vereinfacht visualisiert. 
+
 
 % polare Zersetzung der Kovarianzmatrix der deformierten Form
 \bild{ShapeMatching}{6cm}{Abbildung aus \cite{FlexD3D}. Das Grundprinzip des Shape Matchings. }
 
+Das Grundprinzip des Shape Matchings funktioniert wie folgt:
 Die Entspannungskonfiguration einer Partikelgruppe wird gespeichert (siehe Abbildung \ref{ShapeMatching}: \textit{Rest Configuration}). Diese zusammengehörende Partikelgruppe ist dann ein sogenanntes \textit{Cluster}. 
 Die Partikel des Clusters werden zunächst simuliert, als währen sie nicht miteinander verbunden.
-Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
+Bei einer Kollision greifen zunächst die Kollisions-Constraints und verschieben die kollidierten Partikel entsprechend (siehe Abbildung \ref{ShapeMatching}: \linebreak \textit{Deformed State}). Dann wird das Shape Matching Constraint für die Partikelgruppe gelöst, um die beste Transformation zu finden, bei der die Entspannungskonfiguration wieder eingenommen werden kann (siehe Abbildung \ref{ShapeMatching}: \textit{Best Rigid Transformation}).
 
 So erhält man zunächst eine Möglichkeit, Rigid Bodies mit Partikelsystemen zu simulieren. Bei NVIDIA FleX wird das Shape Matching von einem Constraint namens \textit{Shape-Constraint} umgesetzt. Pro Simulationsschritt muss also für jedes Rigid Body ein Shape-Constraint gelöst werden.
 

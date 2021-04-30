@@ -1,7 +1,7 @@
 % Die Arbeit besteht aus Kapiteln (chapter)
-\chapter{Diskussion}
+\chapter{Zusammenfassung, Ausblick und Diskussion}
 
-%\section{Fazit und Ausblick}
+\section{Zusammenfassung und Ausblick}
 %Die für diese Arbeit gesetzten Ziele konnten zum Großteil erreicht werden und es konnten einige überraschend gute Ergebnisse erzielt werden. 
 
 %%%%%%%%%% Feedback %%%%%%%%%%%%%%%%
@@ -13,7 +13,8 @@ Das Kombinieren von NVIDIA FleX mit einer Game Engine erwies sich als überaus n
 %Ohne die vielen nützlichen Funktionen der Unreal Engine 4 hätten niemals so viele Ergebnisse in solch kurzer Zeit erzielt werden können. 
 %Es konnten die wichtigsten Faktoren identifiziert werden, die den größten Einfluss auf die Simulationsperformance von FleX haben (Kapitel \ref{subsec_perf_zusa}). 
 Mithilfe des angeeigneten theoretischen Wissens über die verwendete Software und über PBD, konnte stets gut nachvollzogen werden, wieso sich die Simulationen in bestimmten Situationen unterschiedlich verhält. 
-So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen (siehe Kapitel \ref{subsec_perf_zusa}). Die wohl größte Schwäche von NVIDIA FleX ist dabei die Simulation von großen Rigid Bodies, die aus vielen Partikeln (über 4000) bestehen. Hier kommt die Hardware schnell an ihre Grenzen und die Echtzeitfähigkeit kann nicht mehr garantiert werden.
+So konnten die wichtigsten Punkte herausgearbeitet werden, auf die zu achten ist, um das bestmögliche aus PBD-basierten Simulationen herauszuholen (siehe Kapitel \ref{subsec_perf_zusa}). 
+%Die wohl größte Schwäche von NVIDIA FleX ist dabei die Simulation von großen Rigid Bodies, die aus vielen Partikeln (über 4000) bestehen. Hier kommt die Hardware schnell an ihre Grenzen und die Echtzeitfähigkeit kann nicht mehr garantiert werden.
 
 %Für zukünftige Projekte könnte noch getestet werden, ob sich FleX-Simulationen auf Standalone VR Anlagen portieren und effizient ausführen lassen. Es wäre interessant zu klären, ob moderne Hardware, wie die Oculus Quest 2 stark genug sind um FleX Simulationen auszuführen.
 
@@ -58,10 +59,32 @@ Die Nadel-Gewebe-Interaktion konnte in Kapitel \ref{sec_needle} überraschend gu
 
 Aus dem Gewebe herausfallende Nadeln könnten zukünftig mithilfe von manuellen Partikelbefestigungen (Nadel an Gewebe) vermieden werden.
 
-%Eine weitere Problemstellung, die noch eine Lösuing bedarf,...
 Eine weiter Problemstellung, die noch gelöst werden sollte, ist das Abrutschen der Nadel beim Stechen ins Gewebe. Die Nadel macht keinen spitzen Eindruck, weil sich ihre Spitze nicht mit der Gewebeoberfläche verhakt. Hierfür könnte eine manuelle Lösung implementiert werden, die bewirkt, dass die Spitze der Nadel stärker an der Gewebeoberflächen haftet.
 
 Außerdem könnte die maximale radiale Nadelkraft eingeschränkt werden, solange sich die Nadel im Gewebe befindet, um seitliche Nadelbewegungen im Gewebe stärker einzuschränken.
+
+\clearpage
+\section{Diskussion}
+
+% Vielseitigkeit
+Insgesamt lässt sich sagen, dass PBD-basierte Physik Engines in Verbindung mit Game Engines gut für  medizinische Echtzeitsimulationen geeignet sind. 
+%Auch wenn die heutige Software noch recht spärlich ausgestattet ist, weswegen in dieser Arbeit einige Grundfunktionalitäten selbst implementiert werden mussten. 
+NVIDIA FleX profitiert vor allem von einer großen Vielseitigkeit: Festkörper, Gewebe, Häute und Flüssigkeiten können in den meisten Fällen ausreichend performant und akkurat simuliert werden, um optisch realistisch wirkende Bilder zu erhalten.
+
+%FleX Genauigkeit
+In dieser Arbeit kann keine genauere Aussage über die Simulationsgenauigkeit von FleX getroffen werden, weil Zeit und Mittel fehlten, um entsprechende Messversuche durchzuführen. Allerdings setzen sich andere Werke wie \cite{BreastBiopsy} und \cite{PBDKidney} sehr detailliert mit dieser Thematik auseinander. In diesen Arbeiten konnten ausreichend akkurate Gewebesimulationen mit FleX aufgesetzt werden. 
+%Deswegen wurden in dieser Arbeit auch die selben Simulationseinstellungen verwendet, um Aussagen über die Performance zu treffen und um Anwendungen zu implementieren.
+
+%Flex performance:
+Die Performance von NVIDIA FleX überzeugt in den meisten Fällen, auch wenn viele Partikel (ca. 60.000) simuliert werden und anspruchsvolle Simulationsparameter eingesetzt werden. Alle Anwendungen laufen zuverlässig mit 60 bis 120 FPS, solange die Regeln aus Kapitel \ref{subsec_perf_zusa} eingehalten werden. Die wichtigste Regel ist hierbei, die Partikelanzahl pro Cluster klein zu halten. Dies ist keine schlimme Einschränkung, weil viele kleine Cluster keine Nachteile mit sich bringen. Im Gegenteil: In \cite{BreastBiopsy} und \cite{PBDKidney} werden akkurate Gewebesimulationen mit vielen kleinen Clustern umgesetzt.
+
+%große Rigids in FleX
+Die wohl größte Schwäche von NVIDIA FleX ist die Simulation von großen Rigid Bodies, die aus zu vielen Partikeln (hier: über 4000) bestehen. Hier kommt die Hardware (hier: GTX 1070) schnell an ihre Grenzen und die Echtzeitfähigkeit kann nicht mehr gewährleistet werden. 
+Deswegen kann es Sinn machen, Rigid Bodies mithilfe einer dafür spezialisierten Physik Engine (beispielsweise NVIDIA PhysX) zu simulieren, während Soft Bodies, Häute, Fäden und Flüssigkeiten von NVIDIA FleX simuliert werden. Das Kombinieren von zwei Physik Engines kann allerdings aufwendig  und kompliziert sein (siehe Kapitel \ref{subsec_physXFleX}).
+Dieser Extraaufwand lohnt sich nur, wenn so große Rigid Bodies simuliert werden müssen, dass diese nicht mehr von wenigen Partikeln (weniger als 4000 Partikel) repräsentiert werden können. 
+In dieser Arbeit war der Einsatz einer separaten Rigid Body Simulation nicht nötig. Nadeln, Pinzetten und Skalpelle konnten jeweils mit weniger als 1000 Partikeln modelliert werden. 
+
+In Anwendungsfällen wie aus \cite{VRSim20} und \cite{VRmagic} müssen außerdem überhaupt keine Rigid Bodies simuliert werden. Zwar sind hier die virtuellen Werkzeuge Festkörper, allerdings müssen diese keine Physik simulieren, weil sich diese immer in der Hand des Anwenders befinden, wo haptisches Feedback erzeugt wird. Dadurch können die Werkzeuge von Polygonmodellen repräsentiert werden und FleX muss nur die Partikel-Polygonmodell-Kollisionen berechnen, was sehr effizient funktioniert. Weil solche Anwendungsfälle häufig vorkommen, ist davon auszugehen, dass die Fähigkeiten von NVIDIA FleX für die meisten Anwendungen ausreichen.
 
 
 
