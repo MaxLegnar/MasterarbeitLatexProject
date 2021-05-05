@@ -369,7 +369,7 @@ $\vec{p}_{new}$ kann mithilfe von Gleichung \ref{form_reltransf} aus Kapitel \re
 
 %%% EVT noch genauer beschreiben wie genau das Befestigen funktioniert...
 
-\subsubsection{Befestigung von Szenen an Szenen}
+\subsubsection{Befestigung von Szenen an FleX-Objekte}
 
 Erfreulicherweise unterstützt die verwendete Unreal Integration bereits das Befestigen von Szenen an ein Flex-Objekt. Allerdings drehen sich Szenen nicht mit Soft Bodies mit. Nur die Position der befestigten Szenen wird angepasst, während die Rotation unverändert bleibt. 
 
@@ -386,7 +386,7 @@ Im Rahmen dieser Arbeit war dies allerdings nicht erwünscht. In vielen Fällen 
 Für genau diesen Anwendungsfall bietet NVIDIA FleX bereits eine Lösung an. Mithilfe von NVIDIA FleX können physikalisch realistisch wirkende Verbindungen zwischen mehreren Flex-Objekten hergestellt werden. Solche Verbindungen heißen \textit{Soft Joints} (siehe \textit{NvFlexExtSoftJoint} aus \textit{NvFlexExt.h}).
 
 \subsection{Kollisionserkennung}
-
+\label{physXFleX}
 
 Eine wichtige Funktionalität, die die meisten Game Engines bieten, ist ein Framework für die Erkennung von Kollisionen zwischen 3d-Modellen. 
 Ein Kollisionserkennungsframework wird für Computerspiele häufig benötigt, beispielsweise um zu erkennen, ob der Spieler in tödliche Lava fällt, ob der Spieler ein Zielgebiet erreicht hat oder ob eine geschwungene Klinge ein Ziel getroffen hat. Die Programmierschnittstelle für solche Kollisionserkennungen existiert meist in der Form von \textit{Event-Bindings}. 
